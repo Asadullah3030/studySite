@@ -20,7 +20,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 10px;
+            padding: 20px;
         }
 
         .container {
@@ -35,96 +35,31 @@
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 2em;
+            font-size: 2.5em;
             margin-bottom: 10px;
         }
 
         .header p {
-            font-size: 1em;
+            font-size: 1.1em;
             opacity: 0.9;
         }
 
         .content {
-            padding: 20px;
-        }
-
-        .sync-section {
-            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .sync-section h3 {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-        }
-
-        .sync-key-display {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 1.2em;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin: 10px 0;
-            word-break: break-all;
-        }
-
-        .sync-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .btn-sync {
-            background: white;
-            color: #4caf50;
-            padding: 8px 20px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        .btn-sync:hover {
-            background: #f0f0f0;
-        }
-
-        .sync-input-container {
-            margin-top: 15px;
-            display: none;
-        }
-
-        .sync-input {
-            width: 100%;
-            max-width: 300px;
-            padding: 10px;
-            border: 2px solid white;
-            border-radius: 20px;
-            font-size: 0.95em;
-            text-align: center;
-            margin: 10px auto;
-            display: block;
+            padding: 40px;
         }
 
         .upload-section {
             background: #f8f9fa;
             border: 3px dashed #667eea;
             border-radius: 15px;
-            padding: 30px 20px;
+            padding: 40px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             transition: all 0.3s ease;
         }
 
@@ -140,14 +75,14 @@
         }
 
         .upload-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
+            font-size: 4em;
+            margin-bottom: 20px;
         }
 
         .file-input-wrapper {
             position: relative;
             display: inline-block;
-            margin: 15px 0;
+            margin: 20px 0;
         }
 
         #fileInput {
@@ -157,10 +92,10 @@
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 12px 30px;
+            padding: 15px 40px;
             border: none;
             border-radius: 50px;
-            font-size: 1em;
+            font-size: 1.1em;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
@@ -172,24 +107,24 @@
         }
 
         .file-list {
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         .file-list h2 {
             color: #333;
-            margin-bottom: 15px;
-            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-size: 1.8em;
         }
 
         .file-item {
             background: white;
             border: 1px solid #e0e0e0;
             border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
@@ -206,44 +141,37 @@
         .file-name {
             font-weight: bold;
             color: #333;
-            font-size: 1em;
+            font-size: 1.1em;
             margin-bottom: 5px;
-            word-break: break-word;
         }
 
         .file-meta {
             color: #666;
-            font-size: 0.85em;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
+            font-size: 0.9em;
         }
 
         .file-type {
             display: inline-block;
             background: #667eea;
             color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.75em;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-right: 10px;
         }
 
         .file-actions {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .btn-small {
-            padding: 8px 15px;
-            font-size: 0.85em;
+            padding: 8px 20px;
+            font-size: 0.9em;
             border-radius: 20px;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: 1;
-            min-width: 90px;
         }
 
         .btn-download {
@@ -266,38 +194,38 @@
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .stat-number {
-            font-size: 2em;
+            font-size: 2.5em;
             font-weight: bold;
             margin-bottom: 5px;
         }
 
         .stat-label {
-            font-size: 0.9em;
+            font-size: 1em;
             opacity: 0.9;
         }
 
         .search-box {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: 2px solid #e0e0e0;
             border-radius: 50px;
-            font-size: 0.95em;
-            margin-bottom: 15px;
+            font-size: 1em;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
         }
 
@@ -309,34 +237,34 @@
 
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             color: #999;
         }
 
         .empty-state-icon {
-            font-size: 4em;
-            margin-bottom: 15px;
+            font-size: 5em;
+            margin-bottom: 20px;
         }
 
         .folder-section {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .folder-controls {
             display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
+            margin-top: 1rem;
+            gap: 10px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
         .folder-input {
             flex-grow: 1;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: 2px solid #e0e0e0;
             border-radius: 25px;
-            font-size: 0.95em;
+            font-size: 1em;
             transition: all 0.3s ease;
-            min-width: 200px;
         }
 
         .folder-input:focus {
@@ -347,13 +275,12 @@
         .btn-create-folder {
             background: #4caf50;
             color: white;
-            padding: 10px 25px;
+            padding: 12px 30px;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 0.95em;
+            font-size: 1em;
             transition: all 0.3s ease;
-            white-space: nowrap;
         }
 
         .btn-create-folder:hover {
@@ -362,16 +289,16 @@
 
         .folders-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
         .folder-card {
             background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
             color: white;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -390,18 +317,18 @@
         }
 
         .folder-icon {
-            font-size: 2.5em;
-            margin-bottom: 8px;
+            font-size: 3em;
+            margin-bottom: 10px;
         }
 
         .folder-name {
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 1em;
             word-break: break-word;
         }
 
         .folder-count {
-            font-size: 0.8em;
+            font-size: 0.85em;
             opacity: 0.9;
             margin-top: 5px;
         }
@@ -414,10 +341,10 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 25px;
+            height: 25px;
             cursor: pointer;
-            font-size: 0.75em;
+            font-size: 0.8em;
             display: none;
         }
 
@@ -427,36 +354,35 @@
 
         .current-folder {
             background: #f0f1ff;
-            padding: 12px 15px;
+            padding: 15px 20px;
             border-radius: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
         }
 
         .current-folder-name {
             font-weight: bold;
             color: #667eea;
-            font-size: 1.1em;
-            flex-grow: 1;
+            font-size: 1.2em;
         }
 
         .btn-back {
             background: #666;
             color: white;
-            padding: 8px 18px;
+            padding: 8px 20px;
             border: none;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85em;
+            font-size: 0.9em;
         }
 
         .btn-back:hover {
             background: #555;
         }
 
+        /* Modal styles for image preview */
         .modal {
             display: none;
             position: fixed;
@@ -504,18 +430,17 @@
 
         .modal-filename {
             color: white;
-            font-size: 1.1em;
+            font-size: 1.2em;
             margin-top: 20px;
             text-align: center;
-            word-break: break-word;
         }
 
         .close-modal {
             position: absolute;
-            top: 15px;
-            right: 25px;
+            top: 20px;
+            right: 40px;
             color: white;
-            font-size: 35px;
+            font-size: 40px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -528,8 +453,8 @@
         }
 
         .thumbnail {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             object-fit: cover;
             border-radius: 5px;
             margin-right: 10px;
@@ -548,16 +473,16 @@
             align-items: center;
         }
 
+        /* Upload Progress Styles */
         .upload-progress-container {
             position: fixed;
-            bottom: 10px;
-            right: 10px;
-            width: 300px;
-            max-width: calc(100vw - 20px);
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
             background: white;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            padding: 15px;
+            padding: 20px;
             z-index: 999;
             display: none;
         }
@@ -582,12 +507,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .upload-header h3 {
             color: #333;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
 
         .close-upload {
@@ -595,14 +520,14 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 25px;
+            height: 25px;
             cursor: pointer;
-            font-size: 0.85em;
+            font-size: 0.9em;
         }
 
         .upload-item {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             padding: 10px;
             background: #f8f9fa;
             border-radius: 10px;
@@ -612,7 +537,7 @@
             font-weight: bold;
             color: #333;
             margin-bottom: 8px;
-            font-size: 0.85em;
+            font-size: 0.9em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -620,7 +545,7 @@
 
         .progress-bar-container {
             background: #e0e0e0;
-            height: 6px;
+            height: 8px;
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 8px;
@@ -636,7 +561,7 @@
         .upload-stats {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8em;
+            font-size: 0.85em;
             color: #666;
         }
 
@@ -650,16 +575,16 @@
             font-weight: bold;
         }
 
+        /* Download/Delete Progress Styles */
         .action-progress-container {
             position: fixed;
-            bottom: 10px;
-            left: 10px;
-            width: 300px;
-            max-width: calc(100vw - 20px);
+            bottom: 20px;
+            left: 20px;
+            width: 350px;
             background: white;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            padding: 15px;
+            padding: 20px;
             z-index: 999;
             display: none;
         }
@@ -684,12 +609,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .action-header h3 {
             color: #333;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
 
         .close-action {
@@ -697,14 +622,14 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 25px;
+            height: 25px;
             cursor: pointer;
-            font-size: 0.85em;
+            font-size: 0.9em;
         }
 
         .action-item {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             padding: 10px;
             background: #f8f9fa;
             border-radius: 10px;
@@ -714,7 +639,7 @@
             font-weight: bold;
             color: #333;
             margin-bottom: 8px;
-            font-size: 0.85em;
+            font-size: 0.9em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -730,125 +655,50 @@
             font-weight: bold;
         }
 
-        .asadRights {
-            background-color: white;
-            font-weight: 700;
-            margin-top: 1.5rem;
-            color: #333;
-            padding: 1em;
-            font-size: 0.95rem;
-            border-radius: 1.5rem;
-            text-align: center;
-        }
-
         @media (max-width: 768px) {
-            body {
-                padding: 5px;
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            .header h1 {
-                font-size: 1.5em;
-            }
-
-            .header p {
-                font-size: 0.9em;
-            }
-
-            .content {
-                padding: 15px;
-            }
-
-            .sync-section h3 {
-                font-size: 1em;
-            }
-
-            .sync-key-display {
-                font-size: 1em;
-            }
-
-            .upload-section {
-                padding: 20px 15px;
-            }
-
-            .upload-icon {
-                font-size: 2.5em;
-            }
-
-            .folder-input {
-                min-width: 100%;
-            }
-
-            .btn-create-folder {
+            .file-actions {
+                margin-top: 15px;
                 width: 100%;
+                justify-content: flex-start;
             }
 
             .folders-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 10px;
-            }
-
-            .folder-icon {
-                font-size: 2em;
-            }
-
-            .stat-number {
-                font-size: 1.8em;
-            }
-
-            .file-item {
-                padding: 12px;
-            }
-
-            .btn-small {
-                font-size: 0.8em;
-                padding: 6px 12px;
-                min-width: 80px;
-            }
-
-            .thumbnail {
-                width: 40px;
-                height: 40px;
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
 
             .close-modal {
-                right: 15px;
+                right: 20px;
                 font-size: 30px;
             }
 
-            .upload-progress-container,
+            .upload-progress-container {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+            }
+
             .action-progress-container {
-                bottom: 5px;
-                left: 5px;
-                right: 5px;
-                width: calc(100vw - 10px);
+                width: calc(100% - 40px);
+                left: 20px;
+                right: 20px;
             }
+           
         }
-
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.3em;
+         .asadRights{
+                background-color: white;
+                font-weight: 700;
+                margin-top: 2rem;
+                color: #333;
+                padding: 1.5em;
+                font-size: 1.1rem;
+                border-radius: 1.7rem;
+                text-align: center;
             }
-
-            .folders-grid {
-                grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-            }
-
-            .folder-icon {
-                font-size: 1.8em;
-            }
-
-            .folder-name {
-                font-size: 0.8em;
-            }
-
-            .stat-card {
-                padding: 12px;
-            }
-
-            .stat-number {
-                font-size: 1.5em;
-            }
-        }
     </style>
 </head>
 <body>
@@ -859,23 +709,6 @@
         </div>
 
         <div class="content">
-            <!-- Sync Section -->
-            <div class="sync-section">
-                <h3>🔄 Cross-Device Sync</h3>
-                <p style="font-size: 0.85em; margin-bottom: 10px;">Apna sync code yaad rakhein - kisi bhi device se access karein!</p>
-                <div class="sync-key-display">
-                    <span id="currentSyncKey">AKS-XXXXX</span>
-                </div>
-                <div class="sync-buttons">
-                    <button class="btn-sync" onclick="copySyncKey()">📋 Copy Code</button>
-                    <button class="btn-sync" onclick="toggleSyncInput()">🔗 New Device Connect</button>
-                </div>
-                <div class="sync-input-container" id="syncInputContainer">
-                    <input type="text" class="sync-input" id="syncInput" placeholder="Code yahan paste karein">
-                    <button class="btn-sync" onclick="connectWithSyncKey()">✓ Connect</button>
-                </div>
-            </div>
-
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-number" id="totalFiles">0</div>
@@ -906,14 +739,14 @@
             <div class="upload-section" id="dropZone">
                 <div class="upload-icon">📤</div>
                 <h2>Files Upload karein</h2>
-                <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Documents, PDFs, Videos, Photos, ZIP files - Sab kuch save kar sakte hain!</p>
+                <p style="color: #666; margin: 15px 0;">Documents, PDFs, Videos, Photos, ZIP files - Sab kuch save kar sakte hain!</p>
                 <div class="file-input-wrapper">
-                    <input type="file" id="fileInput" multiple accept="*/*">
+                    <input type="file" id="fileInput" multiple>
                     <button class="btn" onclick="document.getElementById('fileInput').click()">
                         Choose Files
                     </button>
                 </div>
-                <p style="color: #999; margin-top: 10px; font-size: 0.85em;">Ya files ko yahan drag & drop karein</p>
+                <p style="color: #999; margin-top: 15px; font-size: 0.9em;">Ya files ko yahan drag & drop karein</p>
             </div>
 
             <div class="file-list">
@@ -928,14 +761,16 @@
         <p>© 2025-26 iamchasad, All rights reserved.</p>
     </div>
 
+    <!-- Upload Progress Container -->
     <div class="upload-progress-container" id="uploadProgressContainer">
         <div class="upload-header">
-            <h3>📤 Uploading</h3>
+            <h3>📤 Uploading Files</h3>
             <button class="close-upload" onclick="closeUploadProgress()">✖</button>
         </div>
         <div id="uploadItemsContainer"></div>
     </div>
 
+    <!-- Download/Delete Progress Container -->
     <div class="action-progress-container" id="actionProgressContainer">
         <div class="action-header">
             <h3 id="actionTitle">📥 Processing</h3>
@@ -944,6 +779,7 @@
         <div id="actionItemsContainer"></div>
     </div>
 
+    <!-- Image/Video Preview Modal -->
     <div id="previewModal" class="modal">
         <span class="close-modal" onclick="closePreview()">&times;</span>
         <div class="modal-content" id="modalContent">
@@ -952,127 +788,92 @@
     </div>
 
     <script>
-        // IndexedDB Setup
+        // IndexedDB setup for unlimited storage
         let db;
-        let syncKey = '';
-        let currentFolder = null;
+        const DB_NAME = 'AKStudyHub';
+        const DB_VERSION = 1;
 
+        // Initialize IndexedDB
         function initDB() {
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open('AKStudyHub', 1);
-                
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
                 request.onerror = () => reject(request.error);
                 request.onsuccess = () => {
                     db = request.result;
                     resolve(db);
                 };
-                
+
                 request.onupgradeneeded = (event) => {
                     db = event.target.result;
+                    
                     if (!db.objectStoreNames.contains('files')) {
                         db.createObjectStore('files', { keyPath: 'id' });
                     }
                     if (!db.objectStoreNames.contains('folders')) {
                         db.createObjectStore('folders', { keyPath: 'id' });
                     }
-                    if (!db.objectStoreNames.contains('settings')) {
-                        db.createObjectStore('settings', { keyPath: 'key' });
-                    }
                 };
             });
         }
 
-        async function saveToIDB(storeName, data) {
-            const transaction = db.transaction([storeName], 'readwrite');
-            const store = transaction.objectStore(storeName);
-            return store.put(data);
+        // IndexedDB operations
+        function saveToIndexedDB(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.put(data);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
         }
 
-        async function getAllFromIDB(storeName) {
-            const transaction = db.transaction([storeName], 'readonly');
-            const store = transaction.objectStore(storeName);
-            return new Promise((resolve) => {
+        function getAllFromIndexedDB(storeName) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
                 const request = store.getAll();
+                
                 request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
             });
         }
 
-        async function deleteFromIDB(storeName, id) {
-            const transaction = db.transaction([storeName], 'readwrite');
-            const store = transaction.objectStore(storeName);
-            return store.delete(id);
-        }
-
-        async function getSetting(key) {
-            const transaction = db.transaction(['settings'], 'readonly');
-            const store = transaction.objectStore('settings');
-            return new Promise((resolve) => {
-                const request = store.get(key);
-                request.onsuccess = () => resolve(request.result);
+        function deleteFromIndexedDB(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.delete(id);
+                
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
             });
         }
 
-        async function initializeSyncKey() {
-            const setting = await getSetting('syncKey');
-            if (setting) {
-                syncKey = setting.value;
-            } else {
-                syncKey = 'AKS' + Math.random().toString(36).substr(2, 6).toUpperCase();
-                await saveToIDB('settings', { key: 'syncKey', value: syncKey });
-            }
-            document.getElementById('currentSyncKey').textContent = syncKey;
-        }
+        let filesData = [];
+        let foldersData = [];
+        let currentFolder = null;
 
-        function copySyncKey() {
-            navigator.clipboard.writeText(syncKey).then(() => {
-                alert('✓ Sync code copied!\nIs code ko dusre device pe use karein.');
-            });
-        }
-
-        function toggleSyncInput() {
-            const container = document.getElementById('syncInputContainer');
-            container.style.display = container.style.display === 'none' ? 'block' : 'none';
-        }
-
-        async function connectWithSyncKey() {
-            const newKey = document.getElementById('syncInput').value.trim().toUpperCase();
-            if (!newKey) {
-                alert('Sync code enter karein!');
-                return;
-            }
-            
-            if (confirm('Current data replace ho jayega. Continue?')) {
-                syncKey = newKey;
-                await saveToIDB('settings', { key: 'syncKey', value: syncKey });
-                document.getElementById('currentSyncKey').textContent = syncKey;
-                document.getElementById('syncInput').value = '';
-                toggleSyncInput();
-                alert('✓ Connected! Data sync ho gaya.');
-                await loadData();
-            }
-        }
+        // Initialize app
+        initDB().then(() => {
+            loadData();
+        });
 
         async function loadData() {
-            const files = await getAllFromIDB('files');
-            const folders = await getAllFromIDB('folders');
-            
-            window.filesData = files.filter(f => f.syncKey === syncKey);
-            window.foldersData = folders.filter(f => f.syncKey === syncKey);
-            
+            filesData = await getAllFromIndexedDB('files');
+            foldersData = await getAllFromIndexedDB('folders');
             displayFolders();
             displayFiles();
             updateStats();
         }
 
-        // Initialize
-        initDB().then(async () => {
-            await initializeSyncKey();
-            await loadData();
-        });
-
+        // File input change event
         document.getElementById('fileInput').addEventListener('change', handleFileSelect);
 
+        // Drag and drop functionality
         const dropZone = document.getElementById('dropZone');
+
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
@@ -1085,15 +886,20 @@
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
-            handleFiles(e.dataTransfer.files);
+            const files = e.dataTransfer.files;
+            handleFiles(files);
         });
 
+        // Search functionality
         document.getElementById('searchBox').addEventListener('input', (e) => {
             displayFiles(e.target.value);
         });
 
+        // Folder input enter key
         document.getElementById('folderInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') createFolder();
+            if (e.key === 'Enter') {
+                createFolder();
+            }
         });
 
         async function createFolder() {
@@ -1103,7 +909,8 @@
                 return;
             }
 
-            if (window.foldersData.some(f => f.name === folderName)) {
+            const folderExists = foldersData.some(f => f.name === folderName);
+            if (folderExists) {
                 alert('Ye folder pehle se hai!');
                 return;
             }
@@ -1111,12 +918,11 @@
             const newFolder = {
                 id: Date.now() + Math.random(),
                 name: folderName,
-                syncKey: syncKey,
-                createdDate: new Date().toLocaleString('en-PK')
+                createdDate: new Date().toLocaleString('ur-PK')
             };
 
-            await saveToIDB('folders', newFolder);
-            window.foldersData.push(newFolder);
+            await saveToIndexedDB('folders', newFolder);
+            foldersData.push(newFolder);
             document.getElementById('folderInput').value = '';
             displayFolders();
         }
@@ -1124,13 +930,13 @@
         function displayFolders() {
             const container = document.getElementById('foldersGrid');
             
-            if (!window.foldersData || window.foldersData.length === 0) {
-                container.innerHTML = '<p style="color: #999; grid-column: 1/-1; text-align: center; font-size: 0.9em;">Abhi koi folder nahi hai.</p>';
+            if (foldersData.length === 0) {
+                container.innerHTML = '<p style="color: #999; grid-column: 1/-1; text-align: center;">Abhi koi folder nahi hai. Naya folder banayein!</p>';
                 return;
             }
 
-            container.innerHTML = window.foldersData.map(folder => {
-                const fileCount = window.filesData.filter(f => String(f.folderId) === String(folder.id)).length;
+            container.innerHTML = foldersData.map(folder => {
+                const fileCount = filesData.filter(f => String(f.folderId) === String(folder.id)).length;
                 return `
                     <div class="folder-card ${String(currentFolder) === String(folder.id) ? 'active' : ''}" onclick="openFolder(${folder.id})">
                         <button class="btn-delete-folder" onclick="event.stopPropagation(); deleteFolder(${folder.id})">✖</button>
@@ -1144,7 +950,7 @@
 
         function openFolder(folderId) {
             currentFolder = folderId;
-            const folder = window.foldersData.find(f => String(f.id) === String(folderId));
+            const folder = foldersData.find(f => String(f.id) === String(folderId));
             document.getElementById('currentFolderBar').style.display = 'flex';
             document.getElementById('currentFolderName').textContent = '📁 ' + folder.name;
             displayFolders();
@@ -1159,31 +965,35 @@
         }
 
         async function deleteFolder(folderId) {
-            const filesInFolder = window.filesData.filter(f => String(f.folderId) === String(folderId));
+            const filesInFolder = filesData.filter(f => String(f.folderId) === String(folderId));
             if (filesInFolder.length > 0) {
-                if (!confirm(`Is folder mein ${filesInFolder.length} files hain. Delete karein?`)) {
+                if (!confirm(`Is folder mein ${filesInFolder.length} files hain. Folder aur saari files delete karein?`)) {
                     return;
                 }
+                
                 for (const file of filesInFolder) {
-                    await deleteFromIDB('files', file.id);
+                    await deleteFromIndexedDB('files', file.id);
                 }
+                filesData = filesData.filter(f => String(f.folderId) !== String(folderId));
             }
 
-            await deleteFromIDB('folders', folderId);
+            await deleteFromIndexedDB('folders', folderId);
+            foldersData = foldersData.filter(f => String(f.id) !== String(folderId));
             
             if (String(currentFolder) === String(folderId)) {
                 goToAllFiles();
             }
-            await loadData();
+            displayFolders();
+            displayFiles();
+            updateStats();
         }
 
         function handleFileSelect(e) {
-            handleFiles(e.target.files);
+            const files = e.target.files;
+            handleFiles(files);
         }
 
         function handleFiles(files) {
-            if (!files || files.length === 0) return;
-            
             const uploadContainer = document.getElementById('uploadProgressContainer');
             const uploadItemsContainer = document.getElementById('uploadItemsContainer');
             uploadContainer.classList.add('show');
@@ -1218,17 +1028,13 @@
             
             reader.onprogress = (e) => {
                 if (e.lengthComputable) {
-                    const percent = (e.loaded / e.total) * 100;
-                    const elapsed = (Date.now() - startTime) / 1000;
-                    const speed = (e.loaded / (1024 * 1024)) / elapsed;
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    const elapsedTime = (Date.now() - startTime) / 1000;
+                    const speed = (e.loaded / (1024 * 1024)) / elapsedTime;
                     
-                    const progressEl = document.getElementById(`${uploadId}-progress`);
-                    const percentEl = document.getElementById(`${uploadId}-percent`);
-                    const speedEl = document.getElementById(`${uploadId}-speed`);
-                    
-                    if (progressEl) progressEl.style.width = percent + '%';
-                    if (percentEl) percentEl.textContent = Math.round(percent) + '%';
-                    if (speedEl) speedEl.textContent = speed.toFixed(2) + ' MB/s';
+                    document.getElementById(`${uploadId}-progress`).style.width = percentComplete + '%';
+                    document.getElementById(`${uploadId}-percent`).textContent = Math.round(percentComplete) + '%';
+                    document.getElementById(`${uploadId}-speed`).textContent = speed.toFixed(2) + ' MB/s';
                 }
             };
 
@@ -1236,36 +1042,31 @@
                 const fileData = {
                     id: Date.now() + Math.random(),
                     name: file.name,
-                    type: file.type || 'application/octet-stream',
+                    type: file.type || 'unknown',
                     size: file.size,
                     data: e.target.result,
                     folderId: currentFolder,
-                    syncKey: syncKey,
-                    uploadDate: new Date().toLocaleString('en-PK')
+                    uploadDate: new Date().toLocaleString('ur-PK')
                 };
 
-                await saveToIDB('files', fileData);
-                await loadData();
+                await saveToIndexedDB('files', fileData);
+                filesData.push(fileData);
                 
-                const speedEl = document.getElementById(`${uploadId}-speed`);
-                const progressEl = document.getElementById(`${uploadId}-progress`);
-                const percentEl = document.getElementById(`${uploadId}-percent`);
+                document.getElementById(`${uploadId}-speed`).innerHTML = '<span class="upload-complete">✓ Complete</span>';
+                document.getElementById(`${uploadId}-progress`).style.width = '100%';
+                document.getElementById(`${uploadId}-percent`).textContent = '100%';
                 
-                if (speedEl) speedEl.innerHTML = '<span class="upload-complete">✓ Done</span>';
-                if (progressEl) progressEl.style.width = '100%';
-                if (percentEl) percentEl.textContent = '100%';
+                displayFiles();
+                displayFolders();
+                updateStats();
 
                 setTimeout(() => {
-                    const item = document.getElementById(uploadId);
-                    if (item) {
-                        item.style.opacity = '0';
-                        setTimeout(() => item.remove(), 300);
+                    const uploadItem = document.getElementById(uploadId);
+                    if (uploadItem) {
+                        uploadItem.style.opacity = '0';
+                        setTimeout(() => uploadItem.remove(), 300);
                     }
                 }, 2000);
-            };
-
-            reader.onerror = () => {
-                alert('Error uploading: ' + file.name);
             };
 
             reader.readAsDataURL(file);
@@ -1279,25 +1080,29 @@
             const container = document.getElementById('fileListContainer');
             let filteredFiles = [];
 
+            // Agar koi folder open hai to SIRF us folder ki files dikhao
             if (currentFolder !== null) {
-                filteredFiles = window.filesData.filter(file => 
+                filteredFiles = filesData.filter(file => 
                     String(file.folderId) === String(currentFolder) &&
                     file.name.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             } else {
-                filteredFiles = window.filesData.filter(file => 
+                // Agar koi folder open nahi hai to SIRF wo files dikhao jinki folderId null/undefined hai
+                filteredFiles = filesData.filter(file => 
                     (file.folderId === null || file.folderId === undefined) &&
                     file.name.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             }
 
             if (filteredFiles.length === 0) {
-                const message = currentFolder !== null ? 'Folder khali hai' : 'Koi file nahi';
+                const message = currentFolder !== null 
+                    ? 'Is folder mein koi file nahi hai' 
+                    : 'Koi file nahi mili';
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📂</div>
                         <h3>${message}</h3>
-                        <p style="font-size: 0.9em;">Files upload karein</p>
+                        <p>Files upload karein ya search term change karein</p>
                     </div>
                 `;
                 return;
@@ -1313,29 +1118,35 @@
                     <div class="file-info">
                         <div class="file-preview">
                             ${thumbnail}
-                            <div style="flex: 1; min-width: 0;">
+                            <div>
                                 <div class="file-name">
                                     ${getFileIcon(file.type)} ${file.name}
                                 </div>
                                 <div class="file-meta">
                                     <span class="file-type">${getFileTypeLabel(file.type)}</span>
                                     <span>${formatFileSize(file.size)}</span>
+                                    <span>• ${file.uploadDate}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="file-actions">
-                        ${isImage || isVideo ? `<button class="btn-small" style="background: #2196F3; color: white;" onclick="previewFile(${file.id})">👁️ View</button>` : ''}
-                        <button class="btn-small btn-download" onclick="downloadFileWithSpeed(${file.id})">⬇️ Download</button>
-                        <button class="btn-small btn-delete" onclick="deleteFileWithSpeed(${file.id})">🗑️ Delete</button>
+                        ${isImage || isVideo ? `<button class="btn-small" style="background: #2196F3; color: white;" onclick="previewFile(${file.id})">👁️ Preview</button>` : ''}
+                        <button class="btn-small btn-download" onclick="downloadFileWithSpeed(${file.id})">
+                            ⬇️ Download
+                        </button>
+                        <button class="btn-small btn-delete" onclick="deleteFileWithSpeed(${file.id})">
+                            🗑️ Delete
+                        </button>
                     </div>
                 </div>
             `;
             }).join('');
         }
 
+        // Download with speed indicator
         function downloadFileWithSpeed(fileId) {
-            const file = window.filesData.find(f => String(f.id) === String(fileId));
+            const file = filesData.find(f => String(f.id) === String(fileId));
             if (!file) return;
 
             const actionContainer = document.getElementById('actionProgressContainer');
@@ -1361,16 +1172,17 @@
             `;
             actionItemsContainer.appendChild(actionItem);
 
+            // Simulate download with progress
             const startTime = Date.now();
             const fileSize = file.size;
             let downloaded = 0;
-            const chunkSize = fileSize / 50;
+            const chunkSize = fileSize / 50; // 50 steps
 
             const interval = setInterval(() => {
                 downloaded += chunkSize;
                 const percent = Math.min((downloaded / fileSize) * 100, 100);
-                const elapsed = (Date.now() - startTime) / 1000;
-                const speed = (downloaded / (1024 * 1024)) / elapsed;
+                const elapsedTime = (Date.now() - startTime) / 1000;
+                const speed = (downloaded / (1024 * 1024)) / elapsedTime;
 
                 document.getElementById(`${actionId}-progress`).style.width = percent + '%';
                 document.getElementById(`${actionId}-percent`).textContent = Math.round(percent) + '%';
@@ -1379,6 +1191,7 @@
                 if (percent >= 100) {
                     clearInterval(interval);
                     
+                    // Actual download
                     const link = document.createElement('a');
                     link.href = file.data;
                     link.download = file.name;
@@ -1386,7 +1199,7 @@
                     link.click();
                     document.body.removeChild(link);
 
-                    document.getElementById(`${actionId}-speed`).innerHTML = '<span class="upload-complete">✓ Done</span>';
+                    document.getElementById(`${actionId}-speed`).innerHTML = '<span class="upload-complete">✓ Downloaded</span>';
                     
                     setTimeout(() => {
                         actionItem.style.opacity = '0';
@@ -1396,10 +1209,13 @@
             }, 50);
         }
 
+        // Delete with speed indicator
         async function deleteFileWithSpeed(fileId) {
-            if (!confirm('File delete karein?')) return;
+            if (!confirm('Kya aap is file ko delete karna chahte hain?')) {
+                return;
+            }
 
-            const file = window.filesData.find(f => String(f.id) === String(fileId));
+            const file = filesData.find(f => String(f.id) === String(fileId));
             if (!file) return;
 
             const actionContainer = document.getElementById('actionProgressContainer');
@@ -1425,16 +1241,17 @@
             `;
             actionItemsContainer.appendChild(actionItem);
 
+            // Simulate deletion with progress
             const startTime = Date.now();
             const fileSize = file.size;
             let processed = 0;
-            const chunkSize = fileSize / 30;
+            const chunkSize = fileSize / 30; // 30 steps for deletion
 
             const interval = setInterval(() => {
                 processed += chunkSize;
                 const percent = Math.min((processed / fileSize) * 100, 100);
-                const elapsed = (Date.now() - startTime) / 1000;
-                const speed = (processed / (1024 * 1024)) / elapsed;
+                const elapsedTime = (Date.now() - startTime) / 1000;
+                const speed = (processed / (1024 * 1024)) / elapsedTime;
 
                 document.getElementById(`${actionId}-progress`).style.width = percent + '%';
                 document.getElementById(`${actionId}-percent`).textContent = Math.round(percent) + '%';
@@ -1443,9 +1260,14 @@
                 if (percent >= 100) {
                     clearInterval(interval);
                     
-                    deleteFromIDB('files', fileId).then(async () => {
-                        await loadData();
-                        document.getElementById(`${actionId}-speed`).innerHTML = '<span class="upload-complete">✓ Done</span>';
+                    // Actual deletion
+                    deleteFromIndexedDB('files', fileId).then(() => {
+                        filesData = filesData.filter(f => String(f.id) !== String(fileId));
+                        displayFiles();
+                        displayFolders();
+                        updateStats();
+
+                        document.getElementById(`${actionId}-speed`).innerHTML = '<span class="upload-complete">✓ Deleted</span>';
                         
                         setTimeout(() => {
                             actionItem.style.opacity = '0';
@@ -1461,7 +1283,7 @@
         }
 
         function previewFile(fileId) {
-            const file = window.filesData.find(f => String(f.id) === String(fileId));
+            const file = filesData.find(f => String(f.id) === String(fileId));
             if (!file) return;
 
             const modal = document.getElementById('previewModal');
@@ -1474,9 +1296,9 @@
                 `;
             } else if (file.type.startsWith('video/')) {
                 modalContent.innerHTML = `
-                    <video class="modal-video" controls autoplay>
+                    <video class="modal-video" controls>
                         <source src="${file.data}" type="${file.type}">
-                        Your browser does not support video.
+                        Your browser does not support video playback.
                     </video>
                     <div class="modal-filename">${file.name}</div>
                 `;
@@ -1488,13 +1310,13 @@
         function closePreview() {
             const modal = document.getElementById('previewModal');
             modal.style.display = 'none';
-            const video = modal.querySelector('video');
-            if (video) video.pause();
-            document.getElementById('modalContent').innerHTML = '<div class="modal-filename" id="modalFilename"></div>';
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = '<div class="modal-filename" id="modalFilename"></div>';
         }
 
         window.onclick = function(event) {
-            if (event.target == document.getElementById('previewModal')) {
+            const modal = document.getElementById('previewModal');
+            if (event.target == modal) {
                 closePreview();
             }
         }
@@ -1522,6 +1344,7 @@
             if (type.includes('excel')) return 'Excel';
             if (type.includes('powerpoint')) return 'PowerPoint';
             return 'File';
+            
         }
 
         function formatFileSize(bytes) {
@@ -1533,9 +1356,8 @@
         }
 
         function updateStats() {
-            if (!window.filesData) return;
-            document.getElementById('totalFiles').textContent = window.filesData.length;
-            const totalBytes = window.filesData.reduce((sum, file) => sum + file.size, 0);
+            document.getElementById('totalFiles').textContent = filesData.length;
+            const totalBytes = filesData.reduce((sum, file) => sum + file.size, 0);
             document.getElementById('totalSize').textContent = formatFileSize(totalBytes);
         }
     </script>
