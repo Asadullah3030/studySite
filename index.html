@@ -83,6 +83,7 @@
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 10px;
         }
 
         .btn-sync {
@@ -100,6 +101,11 @@
             background: #f0f0f0;
         }
 
+        .sync-input-container {
+            margin-top: 15px;
+            display: none;
+        }
+
         .sync-input {
             width: 100%;
             max-width: 300px;
@@ -109,6 +115,7 @@
             font-size: 0.95em;
             text-align: center;
             margin: 10px auto;
+            display: block;
         }
 
         .upload-section {
@@ -855,18 +862,17 @@
             <!-- Sync Section -->
             <div class="sync-section">
                 <h3>🔄 Cross-Device Sync</h3>
-                <p style="font-size: 0.9em; margin-bottom: 10px;">Apna sync code yaad rakhein - is code se kisi bhi device/browser se access karein!</p>
-                <div class="sync-key-display" id="syncKeyDisplay">
-                    <span id="currentSyncKey">LOADING...</span>
+                <p style="font-size: 0.85em; margin-bottom: 10px;">Apna sync code yaad rakhein - kisi bhi device se access karein!</p>
+                <div class="sync-key-display">
+                    <span id="currentSyncKey">AKS-XXXXX</span>
                 </div>
                 <div class="sync-buttons">
                     <button class="btn-sync" onclick="copySyncKey()">📋 Copy Code</button>
-                    <button class="btn-sync" onclick="showSyncInput()">🔗 Dusre Device Se Connect</button>
+                    <button class="btn-sync" onclick="toggleSyncInput()">🔗 New Device Connect</button>
                 </div>
-                <div id="syncInputContainer" style="display: none; margin-top: 10px;">
-                    <input type="text" class="sync-input" id="syncInput" placeholder="Sync code yahan enter karein">
-                    <br>
-                    <button class="btn-sync" style="margin-top: 10px;" onclick="connectWithSyncKey()">✓ Connect Karein</button>
+                <div class="sync-input-container" id="syncInputContainer">
+                    <input type="text" class="sync-input" id="syncInput" placeholder="Code yahan paste karein">
+                    <button class="btn-sync" onclick="connectWithSyncKey()">✓ Connect</button>
                 </div>
             </div>
 
@@ -902,7 +908,7 @@
                 <h2>Files Upload karein</h2>
                 <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Documents, PDFs, Videos, Photos, ZIP files - Sab kuch save kar sakte hain!</p>
                 <div class="file-input-wrapper">
-                    <input type="file" id="fileInput" multiple>
+                    <input type="file" id="fileInput" multiple accept="*/*">
                     <button class="btn" onclick="document.getElementById('fileInput').click()">
                         Choose Files
                     </button>
@@ -946,70 +952,123 @@
     </div>
 
     <script>
-        let filesData = [];
-        let foldersData = [];
-        let currentFolder = null;
+        // IndexedDB Setup
+        let db;
         let syncKey = '';
+        let currentFolder = null;
 
-        // Generate or load sync key
-        function initializeSyncKey() {
-            syncKey = localStorage.getItem('userSyncKey');
-            if (!syncKey) {
-                syncKey = 'AKS-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-                localStorage.setItem('userSyncKey', syncKey);
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('AKStudyHub', 1);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    if (!db.objectStoreNames.contains('files')) {
+                        db.createObjectStore('files', { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains('folders')) {
+                        db.createObjectStore('folders', { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains('settings')) {
+                        db.createObjectStore('settings', { keyPath: 'key' });
+                    }
+                };
+            });
+        }
+
+        async function saveToIDB(storeName, data) {
+            const transaction = db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            return store.put(data);
+        }
+
+        async function getAllFromIDB(storeName) {
+            const transaction = db.transaction([storeName], 'readonly');
+            const store = transaction.objectStore(storeName);
+            return new Promise((resolve) => {
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        async function deleteFromIDB(storeName, id) {
+            const transaction = db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            return store.delete(id);
+        }
+
+        async function getSetting(key) {
+            const transaction = db.transaction(['settings'], 'readonly');
+            const store = transaction.objectStore('settings');
+            return new Promise((resolve) => {
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        async function initializeSyncKey() {
+            const setting = await getSetting('syncKey');
+            if (setting) {
+                syncKey = setting.value;
+            } else {
+                syncKey = 'AKS' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                await saveToIDB('settings', { key: 'syncKey', value: syncKey });
             }
             document.getElementById('currentSyncKey').textContent = syncKey;
         }
 
-        // Copy sync key
         function copySyncKey() {
-            navigator.clipboard.writeText(syncKey);
-            alert('Sync code copied! Is code ko dusre device pe use karein.');
+            navigator.clipboard.writeText(syncKey).then(() => {
+                alert('✓ Sync code copied!\nIs code ko dusre device pe use karein.');
+            });
         }
 
-        // Show sync input
-        function showSyncInput() {
+        function toggleSyncInput() {
             const container = document.getElementById('syncInputContainer');
             container.style.display = container.style.display === 'none' ? 'block' : 'none';
         }
 
-        // Connect with sync key
-        function connectWithSyncKey() {
-            const newSyncKey = document.getElementById('syncInput').value.trim().toUpperCase();
-            if (!newSyncKey) {
+        async function connectWithSyncKey() {
+            const newKey = document.getElementById('syncInput').value.trim().toUpperCase();
+            if (!newKey) {
                 alert('Sync code enter karein!');
                 return;
             }
-
-            if (confirm('Kya aap sure hain? Current data replace ho jayega.')) {
-                syncKey = newSyncKey;
-                localStorage.setItem('userSyncKey', syncKey);
+            
+            if (confirm('Current data replace ho jayega. Continue?')) {
+                syncKey = newKey;
+                await saveToIDB('settings', { key: 'syncKey', value: syncKey });
                 document.getElementById('currentSyncKey').textContent = syncKey;
-                loadData();
-                alert('Connected! Ab aap is device se bhi access kar sakte hain.');
-                document.getElementById('syncInputContainer').style.display = 'none';
                 document.getElementById('syncInput').value = '';
+                toggleSyncInput();
+                alert('✓ Connected! Data sync ho gaya.');
+                await loadData();
             }
         }
 
-        // Load data
-        function loadData() {
-            filesData = JSON.parse(localStorage.getItem(`files_${syncKey}`)) || [];
-            foldersData = JSON.parse(localStorage.getItem(`folders_${syncKey}`)) || [];
+        async function loadData() {
+            const files = await getAllFromIDB('files');
+            const folders = await getAllFromIDB('folders');
+            
+            window.filesData = files.filter(f => f.syncKey === syncKey);
+            window.foldersData = folders.filter(f => f.syncKey === syncKey);
+            
             displayFolders();
             displayFiles();
             updateStats();
         }
 
-        // Save data
-        function saveData() {
-            localStorage.setItem(`files_${syncKey}`, JSON.stringify(filesData));
-            localStorage.setItem(`folders_${syncKey}`, JSON.stringify(foldersData));
-        }
-
         // Initialize
-        initializeSyncKey();
-        loadData();
+        initDB().then(async () => {
+            await initializeSyncKey();
+            await loadData();
+        });
 
         document.getElementById('fileInput').addEventListener('change', handleFileSelect);
 
@@ -1037,14 +1096,14 @@
             if (e.key === 'Enter') createFolder();
         });
 
-        function createFolder() {
+        async function createFolder() {
             const folderName = document.getElementById('folderInput').value.trim();
             if (!folderName) {
                 alert('Folder ka naam enter karein!');
                 return;
             }
 
-            if (foldersData.some(f => f.name === folderName)) {
+            if (window.foldersData.some(f => f.name === folderName)) {
                 alert('Ye folder pehle se hai!');
                 return;
             }
@@ -1052,11 +1111,12 @@
             const newFolder = {
                 id: Date.now() + Math.random(),
                 name: folderName,
-                createdDate: new Date().toLocaleString('ur-PK')
+                syncKey: syncKey,
+                createdDate: new Date().toLocaleString('en-PK')
             };
 
-            foldersData.push(newFolder);
-            saveData();
+            await saveToIDB('folders', newFolder);
+            window.foldersData.push(newFolder);
             document.getElementById('folderInput').value = '';
             displayFolders();
         }
@@ -1064,13 +1124,13 @@
         function displayFolders() {
             const container = document.getElementById('foldersGrid');
             
-            if (foldersData.length === 0) {
-                container.innerHTML = '<p style="color: #999; grid-column: 1/-1; text-align: center; font-size: 0.9em;">Abhi koi folder nahi hai. Naya folder banayein!</p>';
+            if (!window.foldersData || window.foldersData.length === 0) {
+                container.innerHTML = '<p style="color: #999; grid-column: 1/-1; text-align: center; font-size: 0.9em;">Abhi koi folder nahi hai.</p>';
                 return;
             }
 
-            container.innerHTML = foldersData.map(folder => {
-                const fileCount = filesData.filter(f => String(f.folderId) === String(folder.id)).length;
+            container.innerHTML = window.foldersData.map(folder => {
+                const fileCount = window.filesData.filter(f => String(f.folderId) === String(folder.id)).length;
                 return `
                     <div class="folder-card ${String(currentFolder) === String(folder.id) ? 'active' : ''}" onclick="openFolder(${folder.id})">
                         <button class="btn-delete-folder" onclick="event.stopPropagation(); deleteFolder(${folder.id})">✖</button>
@@ -1084,7 +1144,7 @@
 
         function openFolder(folderId) {
             currentFolder = folderId;
-            const folder = foldersData.find(f => String(f.id) === String(folderId));
+            const folder = window.foldersData.find(f => String(f.id) === String(folderId));
             document.getElementById('currentFolderBar').style.display = 'flex';
             document.getElementById('currentFolderName').textContent = '📁 ' + folder.name;
             displayFolders();
@@ -1098,24 +1158,23 @@
             displayFiles();
         }
 
-        function deleteFolder(folderId) {
-            const filesInFolder = filesData.filter(f => String(f.folderId) === String(folderId));
+        async function deleteFolder(folderId) {
+            const filesInFolder = window.filesData.filter(f => String(f.folderId) === String(folderId));
             if (filesInFolder.length > 0) {
-                if (!confirm(`Is folder mein ${filesInFolder.length} files hain. Folder aur saari files delete karein?`)) {
+                if (!confirm(`Is folder mein ${filesInFolder.length} files hain. Delete karein?`)) {
                     return;
                 }
-                filesData = filesData.filter(f => String(f.folderId) !== String(folderId));
+                for (const file of filesInFolder) {
+                    await deleteFromIDB('files', file.id);
+                }
             }
 
-            foldersData = foldersData.filter(f => String(f.id) !== String(folderId));
-            saveData();
+            await deleteFromIDB('folders', folderId);
             
             if (String(currentFolder) === String(folderId)) {
                 goToAllFiles();
             }
-            displayFolders();
-            displayFiles();
-            updateStats();
+            await loadData();
         }
 
         function handleFileSelect(e) {
@@ -1123,6 +1182,8 @@
         }
 
         function handleFiles(files) {
+            if (!files || files.length === 0) return;
+            
             const uploadContainer = document.getElementById('uploadProgressContainer');
             const uploadItemsContainer = document.getElementById('uploadItemsContainer');
             uploadContainer.classList.add('show');
@@ -1151,50 +1212,60 @@
             document.getElementById('fileInput').value = '';
         }
 
-        function uploadFileWithProgress(file, uploadId) {
+        async function uploadFileWithProgress(file, uploadId) {
             const startTime = Date.now();
             const reader = new FileReader();
             
             reader.onprogress = (e) => {
                 if (e.lengthComputable) {
-                    const percentComplete = (e.loaded / e.total) * 100;
-                    const elapsedTime = (Date.now() - startTime) / 1000;
-                    const speed = (e.loaded / (1024 * 1024)) / elapsedTime;
+                    const percent = (e.loaded / e.total) * 100;
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    const speed = (e.loaded / (1024 * 1024)) / elapsed;
                     
-                    document.getElementById(`${uploadId}-progress`).style.width = percentComplete + '%';
-                    document.getElementById(`${uploadId}-percent`).textContent = Math.round(percentComplete) + '%';
-                    document.getElementById(`${uploadId}-speed`).textContent = speed.toFixed(2) + ' MB/s';
+                    const progressEl = document.getElementById(`${uploadId}-progress`);
+                    const percentEl = document.getElementById(`${uploadId}-percent`);
+                    const speedEl = document.getElementById(`${uploadId}-speed`);
+                    
+                    if (progressEl) progressEl.style.width = percent + '%';
+                    if (percentEl) percentEl.textContent = Math.round(percent) + '%';
+                    if (speedEl) speedEl.textContent = speed.toFixed(2) + ' MB/s';
                 }
             };
 
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 const fileData = {
                     id: Date.now() + Math.random(),
                     name: file.name,
-                    type: file.type || 'unknown',
+                    type: file.type || 'application/octet-stream',
                     size: file.size,
                     data: e.target.result,
                     folderId: currentFolder,
-                    uploadDate: new Date().toLocaleString('ur-PK')
+                    syncKey: syncKey,
+                    uploadDate: new Date().toLocaleString('en-PK')
                 };
 
-                filesData.push(fileData);
-                saveData();
-                displayFiles();
-                displayFolders();
-                updateStats();
+                await saveToIDB('files', fileData);
+                await loadData();
                 
-                document.getElementById(`${uploadId}-speed`).innerHTML = '<span class="upload-complete">✓ Complete</span>';
-                document.getElementById(`${uploadId}-progress`).style.width = '100%';
-                document.getElementById(`${uploadId}-percent`).textContent = '100%';
+                const speedEl = document.getElementById(`${uploadId}-speed`);
+                const progressEl = document.getElementById(`${uploadId}-progress`);
+                const percentEl = document.getElementById(`${uploadId}-percent`);
+                
+                if (speedEl) speedEl.innerHTML = '<span class="upload-complete">✓ Done</span>';
+                if (progressEl) progressEl.style.width = '100%';
+                if (percentEl) percentEl.textContent = '100%';
 
                 setTimeout(() => {
-                    const uploadItem = document.getElementById(uploadId);
-                    if (uploadItem) {
-                        uploadItem.style.opacity = '0';
-                        setTimeout(() => uploadItem.remove(), 300);
+                    const item = document.getElementById(uploadId);
+                    if (item) {
+                        item.style.opacity = '0';
+                        setTimeout(() => item.remove(), 300);
                     }
                 }, 2000);
+            };
+
+            reader.onerror = () => {
+                alert('Error uploading: ' + file.name);
             };
 
             reader.readAsDataURL(file);
@@ -1209,21 +1280,19 @@
             let filteredFiles = [];
 
             if (currentFolder !== null) {
-                filteredFiles = filesData.filter(file => 
+                filteredFiles = window.filesData.filter(file => 
                     String(file.folderId) === String(currentFolder) &&
                     file.name.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             } else {
-                filteredFiles = filesData.filter(file => 
+                filteredFiles = window.filesData.filter(file => 
                     (file.folderId === null || file.folderId === undefined) &&
                     file.name.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             }
 
             if (filteredFiles.length === 0) {
-                const message = currentFolder !== null 
-                    ? 'Is folder mein koi file nahi hai' 
-                    : 'Koi file nahi mili';
+                const message = currentFolder !== null ? 'Folder khali hai' : 'Koi file nahi';
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📂</div>
@@ -1251,19 +1320,14 @@
                                 <div class="file-meta">
                                     <span class="file-type">${getFileTypeLabel(file.type)}</span>
                                     <span>${formatFileSize(file.size)}</span>
-                                    <span>• ${file.uploadDate}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="file-actions">
                         ${isImage || isVideo ? `<button class="btn-small" style="background: #2196F3; color: white;" onclick="previewFile(${file.id})">👁️ View</button>` : ''}
-                        <button class="btn-small btn-download" onclick="downloadFileWithSpeed(${file.id})">
-                            ⬇️ Download
-                        </button>
-                        <button class="btn-small btn-delete" onclick="deleteFileWithSpeed(${file.id})">
-                            🗑️ Delete
-                        </button>
+                        <button class="btn-small btn-download" onclick="downloadFileWithSpeed(${file.id})">⬇️ Download</button>
+                        <button class="btn-small btn-delete" onclick="deleteFileWithSpeed(${file.id})">🗑️ Delete</button>
                     </div>
                 </div>
             `;
@@ -1271,7 +1335,7 @@
         }
 
         function downloadFileWithSpeed(fileId) {
-            const file = filesData.find(f => String(f.id) === String(fileId));
+            const file = window.filesData.find(f => String(f.id) === String(fileId));
             if (!file) return;
 
             const actionContainer = document.getElementById('actionProgressContainer');
@@ -1305,8 +1369,8 @@
             const interval = setInterval(() => {
                 downloaded += chunkSize;
                 const percent = Math.min((downloaded / fileSize) * 100, 100);
-                const elapsedTime = (Date.now() - startTime) / 1000;
-                const speed = (downloaded / (1024 * 1024)) / elapsedTime;
+                const elapsed = (Date.now() - startTime) / 1000;
+                const speed = (downloaded / (1024 * 1024)) / elapsed;
 
                 document.getElementById(`${actionId}-progress`).style.width = percent + '%';
                 document.getElementById(`${actionId}-percent`).textContent = Math.round(percent) + '%';
@@ -1322,7 +1386,7 @@
                     link.click();
                     document.body.removeChild(link);
 
-                    document.getElementById(`${actionId}-speed`).innerHTML = '<span class="upload-complete">✓ Downloaded</span>';
+                    document.getElementById(`${actionId}-speed`).innerHTML = '<span class="upload-complete">✓ Done</span>';
                     
                     setTimeout(() => {
                         actionItem.style.opacity = '0';
@@ -1332,12 +1396,10 @@
             }, 50);
         }
 
-        function deleteFileWithSpeed(fileId) {
-            if (!confirm('Kya aap is file ko delete karna chahte hain?')) {
-                return;
-            }
+        async function deleteFileWithSpeed(fileId) {
+            if (!confirm('File delete karein?')) return;
 
-            const file = filesData.find(f => String(f.id) === String(fileId));
+            const file = window.filesData.find(f => String(f.id) === String(fileId));
             if (!file) return;
 
             const actionContainer = document.getElementById('actionProgressContainer');
@@ -1371,8 +1433,8 @@
             const interval = setInterval(() => {
                 processed += chunkSize;
                 const percent = Math.min((processed / fileSize) * 100, 100);
-                const elapsedTime = (Date.now() - startTime) / 1000;
-                const speed = (processed / (1024 * 1024)) / elapsedTime;
+                const elapsed = (Date.now() - startTime) / 1000;
+                const speed = (processed / (1024 * 1024)) / elapsed;
 
                 document.getElementById(`${actionId}-progress`).style.width = percent + '%';
                 document.getElementById(`${actionId}-percent`).textContent = Math.round(percent) + '%';
@@ -1381,18 +1443,15 @@
                 if (percent >= 100) {
                     clearInterval(interval);
                     
-                    filesData = filesData.filter(f => String(f.id) !== String(fileId));
-                    saveData();
-                    displayFiles();
-                    displayFolders();
-                    updateStats();
-
-                    document.getElementById(`${actionId}-speed`).innerHTML = '<span class="upload-complete">✓ Deleted</span>';
-                    
-                    setTimeout(() => {
-                        actionItem.style.opacity = '0';
-                        setTimeout(() => actionItem.remove(), 300);
-                    }, 2000);
+                    deleteFromIDB('files', fileId).then(async () => {
+                        await loadData();
+                        document.getElementById(`${actionId}-speed`).innerHTML = '<span class="upload-complete">✓ Done</span>';
+                        
+                        setTimeout(() => {
+                            actionItem.style.opacity = '0';
+                            setTimeout(() => actionItem.remove(), 300);
+                        }, 2000);
+                    });
                 }
             }, 30);
         }
@@ -1402,7 +1461,7 @@
         }
 
         function previewFile(fileId) {
-            const file = filesData.find(f => String(f.id) === String(fileId));
+            const file = window.filesData.find(f => String(f.id) === String(fileId));
             if (!file) return;
 
             const modal = document.getElementById('previewModal');
@@ -1415,8 +1474,9 @@
                 `;
             } else if (file.type.startsWith('video/')) {
                 modalContent.innerHTML = `
-                    <video class="modal-video" controls>
+                    <video class="modal-video" controls autoplay>
                         <source src="${file.data}" type="${file.type}">
+                        Your browser does not support video.
                     </video>
                     <div class="modal-filename">${file.name}</div>
                 `;
@@ -1426,7 +1486,10 @@
         }
 
         function closePreview() {
-            document.getElementById('previewModal').style.display = 'none';
+            const modal = document.getElementById('previewModal');
+            modal.style.display = 'none';
+            const video = modal.querySelector('video');
+            if (video) video.pause();
             document.getElementById('modalContent').innerHTML = '<div class="modal-filename" id="modalFilename"></div>';
         }
 
@@ -1470,8 +1533,9 @@
         }
 
         function updateStats() {
-            document.getElementById('totalFiles').textContent = filesData.length;
-            const totalBytes = filesData.reduce((sum, file) => sum + file.size, 0);
+            if (!window.filesData) return;
+            document.getElementById('totalFiles').textContent = window.filesData.length;
+            const totalBytes = window.filesData.reduce((sum, file) => sum + file.size, 0);
             document.getElementById('totalSize').textContent = formatFileSize(totalBytes);
         }
     </script>
