@@ -6,7 +6,7 @@
     <title>Agriculture College RYK - Study Resources</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,136 +15,184 @@
         }
 
         :root {
-            --primary: #2ecc71;
-            --secondary: #27ae60;
-            --dark: #2c3e50;
-            --light: #ecf0f1;
-            --accent: #f39c12;
-            --blue: #3498db;
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #34d399;
+            --accent-green: #6ee7b7;
+            --gray-white: #f9fafb;
+            --gray-light: #e5e7eb;
+            --gray-medium: #9ca3af;
+            --gray-dark: #374151;
+            --gray-darker: #1f2937;
+            --white: #ffffff;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--gray-white) 0%, #e0e7ff 100%);
             min-height: 100vh;
-            padding: 0;
+            color: var(--gray-darker);
         }
 
-        /* Hero Section */
+        /* Modern Hero Section */
         .hero {
-            background: linear-gradient(135deg, rgba(46, 204, 113, 0.95), rgba(39, 174, 96, 0.95));
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             color: white;
-            padding: 40px 20px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 60px 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .college-logo {
-            width: 120px;
-            height: 120px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 3.5em;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
-            animation: float 3s ease-in-out infinite;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-30px, 30px) rotate(5deg); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .college-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 12px 28px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .college-icon {
+            font-size: 2em;
         }
 
         .hero h1 {
-            font-size: 2.5em;
-            font-weight: 800;
-            margin-bottom: 10px;
+            font-size: 3.2em;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .hero .subtitle {
             font-size: 1.3em;
             opacity: 0.95;
+            font-weight: 500;
         }
 
-        .collab-section {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap;
-        }
-
-        .collab-card {
+        .author-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             background: rgba(255, 255, 255, 0.2);
-            padding: 15px 30px;
-            border-radius: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .collab-card .name {
-            font-size: 1.2em;
+            backdrop-filter: blur(15px);
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin-top: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.1em;
             font-weight: 700;
-            color: #f39c12;
         }
 
         /* Container */
         .container {
             max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 0 auto;
+            padding: 40px 20px;
         }
 
-        /* Stats */
+        /* Modern Stats Cards */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
         }
 
         .stat-card {
-            background: white;
-            padding: 25px;
+            background: var(--white);
+            padding: 30px;
             border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--gray-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-green), var(--light-green));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
         }
 
         .stat-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
         }
 
         .stat-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
+            font-size: 2.5em;
+            filter: grayscale(20%);
         }
 
         .stat-number {
-            font-size: 2.5em;
-            font-weight: 800;
-            color: var(--primary);
+            font-size: 2.8em;
+            font-weight: 900;
+            color: var(--primary-green);
+            line-height: 1;
         }
 
         .stat-label {
-            font-size: 1em;
-            color: var(--dark);
+            font-size: 0.95em;
+            color: var(--gray-medium);
             font-weight: 600;
+            margin-top: 8px;
         }
 
         /* Breadcrumb */
         .breadcrumb {
-            background: white;
-            padding: 15px 25px;
+            background: var(--white);
+            padding: 18px 28px;
             border-radius: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             display: none;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             flex-wrap: wrap;
         }
 
@@ -154,110 +202,152 @@
             gap: 8px;
             font-weight: 600;
             cursor: pointer;
-            color: var(--dark);
+            color: var(--gray-dark);
+            transition: color 0.3s ease;
         }
 
         .breadcrumb-item:hover {
-            color: var(--primary);
+            color: var(--primary-green);
         }
 
-        /* Search */
+        /* Modern Search Box */
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
         .search-box {
             width: 100%;
-            max-width: 600px;
-            margin: 0 auto 30px;
-            padding: 15px 25px;
+            padding: 18px 55px 18px 25px;
             font-size: 1em;
-            border: 3px solid white;
+            border: 2px solid var(--gray-light);
             border-radius: 50px;
-            background: white;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            background: var(--white);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .search-box:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--primary-green);
+            box-shadow: 0 4px 25px rgba(16, 185, 129, 0.15);
         }
 
-        /* Folders Grid */
+        .search-icon {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3em;
+            color: var(--gray-medium);
+        }
+
+        /* Modern Folders Grid */
         .folders-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 25px;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         .folder-card {
-            background: white;
+            background: var(--white);
             border-radius: 20px;
-            padding: 35px 25px;
+            padding: 35px 28px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--gray-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .folder-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .folder-card:hover::before {
+            opacity: 0.05;
         }
 
         .folder-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
+            border-color: var(--primary-green);
         }
 
         .folder-icon {
-            font-size: 4.5em;
-            margin-bottom: 15px;
+            font-size: 4em;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
         }
 
         .folder-name {
-            font-size: 1.3em;
+            font-size: 1.25em;
             font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 10px;
+            color: var(--gray-darker);
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .folder-info {
-            color: #7f8c8d;
+            color: var(--gray-medium);
             font-weight: 600;
+            font-size: 0.95em;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Resources Grid */
+        /* Modern Resources Grid */
         .resources-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 30px;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         .resource-card {
-            background: white;
+            background: var(--white);
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--gray-light);
         }
 
         .resource-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
         }
 
         .resource-thumbnail {
             width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4.5em;
+            font-size: 5em;
             color: white;
             position: relative;
         }
 
         .resource-thumbnail.video {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #ec4899, #be185d);
         }
 
         .resource-thumbnail.image {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
         }
 
         .resource-thumbnail img,
@@ -269,75 +359,173 @@
 
         .resource-type-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             background: rgba(255, 255, 255, 0.95);
-            padding: 5px 15px;
+            backdrop-filter: blur(10px);
+            padding: 6px 18px;
             border-radius: 20px;
-            font-size: 0.3em;
-            font-weight: 700;
-            color: var(--dark);
+            font-size: 0.28em;
+            font-weight: 800;
+            color: var(--gray-darker);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .resource-content {
-            padding: 25px;
+            padding: 28px;
         }
 
         .resource-title {
-            font-size: 1.2em;
+            font-size: 1.25em;
             font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 10px;
-            line-height: 1.3;
+            color: var(--gray-darker);
+            margin-bottom: 12px;
+            line-height: 1.4;
         }
 
         .resource-meta {
             display: flex;
-            gap: 15px;
-            margin-bottom: 12px;
-            font-size: 0.85em;
-            color: #7f8c8d;
+            gap: 18px;
+            margin-bottom: 18px;
+            font-size: 0.9em;
+            color: var(--gray-medium);
             flex-wrap: wrap;
+            font-weight: 600;
         }
 
         .action-buttons {
-            display: flex;
-            gap: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .download-btn, .preview-btn {
-            flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .download-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
         .preview-btn {
-            background: linear-gradient(135deg, var(--blue), #2980b9);
-            color: white;
+            background: var(--gray-white);
+            color: var(--gray-darker);
+            border: 2px solid var(--gray-light);
         }
 
-        .download-btn:hover, .preview-btn:hover {
+        .download-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .preview-btn:hover {
+            background: white;
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        /* Download Progress Modal */
+        .download-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .download-modal-content {
+            background: white;
+            padding: 45px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .download-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .download-modal h2 {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: var(--gray-darker);
+            margin-bottom: 25px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: var(--gray-light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-green), var(--light-green));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .progress-text {
+            font-size: 2em;
+            font-weight: 900;
+            color: var(--primary-green);
+            margin-top: 15px;
+        }
+
+        .download-status {
+            font-size: 1.1em;
+            color: var(--gray-medium);
+            font-weight: 600;
+            margin-top: 10px;
         }
 
         /* Preview Modal */
         .preview-modal {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
+            z-index: 1500;
+            inset: 0;
             background: rgba(0, 0, 0, 0.95);
         }
 
@@ -347,21 +535,22 @@
             max-width: 1400px;
             margin: 2.5% auto;
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
 
         .preview-modal-header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             color: white;
-            padding: 15px 25px;
+            padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .preview-modal-header h3 {
-            font-size: 1.2em;
+            font-size: 1.3em;
             font-weight: 700;
         }
 
@@ -369,21 +558,34 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            font-size: 1.3em;
+            font-size: 1.4em;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 800;
+        }
+
+        .close-preview:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
         }
 
         .preview-viewer {
             width: 100%;
-            height: calc(100% - 60px);
-            border: none;
+            height: calc(100% - 80px);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f8f9fa;
+            background: var(--gray-white);
+        }
+
+        .preview-viewer iframe,
+        .preview-viewer img,
+        .preview-viewer video {
+            max-width: 100%;
+            max-height: 100%;
         }
 
         .preview-viewer iframe {
@@ -392,175 +594,86 @@
             border: none;
         }
 
-        .preview-viewer img,
-        .preview-viewer video {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
         /* Footer */
         .footer {
-            background: white;
-            padding: 40px 20px;
+            background: var(--white);
+            padding: 50px 30px;
             text-align: center;
-            margin-top: 60px;
-            border-radius: 30px 30px 0 0;
+            margin-top: 80px;
+            border-radius: 40px 40px 0 0;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
         }
 
         .footer h3 {
-            color: var(--primary);
-            font-size: 2em;
-            margin-bottom: 15px;
+            font-size: 2.2em;
+            font-weight: 900;
+            color: var(--primary-green);
+            margin-bottom: 20px;
         }
 
         .team-section {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
+            background: var(--gray-white);
+            padding: 35px;
+            border-radius: 20px;
+            margin: 25px 0;
         }
 
         .team-members {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 40px;
             flex-wrap: wrap;
         }
 
         .team-member-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5em;
-            margin: 0 auto 10px;
+            font-size: 3em;
+            margin: 0 auto 12px;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
         }
 
         .team-member-name {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: var(--dark);
+            font-size: 1.3em;
+            font-weight: 800;
+            color: var(--gray-darker);
+        }
+
+        .copyright {
+            margin-top: 30px;
+            color: var(--gray-medium);
+            font-weight: 600;
         }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            .hero h1 { 
-                font-size: 1.8em; 
-            }
-            
-            .hero .subtitle {
-                font-size: 1.1em;
-            }
-
-            .college-logo {
-                width: 100px;
-                height: 100px;
-                font-size: 3em;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            .folders-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 15px;
-            }
-
-            .folder-card {
-                padding: 25px 15px;
-            }
-
-            .folder-icon {
-                font-size: 3em;
-            }
-
-            .folder-name {
-                font-size: 1.1em;
-            }
-
-            .resources-grid { 
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .resource-card {
-                border-radius: 15px;
-            }
-
-            .resource-thumbnail {
-                height: 160px;
-                font-size: 3.5em;
-            }
-
-            .resource-content {
-                padding: 20px;
-            }
-
-            .resource-title {
-                font-size: 1.1em;
-            }
-
-            .action-buttons { 
-                flex-direction: column; 
-            }
-
-            .download-btn, .preview-btn {
-                width: 100%;
-            }
-
-            .preview-modal-content {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                border-radius: 0;
-            }
-
-            .search-box {
-                font-size: 0.9em;
-                padding: 12px 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 1.5em;
-            }
-
-            .collab-card .name {
-                font-size: 1em;
-            }
-
-            .stat-card {
-                padding: 20px;
-            }
-
-            .stat-icon {
-                font-size: 2.5em;
-            }
-
-            .stat-number {
-                font-size: 2em;
-            }
-
-            .folders-grid {
-                grid-template-columns: 1fr;
-            }
+            .hero h1 { font-size: 2em; }
+            .hero .subtitle { font-size: 1.1em; }
+            .stats { grid-template-columns: 1fr; }
+            .folders-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .resources-grid { grid-template-columns: 1fr; }
+            .action-buttons { grid-template-columns: 1fr; }
+            .preview-modal-content { width: 100%; height: 100%; margin: 0; border-radius: 0; }
         }
     </style>
 </head>
 <body>
     <div class="hero">
-        <div class="college-logo">🌾</div>
-        <h1>Agriculture College RYK</h1>
-        <p class="subtitle">Your Ultimate Learning Support Hub</p>
-        <div class="collab-section">
-            <div class="collab-card">
-                <div class="name">👨‍💼 Asadullah Ashraf</div>
+        <div class="hero-content">
+            <div class="college-badge">
+                <span class="college-icon">🌾</span>
+                <span style="font-weight: 700;">Agriculture College</span>
+            </div>
+            <h1>Study Resources Hub</h1>
+            <p class="subtitle">Rahim Yar Khan • Premium Learning Platform</p>
+            <div class="author-tag">
+                <span>👨‍💼</span>
+                <span>Asadullah Ashraf</span>
             </div>
         </div>
     </div>
@@ -568,28 +681,49 @@
     <div class="container">
         <div class="stats">
             <div class="stat-card">
-                <div class="stat-icon">📁</div>
-                <div class="stat-number" id="totalFolders">8</div>
+                <div class="stat-header">
+                    <div class="stat-icon">📁</div>
+                    <div class="stat-number" id="totalFolders">8</div>
+                </div>
                 <div class="stat-label">Class Folders</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">📚</div>
-                <div class="stat-number" id="totalDocs">45</div>
-                <div class="stat-label">Study Notes</div>
+                <div class="stat-header">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-number" id="totalDocs">15</div>
+                </div>
+                <div class="stat-label">Study Materials</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">⬇️</div>
-                <div class="stat-number">3.2K</div>
-                <div class="stat-label">Downloads</div>
+                <div class="stat-header">
+                    <div class="stat-icon">⬇️</div>
+                    <div class="stat-number" id="totalDownloads">3.2K</div>
+                </div>
+                <div class="stat-label">Total Downloads</div>
             </div>
         </div>
 
         <div class="breadcrumb" id="breadcrumb"></div>
         
-        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search classes, subjects, or files...">
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search classes, subjects, or files...">
+            <span class="search-icon">🔍</span>
+        </div>
         
         <div class="folders-grid" id="foldersGrid"></div>
         <div class="resources-grid" id="resourcesGrid"></div>
+    </div>
+
+    <div id="downloadModal" class="download-modal">
+        <div class="download-modal-content">
+            <div class="download-icon">⬇️</div>
+            <h2 id="downloadTitle">Preparing Download...</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+            <div class="download-status" id="downloadStatus">Initializing...</div>
+        </div>
     </div>
 
     <div id="previewModal" class="preview-modal">
@@ -605,7 +739,7 @@
     <div class="footer">
         <h3>🌾 Agriculture College RYK</h3>
         <div class="team-section">
-            <h4>🤝 Project Team</h4>
+            <h4 style="font-size: 1.5em; font-weight: 800; margin-bottom: 25px; color: var(--gray-darker);">Project Team</h4>
             <div class="team-members">
                 <div>
                     <div class="team-member-avatar">👨‍💼</div>
@@ -617,19 +751,21 @@
                 </div>
             </div>
         </div>
-        <p style="margin-top: 20px;">© 2025–2026 <strong>iamchasad</strong> All Rights Reserved</p>
+        <div class="copyright">
+            <p>© 2025–2026 <strong>iamchasad</strong> • All Rights Reserved</p>
+        </div>
     </div>
 
     <script>
         const folders = [
-            {id: 'first-year', name: 'First Year Notes', icon: '📘', filesCount: 12},
-            {id: 'second-year', name: 'Second Year Notes', icon: '📗', filesCount: 10},
-            {id: 'third-year', name: 'Third Year Notes', icon: '📙', filesCount: 8},
-            {id: 'fourth-year', name: 'Fourth Year Notes', icon: '📕', filesCount: 15},
+            {id: 'first-year', name: 'First Year Notes', icon: '📘', filesCount: 3},
+            {id: 'second-year', name: 'Second Year Notes', icon: '📗', filesCount: 1},
+            {id: 'third-year', name: 'Third Year Notes', icon: '📙', filesCount: 0},
+            {id: 'fourth-year', name: 'Fourth Year Notes', icon: '📕', filesCount: 0},
             {id: 'exam-papers', name: 'Second Year Past Papers', icon: '📝', filesCount: 7},
-            {id: 'reference', name: 'Reference Books', icon: '📚', filesCount: 18},
-            {id: 'photos', name: 'College Photos', icon: '📷', filesCount: 10},
-            {id: 'videos', name: 'Video Lectures', icon: '🎥', filesCount: 5}
+            {id: 'reference', name: 'Reference Books', icon: '📚', filesCount: 0},
+            {id: 'photos', name: 'College Photos', icon: '📷', filesCount: 2},
+            {id: 'videos', name: 'Video Lectures', icon: '🎥', filesCount: 2}
         ];
 
         const resources = {
@@ -660,13 +796,11 @@
 
             'photos': [
                 {id: 'ph1', title: "College Photos View", type: 'image', size: "2.5 MB", downloads: 156, fileUrl: "files/collage photos/asad.jpeg", icon: "🖼️"},
-
                 {id: 'ph2', title: "Agriculture Lab", type: 'image', size: "1.8 MB", downloads: 134, fileUrl: "files/collage photos/levels.png", icon: "🖼️"}
             ],
 
             'videos': [
                 {id: 'vid1', title: "College Introduction Video", type: 'video', size: "45 MB", downloads: 289, fileUrl: "files/collage video/asad.mp4", icon: "🎥"},
-
                 {id: 'vid2', title: "Campus Tour", type: 'video', size: "38 MB", downloads: 245, fileUrl: "files/videos/tour.mp4", icon: "🎥"}
             ]
         };
@@ -675,6 +809,7 @@
         let searchTerm = '';
 
         displayContent();
+        updateTotalStats();
 
         function displayContent() {
             const searchLower = searchTerm.toLowerCase();
@@ -683,7 +818,6 @@
                 displayFolders();
                 displayResources();
             } else if (searchTerm) {
-                // Search across all resources
                 document.getElementById('foldersGrid').innerHTML = '';
                 const allResources = [];
                 Object.keys(resources).forEach(folder => {
@@ -701,13 +835,7 @@
         }
 
         function displayFolders() {
-            const searchLower = searchTerm.toLowerCase();
-            let filtered = folders;
-            if (searchTerm) {
-                filtered = folders.filter(f => f.name.toLowerCase().includes(searchLower));
-            }
-            
-            document.getElementById('foldersGrid').innerHTML = filtered.map(f => `
+            document.getElementById('foldersGrid').innerHTML = folders.map(f => `
                 <div class="folder-card" onclick="openFolder('${f.id}')">
                     <div class="folder-icon">${f.icon}</div>
                     <div class="folder-name">${f.name}</div>
@@ -718,13 +846,7 @@
 
         function displayResources() {
             const res = resources[currentFolder] || [];
-            const searchLower = searchTerm.toLowerCase();
-            let filtered = res;
-            if (searchTerm) {
-                filtered = res.filter(r => r.title.toLowerCase().includes(searchLower));
-            }
-            
-            document.getElementById('resourcesGrid').innerHTML = filtered.map(r => createResourceCard(r)).join('');
+            document.getElementById('resourcesGrid').innerHTML = res.map(r => createResourceCard(r)).join('');
         }
 
         function displaySearchResults(results) {
@@ -739,7 +861,7 @@
                 thumbnailContent = `<img src="${r.fileUrl}" alt="${r.title}">`;
                 thumbnailClass = 'image';
             } else if (r.type === 'video') {
-                thumbnailContent = `<video src="${r.fileUrl}" style="width:100%;height:100%;object-fit:cover;"></video>`;
+                thumbnailContent = `<video src="${r.fileUrl}"></video>`;
                 thumbnailClass = 'video';
             }
             
@@ -756,8 +878,14 @@
                             <span>⬇️ ${r.downloads}</span>
                         </div>
                         <div class="action-buttons">
-                            <button class="preview-btn" onclick="preview('${r.id}')">👁️ Preview</button>
-                            <button class="download-btn" onclick="download('${r.id}')">⬇️ Download</button>
+                            <button class="preview-btn" onclick="preview('${r.id}')">
+                                <span>👁️</span>
+                                <span>Preview</span>
+                            </button>
+                            <button class="download-btn" onclick="download('${r.id}')">
+                                <span>⬇️</span>
+                                <span>Download</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -796,8 +924,8 @@
             breadcrumb.style.display = 'flex';
             breadcrumb.innerHTML = `
                 <div class="breadcrumb-item" onclick="goHome()">🏠 Home</div>
-                <span style="color:#7f8c8d;">›</span>
-                <div class="breadcrumb-item" style="color:var(--primary);">${folder.icon} ${folder.name}</div>
+                <span style="color:var(--gray-medium);">›</span>
+                <div class="breadcrumb-item" style="color:var(--primary-green);">${folder.icon} ${folder.name}</div>
             `;
         }
 
@@ -812,11 +940,11 @@
             if (r.type === 'image') {
                 viewer.innerHTML = `<img src="${r.fileUrl}" alt="${r.title}">`;
             } else if (r.type === 'video') {
-                viewer.innerHTML = `<video src="${r.fileUrl}" controls style="max-width:100%;max-height:100%;"></video>`;
+                viewer.innerHTML = `<video src="${r.fileUrl}" controls></video>`;
             } else if (r.type === 'pdf') {
                 viewer.innerHTML = `<iframe src="${r.fileUrl}"></iframe>`;
             } else {
-                viewer.innerHTML = `<p style="font-size:1.2em;color:#7f8c8d;">Preview not available</p>`;
+                viewer.innerHTML = `<p style="font-size:1.2em;color:var(--gray-medium);">Preview not available</p>`;
             }
             
             document.getElementById('previewModal').style.display = 'block';
@@ -832,22 +960,71 @@
             const r = allRes.find(x => x.id === id);
             if (!r) return;
             
-            const a = document.createElement('a');
-            a.href = r.fileUrl;
-            a.download = r.title;
-            a.click();
+            const modal = document.getElementById('downloadModal');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const status = document.getElementById('downloadStatus');
+            const title = document.getElementById('downloadTitle');
             
-            r.downloads++;
-            displayContent();
+            title.textContent = 'Downloading: ' + r.title;
+            modal.style.display = 'flex';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 12 + 3;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    progressBar.style.width = '100%';
+                    progressText.textContent = '100%';
+                    status.textContent = '✅ Download Complete!';
+                    title.textContent = 'Download Successful!';
+                    
+                    const a = document.createElement('a');
+                    a.href = r.fileUrl;
+                    a.download = r.title;
+                    a.click();
+                    
+                    r.downloads++;
+                    updateTotalStats();
+                    
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        displayContent();
+                    }, 1500);
+                } else {
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = Math.round(progress) + '%';
+                    status.textContent = 'Downloading... ' + Math.round(progress) + '%';
+                }
+            }, 150);
         }
 
-        // Search functionality
+        function updateTotalStats() {
+            let totalFiles = 0;
+            Object.values(resources).forEach(arr => {
+                totalFiles += arr.length;
+            });
+            document.getElementById('totalDocs').textContent = totalFiles;
+            
+            let totalDownloads = 0;
+            Object.values(resources).flat().forEach(r => {
+                totalDownloads += r.downloads;
+            });
+            document.getElementById('totalDownloads').textContent = formatNumber(totalDownloads);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num;
+        }
+
         document.getElementById('searchBox').addEventListener('input', (e) => {
             searchTerm = e.target.value;
             displayContent();
         });
 
-        // Close modal on outside click
         window.onclick = (e) => {
             if (e.target == document.getElementById('previewModal')) {
                 closePreview();
