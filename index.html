@@ -3,658 +3,2030 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IATI RYK - Study Resources</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Agriculture College RYK - Study Resources</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        :root{--green:#10b981;--dark:#059669;--gray:#6b7280;--light:#f3f4f6;--white:#fff;--red:#ef4444}
-        body{font-family:'Poppins',sans-serif;background:var(--light);min-height:100vh}
-        
-        /* Buttons */
-        .admin-btn{position:fixed;bottom:15px;right:15px;background:var(--green);color:#fff;border:none;padding:10px 20px;border-radius:25px;font-weight:700;cursor:pointer;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.2)}
-        .refresh-btn{position:fixed;bottom:15px;left:15px;background:#3b82f6;color:#fff;border:none;padding:10px 20px;border-radius:25px;font-weight:700;cursor:pointer;z-index:100}
-        
-        /* Header */
-        .header{background:linear-gradient(135deg,var(--green),var(--dark));color:#fff;padding:30px 15px;text-align:center}
-        .header h1{font-size:1.5em;margin-bottom:5px}
-        .header p{opacity:.9;font-size:.9em}
-        
-        /* Container */
-        .container{max-width:1200px;margin:0 auto;padding:20px 15px}
-        
-        /* Stats */
-        .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
-        .stat{background:#fff;padding:15px;border-radius:12px;text-align:center}
-        .stat-num{font-size:1.5em;font-weight:700;color:var(--green)}
-        .stat-label{font-size:.75em;color:var(--gray)}
-        
-        /* Search */
-        .search{margin-bottom:20px}
-        .search input{width:100%;padding:12px 15px;border:2px solid #e5e7eb;border-radius:25px;font-size:1em}
-        .search input:focus{outline:none;border-color:var(--green)}
-        
-        /* Breadcrumb */
-        .breadcrumb{background:#fff;padding:12px 15px;border-radius:10px;margin-bottom:15px;display:none}
-        .breadcrumb span{cursor:pointer;color:var(--green);font-weight:600}
-        
-        /* Grid */
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px}
-        
-        /* Folder */
-        .folder{background:#fff;padding:20px 15px;border-radius:15px;text-align:center;cursor:pointer;transition:transform .2s}
-        .folder:active{transform:scale(.95)}
-        .folder-icon{font-size:2.5em;margin-bottom:10px}
-        .folder-name{font-weight:700;font-size:.9em;color:#1f2937}
-        .folder-count{font-size:.8em;color:var(--gray)}
-        
-        /* File */
-        .file{background:#fff;border-radius:15px;overflow:hidden}
-        .file-thumb{height:120px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:2.5em;color:#fff;position:relative}
-        .file-thumb img{width:100%;height:100%;object-fit:cover}
-        .file-type{position:absolute;top:8px;right:8px;background:#fff;padding:3px 10px;border-radius:10px;font-size:.7em;font-weight:700}
-        .file-info{padding:12px}
-        .file-title{font-weight:700;font-size:.85em;margin-bottom:8px;color:#1f2937}
-        .file-meta{font-size:.75em;color:var(--gray);margin-bottom:10px}
-        .file-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-        .file-btns button{padding:8px;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:.8em}
-        .btn-view{background:var(--light);color:#1f2937}
-        .btn-download{background:var(--green);color:#fff}
-        .btn-delete{background:var(--red);color:#fff;grid-column:1/-1}
-        
-        /* Modal */
-        .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;align-items:center;justify-content:center}
-        .modal-box{background:#fff;width:90%;max-width:400px;padding:25px;border-radius:20px;text-align:center}
-        .modal-box h2{margin-bottom:15px}
-        .modal-box input,.modal-box select{width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:10px;margin-bottom:12px;font-size:1em}
-        .modal-box button{width:100%;padding:12px;border:none;border-radius:10px;font-weight:700;cursor:pointer;margin-top:5px}
-        .btn-primary{background:var(--green);color:#fff}
-        .btn-secondary{background:var(--light);color:#1f2937}
-        .btn-danger{background:var(--red);color:#fff}
-        .close-modal{position:absolute;top:15px;right:20px;background:none;border:none;font-size:1.5em;cursor:pointer;color:#fff}
-        
-        /* Preview */
-        .preview-content{width:95%;height:90%;max-width:1000px;background:#fff;border-radius:15px;overflow:hidden;display:flex;flex-direction:column}
-        .preview-header{background:var(--green);color:#fff;padding:15px;display:flex;justify-content:space-between;align-items:center}
-        .preview-body{flex:1;display:flex;align-items:center;justify-content:center;background:var(--light);overflow:auto}
-        .preview-body img,.preview-body video{max-width:100%;max-height:100%}
-        .preview-body iframe{width:100%;height:100%;border:none}
-        
-        /* Upload Area */
-        .upload-area{border:2px dashed #e5e7eb;padding:30px;border-radius:15px;text-align:center;cursor:pointer;margin-bottom:15px}
-        .upload-area.active{border-color:var(--green);background:rgba(16,185,129,.05)}
-        
-        /* Messages */
-        .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);padding:12px 25px;border-radius:25px;color:#fff;font-weight:600;z-index:300;display:none}
-        .toast.success{background:var(--green)}
-        .toast.error{background:var(--red)}
-        
-        .no-files{grid-column:1/-1;text-align:center;padding:40px;color:var(--gray)}
-        
-        /* Footer */
-        .footer{text-align:center;padding:30px;margin-top:30px;color:var(--gray);font-size:.85em}
-        
-        /* Progress */
-        .progress{height:8px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin:15px 0;display:none}
-        .progress-bar{height:100%;background:var(--green);width:0;transition:width .3s}
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #34d399;
+            --accent-green: #6ee7b7;
+            --gray-white: #f9fafb;
+            --gray-light: #e5e7eb;
+            --gray-medium: #9ca3af;
+            --gray-dark: #374151;
+            --gray-darker: #1f2937;
+            --white: #ffffff;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--gray-white) 0%, #e0e7ff 100%);
+            min-height: 100vh;
+            color: var(--gray-darker);
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, var(--info), #1d4ed8);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .refresh-btn.spinning span:first-child {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Admin Login Button */
+        .admin-login-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--gray-darker), #374151);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+        }
+
+        .admin-login-btn.logged-in {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+        }
+
+        /* Sync Status */
+        .sync-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.85em;
+            font-weight: 600;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sync-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Login Modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-modal h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: var(--gray-darker);
+        }
+
+        .login-modal p {
+            color: var(--gray-medium);
+            margin-bottom: 25px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--gray-medium);
+        }
+
+        .error-msg {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
         /* Admin Panel */
-        .admin-panel{display:none;position:fixed;inset:0;background:#fff;z-index:150;overflow-y:auto}
-        .admin-header{background:var(--green);color:#fff;padding:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .admin-content{padding:20px}
-        .admin-section{background:var(--light);padding:20px;border-radius:15px;margin-bottom:20px}
-        .admin-section h3{margin-bottom:15px}
-        .admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px}
-        
-        @media(max-width:500px){
-            .stats{grid-template-columns:repeat(3,1fr)}
-            .grid{grid-template-columns:repeat(2,1fr)}
-            .admin-grid{grid-template-columns:1fr}
+        .admin-panel {
+            display: none;
+            position: fixed;
+            z-index: 1500;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            overflow-y: auto;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .admin-header h1 {
+            font-size: 1.5em;
+        }
+
+        .admin-user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .admin-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-refresh {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-close {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .btn-logout {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+        }
+
+        .upload-section h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: var(--gray-darker);
+        }
+
+        .upload-info {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .upload-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 15px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        .file-upload-area {
+            border: 3px dashed var(--gray-light);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            grid-column: 1 / -1;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary-green);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--primary-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-size-warning {
+            color: var(--danger);
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .upload-submit {
+            grid-column: 1 / -1;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .upload-submit:disabled {
+            background: var(--gray-medium);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Files Management */
+        .files-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        .files-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .files-section h2 {
+            font-size: 1.5em;
+            color: var(--gray-darker);
+        }
+
+        .files-count {
+            background: var(--primary-green);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .files-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--gray-light);
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-green);
+            color: white;
+            border-color: var(--primary-green);
+        }
+
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .file-card {
+            background: var(--gray-white);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+        }
+
+        .file-card-thumb {
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .file-card-content {
+            padding: 15px;
+        }
+
+        .file-card-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            word-break: break-word;
+            font-size: 0.95em;
+        }
+
+        .file-card-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 0.8em;
+            color: var(--gray-medium);
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .file-card-uploader {
+            font-size: 0.8em;
+            color: var(--info);
+            margin-bottom: 12px;
+        }
+
+        .file-card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .file-action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Upload Progress */
+        .upload-progress {
+            display: none;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+        }
+
+        .progress-bar-container {
+            height: 20px;
+            background: var(--gray-light);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-green), var(--light-green));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 3000;
+            animation: slideInRight 0.3s ease;
+            display: none;
+            max-width: 300px;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success { background: var(--primary-green); }
+        .toast.error { background: var(--danger); }
+        .toast.warning { background: var(--warning); }
+        .toast.info { background: var(--info); }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 60px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-30px, 30px) rotate(5deg); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .college-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 12px 28px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .college-icon {
+            font-size: 2em;
+        }
+
+        .hero h1 {
+            font-size: 3.2em;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .author-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin-top: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Stats Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid var(--gray-light);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .stat-icon {
+            font-size: 2em;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 900;
+            color: var(--primary-green);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--gray-medium);
+            font-weight: 600;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            background: var(--white);
+            padding: 18px 28px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--gray-dark);
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--primary-green);
+        }
+
+        /* Search Box */
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 18px 55px 18px 25px;
+            font-size: 1em;
+            border: 2px solid var(--gray-light);
+            border-radius: 50px;
+            background: var(--white);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3em;
+        }
+
+        /* Folders Grid */
+        .folders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .folder-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 1px solid var(--gray-light);
+        }
+
+        .folder-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
+            border-color: var(--primary-green);
+        }
+
+        .folder-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+        }
+
+        .folder-name {
+            font-size: 1.15em;
+            font-weight: 700;
+            color: var(--gray-darker);
+            margin-bottom: 10px;
+        }
+
+        .folder-info {
+            color: var(--gray-medium);
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        /* Resources Grid */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .resource-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid var(--gray-light);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
+        }
+
+        .resource-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-thumbnail.video {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+        }
+
+        .resource-thumbnail.image {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .resource-thumbnail img,
+        .resource-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
+
+        .resource-type-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 800;
+            color: var(--gray-darker);
+            z-index: 3;
+        }
+
+        .resource-content {
+            padding: 20px;
+        }
+
+        .resource-title {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: var(--gray-darker);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .resource-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.85em;
+            color: var(--gray-medium);
+            flex-wrap: wrap;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .download-btn, .preview-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+        }
+
+        .preview-btn {
+            background: var(--gray-white);
+            color: var(--gray-darker);
+            border: 2px solid var(--gray-light);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .preview-btn:hover {
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        /* Preview Modal */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            z-index: 1500;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+        }
+
+        .preview-modal-content {
+            width: 95%;
+            height: 95%;
+            max-width: 1400px;
+            margin: 2.5% auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .preview-modal-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-modal-header h3 {
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .close-preview {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-preview:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .preview-viewer {
+            width: 100%;
+            height: calc(100% - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-white);
+        }
+
+        .preview-viewer iframe,
+        .preview-viewer img,
+        .preview-viewer video {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .preview-viewer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Confirm Delete Modal */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            z-index: 2500;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .confirm-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .confirm-modal h2 {
+            margin-bottom: 15px;
+            color: var(--gray-darker);
+        }
+
+        .confirm-modal p {
+            color: var(--gray-medium);
+            margin-bottom: 25px;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .confirm-actions button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-confirm-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: var(--gray-light);
+            color: var(--gray-darker);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--white);
+            padding: 50px 30px;
+            text-align: center;
+            margin-top: 80px;
+            border-radius: 40px 40px 0 0;
+        }
+
+        .footer h3 {
+            font-size: 2em;
+            font-weight: 900;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+        }
+
+        .team-section {
+            background: var(--gray-white);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+        }
+
+        .team-members {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .team-member-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            margin: 0 auto 10px;
+        }
+
+        .team-member-name {
+            font-size: 1.2em;
+            font-weight: 800;
+            color: var(--gray-darker);
+        }
+
+        .copyright {
+            margin-top: 25px;
+            color: var(--gray-medium);
+            font-weight: 600;
+        }
+
+        /* Loading */
+        .loading-spinner {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--gray-light);
+            border-top-color: var(--primary-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 50px auto;
+        }
+
+        .no-files-msg {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-medium);
+            font-size: 1.2em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2em; }
+            .stats { grid-template-columns: 1fr 1fr; }
+            .folders-grid { grid-template-columns: repeat(2, 1fr); }
+            .resources-grid { grid-template-columns: 1fr; }
+            .action-buttons { grid-template-columns: 1fr; }
+            .preview-modal-content { width: 100%; height: 100%; margin: 0; border-radius: 0; }
+            .admin-header { flex-direction: column; text-align: center; }
+            .sync-status { top: auto; bottom: 80px; left: 50%; transform: translateX(-50%); right: auto; }
+            .refresh-btn { bottom: 80px; }
         }
     </style>
 </head>
 <body>
 
-<button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
-<button class="admin-btn" id="adminBtn" onclick="openLogin()">🔐 Admin</button>
-<div class="toast" id="toast"></div>
-
-<!-- Login Modal -->
-<div class="modal" id="loginModal">
-    <button class="close-modal" onclick="closeModal('loginModal')">✕</button>
-    <div class="modal-box">
-        <h2>🔐 Admin Login</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <button class="btn-primary" onclick="login()">Login</button>
+    <!-- Sync Status -->
+    <div class="sync-status" id="syncStatus">
+        <div class="sync-dot"></div>
+        <span id="syncText">Live Synced</span>
     </div>
-</div>
 
-<!-- Upload Modal -->
-<div class="modal" id="uploadModal">
-    <button class="close-modal" onclick="closeModal('uploadModal')">✕</button>
-    <div class="modal-box">
-        <h2>📤 Upload File</h2>
-        <input type="text" id="fileTitle" placeholder="File Title">
-        <select id="fileFolder">
-            <option value="">-- Select Folder --</option>
-            <option value="first-year">First Year</option>
-            <option value="second-year">Second Year</option>
-            <option value="third-year">Third Year</option>
-            <option value="fourth-year">Fourth Year</option>
-            <option value="exam-papers">Past Papers</option>
-            <option value="reference">Reference</option>
-            <option value="photos">Photos</option>
-            <option value="videos">Videos</option>
-            <option value="root">Main Page</option>
-        </select>
-        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-            📁 Click to select file<br><small>(Max 10MB)</small>
-            <div id="fileName"></div>
-        </div>
-        <input type="file" id="fileInput" style="display:none" accept=".pdf,.jpg,.jpeg,.png,.gif,.mp4,.webm" onchange="selectFile(event)">
-        <div class="progress" id="progress"><div class="progress-bar" id="progressBar"></div></div>
-        <button class="btn-primary" id="uploadBtn" onclick="uploadFile()">Upload</button>
-    </div>
-</div>
+    <!-- Refresh Button -->
+    <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">
+        <span>🔄</span>
+        <span>Refresh</span>
+    </button>
 
-<!-- Preview Modal -->
-<div class="modal" id="previewModal">
-    <div class="preview-content">
-        <div class="preview-header">
-            <span id="previewTitle">Preview</span>
-            <button onclick="closeModal('previewModal')" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 15px;border-radius:20px;cursor:pointer">✕ Close</button>
-        </div>
-        <div class="preview-body" id="previewBody"></div>
-    </div>
-</div>
+    <!-- Admin Login Button -->
+    <button class="admin-login-btn" id="adminLoginBtn" onclick="toggleAdminAccess()">
+        <span>🔐</span>
+        <span id="adminBtnText">Admin</span>
+    </button>
 
-<!-- Delete Confirm -->
-<div class="modal" id="deleteModal">
-    <div class="modal-box">
-        <h2>⚠️ Delete?</h2>
-        <p id="deleteText">Are you sure?</p>
-        <button class="btn-danger" id="confirmDelete">Yes, Delete</button>
-        <button class="btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
-    </div>
-</div>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
-<!-- Admin Panel -->
-<div class="admin-panel" id="adminPanel">
-    <div class="admin-header">
-        <span>🛠️ Admin Panel (<span id="adminName"></span>)</span>
-        <div>
-            <button onclick="openModal('uploadModal')" style="background:#fff;color:var(--green);border:none;padding:8px 15px;border-radius:20px;font-weight:700;cursor:pointer;margin-right:5px">📤 Upload</button>
-            <button onclick="closeAdmin()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 15px;border-radius:20px;cursor:pointer;margin-right:5px">✕</button>
-            <button onclick="logout()" style="background:var(--red);border:none;color:#fff;padding:8px 15px;border-radius:20px;cursor:pointer">Logout</button>
-        </div>
-    </div>
-    <div class="admin-content">
-        <div class="admin-section">
-            <h3>📂 All Files (<span id="fileCount">0</span>)</h3>
-            <div class="admin-grid" id="adminFiles"></div>
-        </div>
-    </div>
-</div>
-
-<!-- Main Content -->
-<div class="header">
-    <h1>🌾 IATI - Rahim Yar Khan</h1>
-    <p>Study Resources Hub</p>
-</div>
-
-<div class="container">
-    <div class="stats">
-        <div class="stat">
-            <div class="stat-num" id="statFolders">8</div>
-            <div class="stat-label">Folders</div>
-        </div>
-        <div class="stat">
-            <div class="stat-num" id="statFiles">0</div>
-            <div class="stat-label">Files</div>
-        </div>
-        <div class="stat">
-            <div class="stat-num" id="statDownloads">0</div>
-            <div class="stat-label">Downloads</div>
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-modal-content">
+            <button class="close-modal" onclick="closeLoginModal()">✖</button>
+            <h2>🔐 Admin Login</h2>
+            <p>Sirf Asad aur Kamran ke liye</p>
+            <div class="error-msg" id="loginError">Username ya password galat hai!</div>
+            <input type="text" class="login-input" id="loginUsername" placeholder="Username">
+            <input type="password" class="login-input" id="loginPassword" placeholder="Password">
+            <button class="login-btn" onclick="login()">Login</button>
         </div>
     </div>
 
-    <div class="search">
-        <input type="text" id="searchBox" placeholder="🔍 Search files...">
-    </div>
-
-    <div class="breadcrumb" id="breadcrumb">
-        <span onclick="goHome()">🏠 Home</span> › <span id="currentFolderName"></span>
-    </div>
-
-    <div class="grid" id="mainGrid"></div>
-</div>
-
-<div class="footer">
-    <p>👨‍💼 Asadullah Ashraf | 👨‍💻 Muhammad Kamran</p>
-    <p>© 2025 IATI RYK</p>
-</div>
-
-<script>
-// Config
-const CONFIG = {
-    CLOUD: 'dmifnqtlx',
-    PRESET: 'iati_upload',
-    DB: 'https://api.npoint.io/cfe3a72212ad11e74b28',
-    MAX_SIZE: 10 * 1024 * 1024,
-    ADMINS: [
-        {u: 'asad', p: 'asad123'},
-        {u: 'kamran', p: 'kamran123'}
-    ]
-};
-
-// State
-let files = [];
-let folder = 'root';
-let admin = null;
-let selFile = null;
-let delId = null;
-
-const FOLDERS = [
-    {id:'first-year',name:'First Year',icon:'📘'},
-    {id:'second-year',name:'Second Year',icon:'📗'},
-    {id:'third-year',name:'Third Year',icon:'📙'},
-    {id:'fourth-year',name:'Fourth Year',icon:'📕'},
-    {id:'exam-papers',name:'Past Papers',icon:'📝'},
-    {id:'reference',name:'Reference Books',icon:'📚'},
-    {id:'photos',name:'Photos',icon:'📷'},
-    {id:'videos',name:'Videos',icon:'🎥'}
-];
-
-// Init
-window.onload = async () => {
-    checkLogin();
-    await loadData();
-    render();
-};
-
-// Data
-async function loadData() {
-    try {
-        const r = await fetch(CONFIG.DB + '?t=' + Date.now());
-        files = await r.json();
-        if (!Array.isArray(files)) files = [];
-    } catch(e) {
-        files = [];
-    }
-}
-
-async function saveData() {
-    try {
-        await fetch(CONFIG.DB, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(files)
-        });
-        return true;
-    } catch(e) {
-        return false;
-    }
-}
-
-async function refreshData() {
-    toast('Refreshing...', 'success');
-    await loadData();
-    render();
-    if (admin) renderAdmin();
-    toast('Updated! ✅', 'success');
-}
-
-// Auth
-function checkLogin() {
-    const s = localStorage.getItem('admin');
-    if (s) {
-        const d = JSON.parse(s);
-        if (Date.now() - d.t < 86400000) {
-            admin = d.u;
-            updateAdminBtn();
-        }
-    }
-}
-
-function openLogin() {
-    if (admin) {
-        openAdmin();
-    } else {
-        openModal('loginModal');
-    }
-}
-
-function login() {
-    const u = document.getElementById('username').value.toLowerCase().trim();
-    const p = document.getElementById('password').value;
-    const found = CONFIG.ADMINS.find(a => a.u === u && a.p === p);
-    
-    if (found) {
-        admin = u;
-        localStorage.setItem('admin', JSON.stringify({u, t: Date.now()}));
-        closeModal('loginModal');
-        updateAdminBtn();
-        toast('Welcome ' + u + '! 👋', 'success');
-        openAdmin();
-    } else {
-        toast('Wrong credentials!', 'error');
-    }
-}
-
-function logout() {
-    admin = null;
-    localStorage.removeItem('admin');
-    updateAdminBtn();
-    closeAdmin();
-    toast('Logged out!', 'success');
-}
-
-function updateAdminBtn() {
-    document.getElementById('adminBtn').textContent = admin ? '👤 ' + admin : '🔐 Admin';
-}
-
-// Admin Panel
-function openAdmin() {
-    document.getElementById('adminName').textContent = admin;
-    document.getElementById('adminPanel').style.display = 'block';
-    renderAdmin();
-}
-
-function closeAdmin() {
-    document.getElementById('adminPanel').style.display = 'none';
-}
-
-function renderAdmin() {
-    const g = document.getElementById('adminFiles');
-    document.getElementById('fileCount').textContent = files.length;
-    
-    if (files.length === 0) {
-        g.innerHTML = '<p class="no-files">No files yet</p>';
-        return;
-    }
-    
-    g.innerHTML = files.map(f => `
-        <div class="file">
-            <div class="file-thumb" style="height:80px;font-size:2em">
-                ${f.type === 'image' ? '<img src="'+f.url+'">' : getIcon(f.type)}
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>🛠️ Admin Dashboard</h1>
+                <div class="admin-user-info" id="adminUserInfo">👤 Logged in as: -</div>
+                <div class="admin-actions">
+                    <button class="admin-btn btn-refresh" onclick="manualRefresh()">
+                        <span>🔄</span> Refresh Data
+                    </button>
+                    <button class="admin-btn btn-close" onclick="closeAdminPanel()">
+                        <span>✖</span> Close
+                    </button>
+                    <button class="admin-btn btn-logout" onclick="logout()">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
             </div>
-            <div class="file-info">
-                <div class="file-title">${f.title}</div>
-                <div class="file-meta">📁 ${f.folder} | 👤 ${f.by || '?'}</div>
-                <button class="btn-delete" onclick="confirmDel('${f.id}')" style="width:100%;margin-top:8px">🗑️ Delete</button>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h2>📤 Upload New File</h2>
+                <div class="upload-info">
+                    ⚠️ <strong>File Size Limit:</strong> Maximum 10MB per file. Images, PDFs aur Videos supported hain.
+                </div>
+                <form class="upload-form" id="uploadForm" onsubmit="uploadFile(event)">
+                    <div class="form-group">
+                        <label>File Title *</label>
+                        <input type="text" id="fileTitle" placeholder="File ka naam likho" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Folder *</label>
+                        <select id="fileFolder" required>
+                            <option value="">-- Folder Select Karo --</option>
+                            <option value="first-year">First Year Notes</option>
+                            <option value="second-year">Second Year Notes</option>
+                            <option value="third-year">Third Year Notes</option>
+                            <option value="fourth-year">Fourth Year Notes</option>
+                            <option value="exam-papers">Past Papers</option>
+                            <option value="reference">Reference Books</option>
+                            <option value="photos">College Photos</option>
+                            <option value="videos">College Videos</option>
+                            <option value="root">Main Page</option>
+                        </select>
+                    </div>
+                    <div class="file-upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">📁</div>
+                        <p><strong>Click karke file select karo</strong></p>
+                        <p style="color: var(--gray-medium); font-size: 0.9em;">PDF, Images, Videos (Max 10MB)</p>
+                        <p id="selectedFileName" style="color: var(--primary-green); margin-top: 10px; font-weight: 600;"></p>
+                        <p class="file-size-warning" id="fileSizeWarning"></p>
+                    </div>
+                    <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.mp4,.webm,.mov" onchange="handleFileSelect(event)">
+                    
+                    <div class="upload-progress" id="uploadProgress">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="uploadProgressBar"></div>
+                        </div>
+                        <p class="progress-text" id="uploadProgressText">Uploading... 0%</p>
+                    </div>
+                    
+                    <button type="submit" class="upload-submit" id="uploadBtn">
+                        📤 Upload File
+                    </button>
+                </form>
+            </div>
+
+            <!-- Files Management -->
+            <div class="files-section">
+                <div class="files-header">
+                    <h2>📂 Manage Files</h2>
+                    <span class="files-count" id="filesCount">0 files</span>
+                </div>
+                <div class="files-filter">
+                    <button class="filter-btn active" onclick="filterFiles('all', this)">All</button>
+                    <button class="filter-btn" onclick="filterFiles('first-year', this)">1st Year</button>
+                    <button class="filter-btn" onclick="filterFiles('second-year', this)">2nd Year</button>
+                    <button class="filter-btn" onclick="filterFiles('exam-papers', this)">Papers</button>
+                    <button class="filter-btn" onclick="filterFiles('photos', this)">Photos</button>
+                    <button class="filter-btn" onclick="filterFiles('videos', this)">Videos</button>
+                </div>
+                <div class="loading-spinner" id="filesLoading"></div>
+                <div class="files-grid" id="adminFilesGrid"></div>
             </div>
         </div>
-    `).join('');
-}
+    </div>
 
-// Upload
-function selectFile(e) {
-    const f = e.target.files[0];
-    if (!f) return;
-    
-    if (f.size > CONFIG.MAX_SIZE) {
-        toast('File too big! Max 10MB', 'error');
-        selFile = null;
-        document.getElementById('fileName').innerHTML = '';
-        return;
-    }
-    
-    selFile = f;
-    document.getElementById('fileName').innerHTML = '<br>✅ ' + f.name;
-}
-
-async function uploadFile() {
-    if (!selFile) return toast('Select a file!', 'error');
-    
-    const title = document.getElementById('fileTitle').value.trim();
-    const fol = document.getElementById('fileFolder').value;
-    
-    if (!title || !fol) return toast('Fill all fields!', 'error');
-    
-    const btn = document.getElementById('uploadBtn');
-    const prog = document.getElementById('progress');
-    const bar = document.getElementById('progressBar');
-    
-    btn.disabled = true;
-    btn.textContent = 'Uploading...';
-    prog.style.display = 'block';
-    
-    try {
-        const fd = new FormData();
-        fd.append('file', selFile);
-        fd.append('upload_preset', CONFIG.PRESET);
-        fd.append('folder', 'iati/' + fol);
-        
-        const xhr = new XMLHttpRequest();
-        
-        xhr.upload.onprogress = (e) => {
-            if (e.lengthComputable) {
-                bar.style.width = Math.round(e.loaded/e.total*100) + '%';
-            }
-        };
-        
-        const res = await new Promise((ok, no) => {
-            xhr.onload = () => xhr.status === 200 ? ok(JSON.parse(xhr.responseText)) : no();
-            xhr.onerror = () => no();
-            xhr.open('POST', 'https://api.cloudinary.com/v1_1/' + CONFIG.CLOUD + '/auto/upload');
-            xhr.send(fd);
-        });
-        
-        let type = 'pdf';
-        if (res.resource_type === 'image') type = 'image';
-        if (res.resource_type === 'video') type = 'video';
-        
-        files.push({
-            id: 'f' + Date.now(),
-            title,
-            type,
-            size: formatSize(res.bytes),
-            downloads: 0,
-            url: res.secure_url,
-            folder: fol,
-            by: admin,
-            date: new Date().toISOString()
-        });
-        
-        await saveData();
-        toast('Uploaded! ✅', 'success');
-        
-        // Reset
-        document.getElementById('fileTitle').value = '';
-        document.getElementById('fileFolder').value = '';
-        document.getElementById('fileName').innerHTML = '';
-        document.getElementById('fileInput').value = '';
-        selFile = null;
-        prog.style.display = 'none';
-        bar.style.width = '0';
-        
-        render();
-        renderAdmin();
-        closeModal('uploadModal');
-        
-    } catch(e) {
-        toast('Upload failed!', 'error');
-    }
-    
-    btn.disabled = false;
-    btn.textContent = 'Upload';
-}
-
-// Delete
-function confirmDel(id) {
-    delId = id;
-    const f = files.find(x => x.id === id);
-    document.getElementById('deleteText').textContent = 'Delete "' + f?.title + '"?';
-    openModal('deleteModal');
-}
-
-document.getElementById('confirmDelete').onclick = async () => {
-    if (!delId) return;
-    files = files.filter(f => f.id !== delId);
-    await saveData();
-    toast('Deleted!', 'success');
-    closeModal('deleteModal');
-    render();
-    renderAdmin();
-    delId = null;
-};
-
-// Render
-function render() {
-    updateStats();
-    
-    const search = document.getElementById('searchBox').value.toLowerCase();
-    const bc = document.getElementById('breadcrumb');
-    const grid = document.getElementById('mainGrid');
-    
-    if (search) {
-        bc.style.display = 'none';
-        const res = files.filter(f => f.title.toLowerCase().includes(search));
-        renderFiles(res);
-    } else if (folder === 'root') {
-        bc.style.display = 'none';
-        renderFolders();
-    } else {
-        bc.style.display = 'block';
-        document.getElementById('currentFolderName').textContent = FOLDERS.find(f => f.id === folder)?.name || folder;
-        renderFiles(files.filter(f => f.folder === folder));
-    }
-}
-
-function renderFolders() {
-    const grid = document.getElementById('mainGrid');
-    grid.innerHTML = FOLDERS.map(f => {
-        const count = files.filter(x => x.folder === f.id).length;
-        return `
-            <div class="folder" onclick="openFolder('${f.id}')">
-                <div class="folder-icon">${f.icon}</div>
-                <div class="folder-name">${f.name}</div>
-                <div class="folder-count">${count} files</div>
+    <!-- Confirm Delete Modal -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-modal-content">
+            <div class="confirm-icon">⚠️</div>
+            <h2>Delete File?</h2>
+            <p id="confirmText">Kya aap sure hain?</p>
+            <div class="confirm-actions">
+                <button class="btn-cancel" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn-confirm-delete" id="confirmDeleteBtn">Delete</button>
             </div>
-        `;
-    }).join('');
-    
-    // Add root files
-    const rootFiles = files.filter(f => f.folder === 'root');
-    if (rootFiles.length > 0) {
-        grid.innerHTML += rootFiles.map(f => fileCard(f)).join('');
-    }
-}
+        </div>
+    </div>
 
-function renderFiles(list) {
-    const grid = document.getElementById('mainGrid');
-    if (list.length === 0) {
-        grid.innerHTML = '<p class="no-files">📭 No files here</p>';
-        return;
-    }
-    grid.innerHTML = list.map(f => fileCard(f)).join('');
-}
-
-function fileCard(f) {
-    return `
-        <div class="file">
-            <div class="file-thumb" style="background:${f.type==='video'?'#ec4899':f.type==='image'?'#3b82f6':'var(--green)'}">
-                ${f.type === 'image' ? '<img src="'+f.url+'">' : getIcon(f.type)}
-                <span class="file-type">${f.type.toUpperCase()}</span>
+    <!-- Main Website Content -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="college-badge">
+                <span class="college-icon">🌾</span>
+                <span style="font-weight: 700;">Study Resources Hub</span>
             </div>
-            <div class="file-info">
-                <div class="file-title">${f.title}</div>
-                <div class="file-meta">📦 ${f.size} | ⬇️ ${f.downloads}</div>
-                <div class="file-btns">
-                    <button class="btn-view" onclick="preview('${f.id}')">👁️</button>
-                    <button class="btn-download" onclick="download('${f.id}')">⬇️</button>
+            <h1>IATI - Rahim Yar Khan</h1>
+            <p class="subtitle">Your Premium Digital Learning Platform</p>
+            <div class="author-tag">
+                <span>👨‍💼</span>
+                <span>Asadullah Ashraf - 66</span>
+            </div>
+            <div class="author-tag">
+                <span>👨‍💼</span>
+                <span>Muhammad Kamran - 68</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">📁</div>
+                    <div class="stat-number" id="totalFolders">8</div>
+                </div>
+                <div class="stat-label">Folders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-number" id="totalDocs">0</div>
+                </div>
+                <div class="stat-label">Files</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">⬇️</div>
+                    <div class="stat-number" id="totalDownloads">0</div>
+                </div>
+                <div class="stat-label">Downloads</div>
+            </div>
+        </div>
+
+        <div class="breadcrumb" id="breadcrumb"></div>
+        
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search files...">
+            <span class="search-icon">🔍</span>
+        </div>
+        
+        <div class="loading-spinner" id="mainLoading"></div>
+        <div class="folders-grid" id="foldersGrid"></div>
+        <div class="resources-grid" id="resourcesGrid"></div>
+    </div>
+
+    <div id="previewModal" class="preview-modal">
+        <div class="preview-modal-content">
+            <div class="preview-modal-header">
+                <h3 id="previewTitle">Preview</h3>
+                <button class="close-preview" onclick="closePreview()">✖</button>
+            </div>
+            <div class="preview-viewer" id="previewViewer"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>🌾 IATI - Rahim Yar Khan 🌾</h3>
+        <div class="team-section">
+            <h4 style="font-size: 1.4em; font-weight: 800; margin-bottom: 20px;">Project Team</h4>
+            <div class="team-members">
+                <div>
+                    <div class="team-member-avatar">👨‍💼</div>
+                    <div class="team-member-name">Asad</div>
+                </div>
+                <div>
+                    <div class="team-member-avatar">👨‍💻</div>
+                    <div class="team-member-name">Kamran</div>
                 </div>
             </div>
         </div>
-    `;
-}
+        <div class="copyright">
+            <p>© 2025 <strong>Asadullah Ashraf</strong></p>
+        </div>
+    </div>
 
-function getIcon(type) {
-    return {pdf:'📄',image:'🖼️',video:'🎥'}[type] || '📁';
-}
+    <script>
+        // ===== CONFIGURATION =====
+        const CONFIG = {
+            CLOUDINARY_CLOUD_NAME: 'dmifnqtlx',
+            CLOUDINARY_UPLOAD_PRESET: 'iati_upload',
+            NPOINT_URL: 'https://api.npoint.io/cfe3a72212ad11e74b28',
+            
+            // Maximum file size (10MB)
+            MAX_FILE_SIZE: 10 * 1024 * 1024,
+            
+            // Auto refresh interval (30 seconds)
+            REFRESH_INTERVAL: 30000,
+            
+            // Admin Credentials
+            ADMINS: [
+                { username: 'asad', password: 'asad123' },
+                { username: 'kamran', password: 'kamran123' }
+            ]
+        };
 
-function updateStats() {
-    document.getElementById('statFiles').textContent = files.length;
-    const dl = files.reduce((s,f) => s + (f.downloads||0), 0);
-    document.getElementById('statDownloads').textContent = dl > 999 ? (dl/1000).toFixed(1)+'K' : dl;
-}
+        // ===== STATE =====
+        let isLoggedIn = false;
+        let currentAdmin = null;
+        let allResources = [];
+        let currentFolder = 'root';
+        let searchTerm = '';
+        let selectedFile = null;
+        let currentFilter = 'all';
+        let deleteTargetId = null;
+        let refreshInterval = null;
+        let isRefreshing = false;
 
-// Navigation
-function openFolder(id) {
-    folder = id;
-    render();
-    window.scrollTo({top: 200, behavior: 'smooth'});
-}
+        const folders = [
+            {id: 'first-year', name: 'First Year Notes', icon: '📘'},
+            {id: 'second-year', name: 'Second Year Notes', icon: '📗'},
+            {id: 'third-year', name: 'Third Year Notes', icon: '📙'},
+            {id: 'fourth-year', name: 'Fourth Year Notes', icon: '📕'},
+            {id: 'exam-papers', name: 'Past Papers', icon: '📝'},
+            {id: 'reference', name: 'Reference Books', icon: '📚'},
+            {id: 'photos', name: 'College Photos', icon: '📷'},
+            {id: 'videos', name: 'College Videos', icon: '🎥'}
+        ];
 
-function goHome() {
-    folder = 'root';
-    document.getElementById('searchBox').value = '';
-    render();
-}
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            checkLoginStatus();
+            await loadResources();
+            displayContent();
+            setupDragDrop();
+            startAutoRefresh();
+        });
 
-// Preview & Download
-function preview(id) {
-    const f = files.find(x => x.id === id);
-    if (!f) return;
-    
-    document.getElementById('previewTitle').textContent = f.title;
-    const body = document.getElementById('previewBody');
-    
-    if (f.type === 'image') body.innerHTML = '<img src="'+f.url+'">';
-    else if (f.type === 'video') body.innerHTML = '<video src="'+f.url+'" controls></video>';
-    else if (f.type === 'pdf') body.innerHTML = '<iframe src="'+f.url+'"></iframe>';
-    else body.innerHTML = '<p>Cannot preview</p>';
-    
-    openModal('previewModal');
-}
+        // ===== AUTO REFRESH =====
+        function startAutoRefresh() {
+            refreshInterval = setInterval(async () => {
+                if (!isRefreshing) {
+                    await silentRefresh();
+                }
+            }, CONFIG.REFRESH_INTERVAL);
+        }
 
-function download(id) {
-    const f = files.find(x => x.id === id);
-    if (!f) return;
-    
-    f.downloads = (f.downloads||0) + 1;
-    saveData();
-    render();
-    
-    window.open(f.url, '_blank');
-    toast('Download started!', 'success');
-}
+        async function silentRefresh() {
+            try {
+                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
+                const data = await response.json();
+                const newResources = Array.isArray(data) ? data : [];
+                
+                // Check if data changed
+                if (JSON.stringify(newResources) !== JSON.stringify(allResources)) {
+                    allResources = newResources;
+                    displayContent();
+                    if (document.getElementById('adminPanel').style.display === 'block') {
+                        loadAdminFiles();
+                    }
+                    updateSyncStatus('Updated!', 'var(--primary-green)');
+                }
+            } catch (error) {
+                console.log('Silent refresh error:', error);
+            }
+        }
 
-// Utils
-function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
-}
+        async function manualRefresh() {
+            const btn = document.getElementById('refreshBtn');
+            btn.classList.add('spinning');
+            isRefreshing = true;
+            
+            updateSyncStatus('Refreshing...', 'var(--warning)');
+            
+            try {
+                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
+                const data = await response.json();
+                allResources = Array.isArray(data) ? data : [];
+                displayContent();
+                if (document.getElementById('adminPanel').style.display === 'block') {
+                    loadAdminFiles();
+                }
+                showToast('Data refreshed! ✅', 'success');
+                updateSyncStatus('Live Synced', 'var(--primary-green)');
+            } catch (error) {
+                showToast('Refresh failed!', 'error');
+                updateSyncStatus('Offline', 'var(--danger)');
+            }
+            
+            btn.classList.remove('spinning');
+            isRefreshing = false;
+        }
 
-function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-    if (id === 'previewModal') {
-        document.getElementById('previewBody').innerHTML = '';
-    }
-}
+        function updateSyncStatus(text, color) {
+            document.getElementById('syncText').textContent = text;
+            document.querySelector('.sync-dot').style.background = color;
+        }
 
-function toast(msg, type) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast ' + type;
-    t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 2500);
-}
+        // ===== DATABASE =====
+        async function loadResources() {
+            document.getElementById('mainLoading').style.display = 'block';
+            try {
+                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
+                const data = await response.json();
+                allResources = Array.isArray(data) ? data : [];
+                updateSyncStatus('Live Synced', 'var(--primary-green)');
+            } catch (error) {
+                console.error('Load error:', error);
+                allResources = [];
+                updateSyncStatus('Offline', 'var(--danger)');
+            }
+            document.getElementById('mainLoading').style.display = 'none';
+        }
 
-function formatSize(b) {
-    if (b < 1024) return b + 'B';
-    if (b < 1048576) return (b/1024).toFixed(1) + 'KB';
-    return (b/1048576).toFixed(1) + 'MB';
-}
+        async function saveResources() {
+            try {
+                await fetch(CONFIG.NPOINT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(allResources)
+                });
+                return true;
+            } catch (error) {
+                console.error('Save error:', error);
+                return false;
+            }
+        }
 
-// Search
-document.getElementById('searchBox').oninput = () => render();
+        // ===== AUTHENTICATION =====
+        function checkLoginStatus() {
+            const saved = localStorage.getItem('adminLogin');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
+                    isLoggedIn = true;
+                    currentAdmin = data.username;
+                    updateAdminButton();
+                }
+            }
+        }
 
-// Close modals on outside click
-window.onclick = (e) => {
-    ['loginModal','uploadModal','previewModal','deleteModal'].forEach(id => {
-        if (e.target === document.getElementById(id)) closeModal(id);
-    });
-};
-</script>
+        function toggleAdminAccess() {
+            if (isLoggedIn) {
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminUserInfo').textContent = '👤 Logged in as: ' + currentAdmin;
+                loadAdminFiles();
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.toLowerCase().trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            const admin = CONFIG.ADMINS.find(a => a.username === username && a.password === password);
+            
+            if (admin) {
+                isLoggedIn = true;
+                currentAdmin = username;
+                localStorage.setItem('adminLogin', JSON.stringify({
+                    username: username,
+                    timestamp: Date.now()
+                }));
+                closeLoginModal();
+                updateAdminButton();
+                showToast(`Welcome ${username}! 👋`, 'success');
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminUserInfo').textContent = '👤 Logged in as: ' + currentAdmin;
+                loadAdminFiles();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            currentAdmin = null;
+            localStorage.removeItem('adminLogin');
+            updateAdminButton();
+            closeAdminPanel();
+            showToast('Logged out!', 'success');
+        }
+
+        function updateAdminButton() {
+            const btn = document.getElementById('adminLoginBtn');
+            const text = document.getElementById('adminBtnText');
+            if (isLoggedIn) {
+                btn.classList.add('logged-in');
+                text.textContent = currentAdmin;
+            } else {
+                btn.classList.remove('logged-in');
+                text.textContent = 'Admin';
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // ===== FILE UPLOAD =====
+        function setupDragDrop() {
+            const dropZone = document.getElementById('dropZone');
+            if (!dropZone) return;
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+                dropZone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); });
+            });
+
+            ['dragenter', 'dragover'].forEach(e => {
+                dropZone.addEventListener(e, () => dropZone.classList.add('dragover'));
+            });
+
+            ['dragleave', 'drop'].forEach(e => {
+                dropZone.addEventListener(e, () => dropZone.classList.remove('dragover'));
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect({ target: { files: files } });
+                }
+            });
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const warning = document.getElementById('fileSizeWarning');
+            const fileName = document.getElementById('selectedFileName');
+            
+            if (!file) return;
+            
+            // Check file size
+            if (file.size > CONFIG.MAX_FILE_SIZE) {
+                warning.textContent = `⚠️ File bohot bari hai! (${formatFileSize(file.size)}) - Max 10MB allowed`;
+                fileName.textContent = '';
+                selectedFile = null;
+                return;
+            }
+            
+            warning.textContent = '';
+            selectedFile = file;
+            fileName.textContent = `✅ ${file.name} (${formatFileSize(file.size)})`;
+        }
+
+        async function uploadFile(event) {
+            event.preventDefault();
+            
+            if (!selectedFile) {
+                showToast('Pehle file select karo!', 'error');
+                return;
+            }
+
+            // Double check file size
+            if (selectedFile.size > CONFIG.MAX_FILE_SIZE) {
+                showToast('File 10MB se bari hai!', 'error');
+                return;
+            }
+
+            const title = document.getElementById('fileTitle').value.trim();
+            const folder = document.getElementById('fileFolder').value;
+
+            if (!title || !folder) {
+                showToast('Sab fields fill karo!', 'error');
+                return;
+            }
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('uploadProgressBar');
+            const progressText = document.getElementById('uploadProgressText');
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳ Uploading...';
+            progressDiv.style.display = 'block';
+            progressBar.style.width = '0%';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                formData.append('upload_preset', CONFIG.CLOUDINARY_UPLOAD_PRESET);
+                formData.append('folder', `iati-ryk/${folder}`);
+
+                const xhr = new XMLHttpRequest();
+                
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percent + '%';
+                        progressText.textContent = `Uploading... ${percent}%`;
+                    }
+                });
+
+                const result = await new Promise((resolve, reject) => {
+                    xhr.onload = () => {
+                        if (xhr.status === 200) {
+                            resolve(JSON.parse(xhr.responseText));
+                        } else {
+                            try {
+                                const err = JSON.parse(xhr.responseText);
+                                reject(new Error(err.error?.message || 'Upload failed'));
+                            } catch {
+                                reject(new Error('Upload failed - Status: ' + xhr.status));
+                            }
+                        }
+                    };
+                    xhr.onerror = () => reject(new Error('Network error'));
+                    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CONFIG.CLOUDINARY_CLOUD_NAME}/auto/upload`);
+                    xhr.send(formData);
+                });
+
+                let fileType = 'pdf';
+                if (result.resource_type === 'image') fileType = 'image';
+                else if (result.resource_type === 'video') fileType = 'video';
+
+                const newResource = {
+                    id: 'res_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    title: title,
+                    type: fileType,
+                    size: formatFileSize(result.bytes),
+                    downloads: 0,
+                    fileUrl: result.secure_url,
+                    folder: folder,
+                    uploadedBy: currentAdmin,
+                    uploadedAt: new Date().toISOString(),
+                    icon: getIcon(fileType)
+                };
+
+                allResources.push(newResource);
+                
+                const saved = await saveResources();
+                
+                if (saved) {
+                    showToast('File upload ho gayi! ✅', 'success');
+                } else {
+                    showToast('File uploaded but sync issue. Refresh karo.', 'warning');
+                }
+                
+                // Reset form
+                document.getElementById('uploadForm').reset();
+                document.getElementById('selectedFileName').textContent = '';
+                document.getElementById('fileSizeWarning').textContent = '';
+                selectedFile = null;
+                progressDiv.style.display = 'none';
+
+                displayContent();
+                loadAdminFiles();
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                showToast('Upload fail: ' + error.message, 'error');
+                progressDiv.style.display = 'none';
+            }
+
+            uploadBtn.disabled = false;
+            uploadBtn.textContent = '📤 Upload File';
+        }
+
+        function getIcon(type) {
+            return { pdf: '📄', image: '🖼️', video: '🎥' }[type] || '📁';
+        }
+
+        // ===== DELETE =====
+        function confirmDelete(id) {
+            deleteTargetId = id;
+            const resource = allResources.find(r => r.id === id);
+            document.getElementById('confirmText').textContent = 
+                `"${resource?.title}" delete karna hai?`;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            deleteTargetId = null;
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            if (!deleteTargetId) return;
+            
+            allResources = allResources.filter(r => r.id !== deleteTargetId);
+            await saveResources();
+
+            showToast('File delete ho gayi!', 'success');
+            closeConfirmModal();
+            displayContent();
+            loadAdminFiles();
+        });
+
+        // ===== ADMIN FILES =====
+        function loadAdminFiles() {
+            displayAdminFiles(currentFilter);
+        }
+
+        function filterFiles(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            displayAdminFiles(filter);
+        }
+
+        function displayAdminFiles(filter) {
+            const grid = document.getElementById('adminFilesGrid');
+            let filtered = filter === 'all' ? allResources : allResources.filter(r => r.folder === filter);
+
+            document.getElementById('filesCount').textContent = filtered.length + ' files';
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p class="no-files-msg">📭 Koi file nahi hai</p>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(r => `
+                <div class="file-card">
+                    <div class="file-card-thumb">
+                        ${r.type === 'image' ? `<img src="${r.fileUrl}" alt="${r.title}">` : r.icon}
+                    </div>
+                    <div class="file-card-content">
+                        <div class="file-card-title">${r.title}</div>
+                        <div class="file-card-meta">
+                            <span>📁 ${r.folder}</span>
+                            <span>📦 ${r.size}</span>
+                        </div>
+                        <div class="file-card-uploader">👤 ${r.uploadedBy || 'Unknown'}</div>
+                        <div class="file-card-actions">
+                            <button class="file-action-btn btn-delete" onclick="confirmDelete('${r.id}')">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== PUBLIC DISPLAY =====
+        function displayContent() {
+            updateStats();
+            
+            if (currentFolder === 'root' && !searchTerm) {
+                displayFolders();
+                displayRootResources();
+            } else if (searchTerm) {
+                document.getElementById('foldersGrid').innerHTML = '';
+                const results = allResources.filter(r => 
+                    r.title.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                displayResourcesList(results);
+            } else {
+                document.getElementById('foldersGrid').innerHTML = '';
+                displayResourcesList(allResources.filter(r => r.folder === currentFolder));
+            }
+            updateBreadcrumb();
+        }
+
+        function displayFolders() {
+            document.getElementById('foldersGrid').innerHTML = folders.map(f => {
+                const count = allResources.filter(r => r.folder === f.id).length;
+                return `
+                    <div class="folder-card" onclick="openFolder('${f.id}')">
+                        <div class="folder-icon">${f.icon}</div>
+                        <div class="folder-name">${f.name}</div>
+                        <div class="folder-info">📄 ${count} Files</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function displayRootResources() {
+            displayResourcesList(allResources.filter(r => r.folder === 'root'));
+        }
+
+        function displayResourcesList(resources) {
+            const grid = document.getElementById('resourcesGrid');
+            
+            if (resources.length === 0) {
+                grid.innerHTML = '<p class="no-files-msg">📭 Is folder mein koi file nahi</p>';
+                return;
+            }
+
+            grid.innerHTML = resources.map(r => `
+                <div class="resource-card">
+                    <div class="resource-thumbnail ${r.type}">
+                        ${r.type === 'image' ? `<img src="${r.fileUrl}" alt="${r.title}">` : 
+                          r.type === 'video' ? `<video src="${r.fileUrl}"></video>` : r.icon}
+                        <div class="resource-type-badge">${r.type.toUpperCase()}</div>
+                    </div>
+                    <div class="resource-content">
+                        <h3 class="resource-title">${r.title}</h3>
+                        <div class="resource-meta">
+                            <span>📦 ${r.size}</span>
+                            <span>⬇️ ${r.downloads}</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="preview-btn" onclick="preview('${r.id}')">
+                                👁️ Preview
+                            </button>
+                            <button class="download-btn" onclick="downloadFile('${r.id}')">
+                                ⬇️ Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalFolders').textContent = folders.length;
+            document.getElementById('totalDocs').textContent = allResources.length;
+            const total = allResources.reduce((sum, r) => sum + (r.downloads || 0), 0);
+            document.getElementById('totalDownloads').textContent = total >= 1000 ? (total/1000).toFixed(1) + 'K' : total;
+        }
+
+        // ===== NAVIGATION =====
+        function openFolder(id) {
+            currentFolder = id;
+            searchTerm = '';
+            document.getElementById('searchBox').value = '';
+            displayContent();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        function goHome() {
+            currentFolder = 'root';
+            searchTerm = '';
+            document.getElementById('searchBox').value = '';
+            displayContent();
+        }
+
+        function updateBreadcrumb() {
+            const bc = document.getElementById('breadcrumb');
+            if (currentFolder === 'root') {
+                bc.style.display = 'none';
+                return;
+            }
+            const folder = folders.find(f => f.id === currentFolder);
+            bc.style.display = 'flex';
+            bc.innerHTML = `
+                <div class="breadcrumb-item" onclick="goHome()">🏠 Home</div>
+                <span style="color:var(--gray-medium);">›</span>
+                <div class="breadcrumb-item" style="color:var(--primary-green);">${folder?.icon || '📁'} ${folder?.name || ''}</div>
+            `;
+        }
+
+        // ===== PREVIEW & DOWNLOAD =====
+        function preview(id) {
+            const r = allResources.find(x => x.id === id);
+            if (!r) return;
+            
+            document.getElementById('previewTitle').textContent = r.title;
+            const viewer = document.getElementById('previewViewer');
+            
+            if (r.type === 'image') {
+                viewer.innerHTML = `<img src="${r.fileUrl}" alt="${r.title}" style="max-height:90%; border-radius:12px;">`;
+            } else if (r.type === 'video') {
+                viewer.innerHTML = `<video src="${r.fileUrl}" controls style="max-width:90%; max-height:90%; border-radius:12px;"></video>`;
+            } else if (r.type === 'pdf') {
+                viewer.innerHTML = `<iframe src="${r.fileUrl}"></iframe>`;
+            } else {
+                viewer.innerHTML = `<p style="color:var(--gray-medium);">Preview available nahi</p>`;
+            }
+            
+            document.getElementById('previewModal').style.display = 'block';
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+            document.getElementById('previewViewer').innerHTML = '';
+        }
+
+        async function downloadFile(id) {
+            const r = allResources.find(x => x.id === id);
+            if (!r) return;
+
+            r.downloads = (r.downloads || 0) + 1;
+            saveResources();
+            displayContent();
+
+            window.open(r.fileUrl, '_blank');
+            showToast('Download started! ⬇️', 'success');
+        }
+
+        // ===== UTILITY =====
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // ===== EVENT LISTENERS =====
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            displayContent();
+        });
+
+        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
+        });
+
+        window.onclick = (e) => {
+            if (e.target === document.getElementById('previewModal')) closePreview();
+            if (e.target === document.getElementById('loginModal')) closeLoginModal();
+            if (e.target === document.getElementById('confirmModal')) closeConfirmModal();
+        };
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) clearInterval(refreshInterval);
+        });
+    </script>
 </body>
 </html>
