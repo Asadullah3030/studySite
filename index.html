@@ -28,6 +28,7 @@
             --white: #ffffff;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --info: #3b82f6;
         }
 
         body {
@@ -35,6 +36,38 @@
             background: linear-gradient(135deg, var(--gray-white) 0%, #e0e7ff 100%);
             min-height: 100vh;
             color: var(--gray-darker);
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, var(--info), #1d4ed8);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .refresh-btn.spinning span:first-child {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Admin Login Button */
@@ -64,6 +97,36 @@
 
         .admin-login-btn.logged-in {
             background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+        }
+
+        /* Sync Status */
+        .sync-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.85em;
+            font-weight: 600;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sync-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         /* Login Modal */
@@ -188,7 +251,14 @@
         }
 
         .admin-header h1 {
-            font-size: 1.8em;
+            font-size: 1.5em;
+        }
+
+        .admin-user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
         }
 
         .admin-actions {
@@ -207,6 +277,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .btn-refresh {
+            background: var(--info);
+            color: white;
         }
 
         .btn-close {
@@ -231,6 +306,15 @@
             font-size: 1.5em;
             margin-bottom: 20px;
             color: var(--gray-darker);
+        }
+
+        .upload-info {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
         }
 
         .upload-form {
@@ -294,6 +378,12 @@
             display: none;
         }
 
+        .file-size-warning {
+            color: var(--danger);
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
         .upload-submit {
             grid-column: 1 / -1;
             padding: 15px;
@@ -325,10 +415,26 @@
             border-radius: 20px;
         }
 
+        .files-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
         .files-section h2 {
             font-size: 1.5em;
-            margin-bottom: 20px;
             color: var(--gray-darker);
+        }
+
+        .files-count {
+            background: var(--primary-green);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
         }
 
         .files-filter {
@@ -368,7 +474,7 @@
         }
 
         .file-card-thumb {
-            height: 150px;
+            height: 120px;
             background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             display: flex;
             align-items: center;
@@ -391,17 +497,24 @@
 
         .file-card-title {
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             word-break: break-word;
+            font-size: 0.95em;
         }
 
         .file-card-meta {
             display: flex;
             gap: 10px;
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: var(--gray-medium);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
+        }
+
+        .file-card-uploader {
+            font-size: 0.8em;
+            color: var(--info);
+            margin-bottom: 12px;
         }
 
         .file-card-actions {
@@ -417,6 +530,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
+            font-size: 0.85em;
         }
 
         .btn-delete {
@@ -463,6 +577,7 @@
             z-index: 3000;
             animation: slideInRight 0.3s ease;
             display: none;
+            max-width: 300px;
         }
 
         @keyframes slideInRight {
@@ -473,6 +588,7 @@
         .toast.success { background: var(--primary-green); }
         .toast.error { background: var(--danger); }
         .toast.warning { background: var(--warning); }
+        .toast.info { background: var(--info); }
 
         /* Hero Section */
         .hero {
@@ -561,40 +677,22 @@
         /* Stats Cards */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 25px;
             margin-bottom: 50px;
         }
 
         .stat-card {
             background: var(--white);
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s ease;
             border: 1px solid var(--gray-light);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-green), var(--light-green));
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .stat-card:hover::before {
-            transform: scaleX(1);
         }
 
         .stat-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
         }
 
@@ -602,25 +700,24 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .stat-icon {
-            font-size: 2.5em;
+            font-size: 2em;
         }
 
         .stat-number {
-            font-size: 2.8em;
+            font-size: 2.5em;
             font-weight: 900;
             color: var(--primary-green);
             line-height: 1;
         }
 
         .stat-label {
-            font-size: 0.95em;
+            font-size: 0.9em;
             color: var(--gray-medium);
             font-weight: 600;
-            margin-top: 8px;
         }
 
         /* Breadcrumb */
@@ -672,7 +769,6 @@
         .search-box:focus {
             outline: none;
             border-color: var(--primary-green);
-            box-shadow: 0 4px 25px rgba(16, 185, 129, 0.15);
         }
 
         .search-icon {
@@ -681,13 +777,12 @@
             top: 50%;
             transform: translateY(-50%);
             font-size: 1.3em;
-            color: var(--gray-medium);
         }
 
         /* Folders Grid */
         .folders-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 25px;
             margin-bottom: 50px;
         }
@@ -695,27 +790,12 @@
         .folder-card {
             background: var(--white);
             border-radius: 20px;
-            padding: 35px 28px;
+            padding: 30px 25px;
             text-align: center;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s ease;
             border: 1px solid var(--gray-light);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .folder-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .folder-card:hover::before {
-            opacity: 0.05;
         }
 
         .folder-card:hover {
@@ -725,33 +805,27 @@
         }
 
         .folder-icon {
-            font-size: 4em;
-            margin-bottom: 18px;
-            position: relative;
-            z-index: 1;
+            font-size: 3.5em;
+            margin-bottom: 15px;
         }
 
         .folder-name {
-            font-size: 1.25em;
+            font-size: 1.15em;
             font-weight: 700;
             color: var(--gray-darker);
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 10px;
         }
 
         .folder-info {
             color: var(--gray-medium);
             font-weight: 600;
-            font-size: 0.95em;
-            position: relative;
-            z-index: 1;
+            font-size: 0.9em;
         }
 
         /* Resources Grid */
         .resources-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             margin-bottom: 50px;
         }
@@ -761,7 +835,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s ease;
             border: 1px solid var(--gray-light);
         }
 
@@ -772,7 +846,7 @@
 
         .resource-thumbnail {
             width: 100%;
-            height: 200px;
+            height: 180px;
             background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             display: flex;
             align-items: center;
@@ -802,28 +876,26 @@
 
         .resource-type-badge {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 12px;
+            right: 12px;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 6px 18px;
+            padding: 5px 15px;
             border-radius: 20px;
             font-size: 0.75em;
             font-weight: 800;
             color: var(--gray-darker);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             z-index: 3;
         }
 
         .resource-content {
-            padding: 22px;
+            padding: 20px;
         }
 
         .resource-title {
-            font-size: 1.1em;
+            font-size: 1.05em;
             font-weight: 700;
             color: var(--gray-darker);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             line-height: 1.4;
         }
 
@@ -850,7 +922,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.9em;
+            font-size: 0.85em;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -860,7 +932,6 @@
         .download-btn {
             background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             color: white;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
         .preview-btn {
@@ -871,11 +942,9 @@
 
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
 
         .preview-btn:hover {
-            background: white;
             border-color: var(--primary-green);
             color: var(--primary-green);
         }
@@ -897,7 +966,6 @@
             background: white;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
 
         .preview-modal-header {
@@ -910,7 +978,7 @@
         }
 
         .preview-modal-header h3 {
-            font-size: 1.3em;
+            font-size: 1.2em;
             font-weight: 700;
         }
 
@@ -921,15 +989,13 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            font-size: 1.4em;
+            font-size: 1.3em;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 800;
         }
 
         .close-preview:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
         }
 
         .preview-viewer {
@@ -1002,7 +1068,6 @@
             border-radius: 10px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .btn-confirm-delete {
@@ -1022,11 +1087,10 @@
             text-align: center;
             margin-top: 80px;
             border-radius: 40px 40px 0 0;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
         }
 
         .footer h3 {
-            font-size: 2.2em;
+            font-size: 2em;
             font-weight: 900;
             color: var(--primary-green);
             margin-bottom: 20px;
@@ -1034,7 +1098,7 @@
 
         .team-section {
             background: var(--gray-white);
-            padding: 35px;
+            padding: 30px;
             border-radius: 20px;
             margin: 25px 0;
         }
@@ -1047,31 +1111,30 @@
         }
 
         .team-member-avatar {
-            width: 90px;
-            height: 90px;
+            width: 80px;
+            height: 80px;
             background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3em;
-            margin: 0 auto 12px;
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            font-size: 2.5em;
+            margin: 0 auto 10px;
         }
 
         .team-member-name {
-            font-size: 1.3em;
+            font-size: 1.2em;
             font-weight: 800;
             color: var(--gray-darker);
         }
 
         .copyright {
-            margin-top: 30px;
+            margin-top: 25px;
             color: var(--gray-medium);
             font-weight: 600;
         }
 
-        /* Loading Spinner */
+        /* Loading */
         .loading-spinner {
             display: none;
             width: 50px;
@@ -1081,10 +1144,6 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 50px auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         .no-files-msg {
@@ -1098,18 +1157,30 @@
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2em; }
-            .hero .subtitle { font-size: 1.1em; }
-            .stats { grid-template-columns: 1fr; }
-            .folders-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .stats { grid-template-columns: 1fr 1fr; }
+            .folders-grid { grid-template-columns: repeat(2, 1fr); }
             .resources-grid { grid-template-columns: 1fr; }
             .action-buttons { grid-template-columns: 1fr; }
             .preview-modal-content { width: 100%; height: 100%; margin: 0; border-radius: 0; }
             .admin-header { flex-direction: column; text-align: center; }
-            .files-grid { grid-template-columns: 1fr; }
+            .sync-status { top: auto; bottom: 80px; left: 50%; transform: translateX(-50%); right: auto; }
+            .refresh-btn { bottom: 80px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- Sync Status -->
+    <div class="sync-status" id="syncStatus">
+        <div class="sync-dot"></div>
+        <span id="syncText">Live Synced</span>
+    </div>
+
+    <!-- Refresh Button -->
+    <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">
+        <span>🔄</span>
+        <span>Refresh</span>
+    </button>
 
     <!-- Admin Login Button -->
     <button class="admin-login-btn" id="adminLoginBtn" onclick="toggleAdminAccess()">
@@ -1125,7 +1196,7 @@
         <div class="login-modal-content">
             <button class="close-modal" onclick="closeLoginModal()">✖</button>
             <h2>🔐 Admin Login</h2>
-            <p>Sirf authorized users ke liye</p>
+            <p>Sirf Asad aur Kamran ke liye</p>
             <div class="error-msg" id="loginError">Username ya password galat hai!</div>
             <input type="text" class="login-input" id="loginUsername" placeholder="Username">
             <input type="password" class="login-input" id="loginPassword" placeholder="Password">
@@ -1138,7 +1209,11 @@
         <div class="admin-container">
             <div class="admin-header">
                 <h1>🛠️ Admin Dashboard</h1>
+                <div class="admin-user-info" id="adminUserInfo">👤 Logged in as: -</div>
                 <div class="admin-actions">
+                    <button class="admin-btn btn-refresh" onclick="manualRefresh()">
+                        <span>🔄</span> Refresh Data
+                    </button>
                     <button class="admin-btn btn-close" onclick="closeAdminPanel()">
                         <span>✖</span> Close
                     </button>
@@ -1151,20 +1226,23 @@
             <!-- Upload Section -->
             <div class="upload-section">
                 <h2>📤 Upload New File</h2>
+                <div class="upload-info">
+                    ⚠️ <strong>File Size Limit:</strong> Maximum 10MB per file. Images, PDFs aur Videos supported hain.
+                </div>
                 <form class="upload-form" id="uploadForm" onsubmit="uploadFile(event)">
                     <div class="form-group">
-                        <label>File Title</label>
-                        <input type="text" id="fileTitle" placeholder="Enter file title" required>
+                        <label>File Title *</label>
+                        <input type="text" id="fileTitle" placeholder="File ka naam likho" required>
                     </div>
                     <div class="form-group">
-                        <label>Select Folder</label>
+                        <label>Select Folder *</label>
                         <select id="fileFolder" required>
-                            <option value="">-- Select Folder --</option>
+                            <option value="">-- Folder Select Karo --</option>
                             <option value="first-year">First Year Notes</option>
                             <option value="second-year">Second Year Notes</option>
                             <option value="third-year">Third Year Notes</option>
                             <option value="fourth-year">Fourth Year Notes</option>
-                            <option value="exam-papers">Second Year Past Papers</option>
+                            <option value="exam-papers">Past Papers</option>
                             <option value="reference">Reference Books</option>
                             <option value="photos">College Photos</option>
                             <option value="videos">College Videos</option>
@@ -1173,9 +1251,10 @@
                     </div>
                     <div class="file-upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
                         <div class="upload-icon">📁</div>
-                        <p><strong>Click to upload</strong> or drag and drop</p>
-                        <p style="color: var(--gray-medium); font-size: 0.9em;">PDF, Images, Videos supported</p>
+                        <p><strong>Click karke file select karo</strong></p>
+                        <p style="color: var(--gray-medium); font-size: 0.9em;">PDF, Images, Videos (Max 10MB)</p>
                         <p id="selectedFileName" style="color: var(--primary-green); margin-top: 10px; font-weight: 600;"></p>
+                        <p class="file-size-warning" id="fileSizeWarning"></p>
                     </div>
                     <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.mp4,.webm,.mov" onchange="handleFileSelect(event)">
                     
@@ -1194,12 +1273,15 @@
 
             <!-- Files Management -->
             <div class="files-section">
-                <h2>📂 Manage Files</h2>
+                <div class="files-header">
+                    <h2>📂 Manage Files</h2>
+                    <span class="files-count" id="filesCount">0 files</span>
+                </div>
                 <div class="files-filter">
                     <button class="filter-btn active" onclick="filterFiles('all', this)">All</button>
                     <button class="filter-btn" onclick="filterFiles('first-year', this)">1st Year</button>
                     <button class="filter-btn" onclick="filterFiles('second-year', this)">2nd Year</button>
-                    <button class="filter-btn" onclick="filterFiles('exam-papers', this)">Past Papers</button>
+                    <button class="filter-btn" onclick="filterFiles('exam-papers', this)">Papers</button>
                     <button class="filter-btn" onclick="filterFiles('photos', this)">Photos</button>
                     <button class="filter-btn" onclick="filterFiles('videos', this)">Videos</button>
                 </div>
@@ -1214,7 +1296,7 @@
         <div class="confirm-modal-content">
             <div class="confirm-icon">⚠️</div>
             <h2>Delete File?</h2>
-            <p id="confirmText">Kya aap sure hain? Ye file permanently delete ho jayegi.</p>
+            <p id="confirmText">Kya aap sure hain?</p>
             <div class="confirm-actions">
                 <button class="btn-cancel" onclick="closeConfirmModal()">Cancel</button>
                 <button class="btn-confirm-delete" id="confirmDeleteBtn">Delete</button>
@@ -1249,21 +1331,21 @@
                     <div class="stat-icon">📁</div>
                     <div class="stat-number" id="totalFolders">8</div>
                 </div>
-                <div class="stat-label">Class Folders</div>
+                <div class="stat-label">Folders</div>
             </div>
             <div class="stat-card">
                 <div class="stat-header">
                     <div class="stat-icon">📚</div>
                     <div class="stat-number" id="totalDocs">0</div>
                 </div>
-                <div class="stat-label">Study Materials</div>
+                <div class="stat-label">Files</div>
             </div>
             <div class="stat-card">
                 <div class="stat-header">
                     <div class="stat-icon">⬇️</div>
                     <div class="stat-number" id="totalDownloads">0</div>
                 </div>
-                <div class="stat-label">Total Downloads</div>
+                <div class="stat-label">Downloads</div>
             </div>
         </div>
 
@@ -1292,7 +1374,7 @@
     <div class="footer">
         <h3>🌾 IATI - Rahim Yar Khan 🌾</h3>
         <div class="team-section">
-            <h4 style="font-size: 1.5em; font-weight: 800; margin-bottom: 25px; color: var(--gray-darker);">Project Team</h4>
+            <h4 style="font-size: 1.4em; font-weight: 800; margin-bottom: 20px;">Project Team</h4>
             <div class="team-members">
                 <div>
                     <div class="team-member-avatar">👨‍💼</div>
@@ -1305,21 +1387,24 @@
             </div>
         </div>
         <div class="copyright">
-            <p>© 2025–2026 <strong>Asadullah Ashraf</strong> • All Rights Reserved</p>
+            <p>© 2025 <strong>Asadullah Ashraf</strong></p>
         </div>
     </div>
 
     <script>
         // ===== CONFIGURATION =====
         const CONFIG = {
-            // Cloudinary Settings - TUMHARA DATA
             CLOUDINARY_CLOUD_NAME: 'dmifnqtlx',
             CLOUDINARY_UPLOAD_PRESET: 'iati_upload',
-            
-            // npoint.io URL - TUMHARA DATA
             NPOINT_URL: 'https://api.npoint.io/cfe3a72212ad11e74b28',
             
-            // Admin Credentials - PASSWORD CHANGE KAR LENA
+            // Maximum file size (10MB)
+            MAX_FILE_SIZE: 10 * 1024 * 1024,
+            
+            // Auto refresh interval (30 seconds)
+            REFRESH_INTERVAL: 30000,
+            
+            // Admin Credentials
             ADMINS: [
                 { username: 'asad', password: 'asad123' },
                 { username: 'kamran', password: 'kamran123' }
@@ -1335,13 +1420,15 @@
         let selectedFile = null;
         let currentFilter = 'all';
         let deleteTargetId = null;
+        let refreshInterval = null;
+        let isRefreshing = false;
 
         const folders = [
             {id: 'first-year', name: 'First Year Notes', icon: '📘'},
             {id: 'second-year', name: 'Second Year Notes', icon: '📗'},
             {id: 'third-year', name: 'Third Year Notes', icon: '📙'},
             {id: 'fourth-year', name: 'Fourth Year Notes', icon: '📕'},
-            {id: 'exam-papers', name: 'Second Year Past Papers', icon: '📝'},
+            {id: 'exam-papers', name: 'Past Papers', icon: '📝'},
             {id: 'reference', name: 'Reference Books', icon: '📚'},
             {id: 'photos', name: 'College Photos', icon: '📷'},
             {id: 'videos', name: 'College Videos', icon: '🎥'}
@@ -1353,18 +1440,81 @@
             await loadResources();
             displayContent();
             setupDragDrop();
+            startAutoRefresh();
         });
 
-        // ===== DATABASE (npoint.io) =====
+        // ===== AUTO REFRESH =====
+        function startAutoRefresh() {
+            refreshInterval = setInterval(async () => {
+                if (!isRefreshing) {
+                    await silentRefresh();
+                }
+            }, CONFIG.REFRESH_INTERVAL);
+        }
+
+        async function silentRefresh() {
+            try {
+                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
+                const data = await response.json();
+                const newResources = Array.isArray(data) ? data : [];
+                
+                // Check if data changed
+                if (JSON.stringify(newResources) !== JSON.stringify(allResources)) {
+                    allResources = newResources;
+                    displayContent();
+                    if (document.getElementById('adminPanel').style.display === 'block') {
+                        loadAdminFiles();
+                    }
+                    updateSyncStatus('Updated!', 'var(--primary-green)');
+                }
+            } catch (error) {
+                console.log('Silent refresh error:', error);
+            }
+        }
+
+        async function manualRefresh() {
+            const btn = document.getElementById('refreshBtn');
+            btn.classList.add('spinning');
+            isRefreshing = true;
+            
+            updateSyncStatus('Refreshing...', 'var(--warning)');
+            
+            try {
+                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
+                const data = await response.json();
+                allResources = Array.isArray(data) ? data : [];
+                displayContent();
+                if (document.getElementById('adminPanel').style.display === 'block') {
+                    loadAdminFiles();
+                }
+                showToast('Data refreshed! ✅', 'success');
+                updateSyncStatus('Live Synced', 'var(--primary-green)');
+            } catch (error) {
+                showToast('Refresh failed!', 'error');
+                updateSyncStatus('Offline', 'var(--danger)');
+            }
+            
+            btn.classList.remove('spinning');
+            isRefreshing = false;
+        }
+
+        function updateSyncStatus(text, color) {
+            document.getElementById('syncText').textContent = text;
+            document.querySelector('.sync-dot').style.background = color;
+        }
+
+        // ===== DATABASE =====
         async function loadResources() {
             document.getElementById('mainLoading').style.display = 'block';
             try {
-                const response = await fetch(CONFIG.NPOINT_URL);
+                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
                 const data = await response.json();
                 allResources = Array.isArray(data) ? data : [];
+                updateSyncStatus('Live Synced', 'var(--primary-green)');
             } catch (error) {
-                console.error('Error loading:', error);
+                console.error('Load error:', error);
                 allResources = [];
+                updateSyncStatus('Offline', 'var(--danger)');
             }
             document.getElementById('mainLoading').style.display = 'none';
         }
@@ -1378,7 +1528,7 @@
                 });
                 return true;
             } catch (error) {
-                console.error('Error saving:', error);
+                console.error('Save error:', error);
                 return false;
             }
         }
@@ -1399,6 +1549,7 @@
         function toggleAdminAccess() {
             if (isLoggedIn) {
                 document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminUserInfo').textContent = '👤 Logged in as: ' + currentAdmin;
                 loadAdminFiles();
             } else {
                 document.getElementById('loginModal').style.display = 'flex';
@@ -1429,6 +1580,7 @@
                 updateAdminButton();
                 showToast(`Welcome ${username}! 👋`, 'success');
                 document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminUserInfo').textContent = '👤 Logged in as: ' + currentAdmin;
                 loadAdminFiles();
             } else {
                 document.getElementById('loginError').style.display = 'block';
@@ -1463,6 +1615,7 @@
         // ===== FILE UPLOAD =====
         function setupDragDrop() {
             const dropZone = document.getElementById('dropZone');
+            if (!dropZone) return;
             
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
                 dropZone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); });
@@ -1479,7 +1632,6 @@
             dropZone.addEventListener('drop', (e) => {
                 const files = e.dataTransfer.files;
                 if (files.length > 0) {
-                    document.getElementById('fileInput').files = files;
                     handleFileSelect({ target: { files: files } });
                 }
             });
@@ -1487,11 +1639,22 @@
 
         function handleFileSelect(event) {
             const file = event.target.files[0];
-            if (file) {
-                selectedFile = file;
-                document.getElementById('selectedFileName').textContent = 
-                    `✅ ${file.name} (${formatFileSize(file.size)})`;
+            const warning = document.getElementById('fileSizeWarning');
+            const fileName = document.getElementById('selectedFileName');
+            
+            if (!file) return;
+            
+            // Check file size
+            if (file.size > CONFIG.MAX_FILE_SIZE) {
+                warning.textContent = `⚠️ File bohot bari hai! (${formatFileSize(file.size)}) - Max 10MB allowed`;
+                fileName.textContent = '';
+                selectedFile = null;
+                return;
             }
+            
+            warning.textContent = '';
+            selectedFile = file;
+            fileName.textContent = `✅ ${file.name} (${formatFileSize(file.size)})`;
         }
 
         async function uploadFile(event) {
@@ -1499,6 +1662,12 @@
             
             if (!selectedFile) {
                 showToast('Pehle file select karo!', 'error');
+                return;
+            }
+
+            // Double check file size
+            if (selectedFile.size > CONFIG.MAX_FILE_SIZE) {
+                showToast('File 10MB se bari hai!', 'error');
                 return;
             }
 
@@ -1518,6 +1687,7 @@
             uploadBtn.disabled = true;
             uploadBtn.textContent = '⏳ Uploading...';
             progressDiv.style.display = 'block';
+            progressBar.style.width = '0%';
 
             try {
                 const formData = new FormData();
@@ -1537,8 +1707,16 @@
 
                 const result = await new Promise((resolve, reject) => {
                     xhr.onload = () => {
-                        if (xhr.status === 200) resolve(JSON.parse(xhr.responseText));
-                        else reject(new Error('Upload failed'));
+                        if (xhr.status === 200) {
+                            resolve(JSON.parse(xhr.responseText));
+                        } else {
+                            try {
+                                const err = JSON.parse(xhr.responseText);
+                                reject(new Error(err.error?.message || 'Upload failed'));
+                            } catch {
+                                reject(new Error('Upload failed - Status: ' + xhr.status));
+                            }
+                        }
                     };
                     xhr.onerror = () => reject(new Error('Network error'));
                     xhr.open('POST', `https://api.cloudinary.com/v1_1/${CONFIG.CLOUDINARY_CLOUD_NAME}/auto/upload`);
@@ -1550,7 +1728,7 @@
                 else if (result.resource_type === 'video') fileType = 'video';
 
                 const newResource = {
-                    id: 'res_' + Date.now(),
+                    id: 'res_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                     title: title,
                     type: fileType,
                     size: formatFileSize(result.bytes),
@@ -1563,23 +1741,29 @@
                 };
 
                 allResources.push(newResource);
-                await saveResources();
-
-                showToast('File upload ho gayi! ✅', 'success');
                 
-                // Reset
+                const saved = await saveResources();
+                
+                if (saved) {
+                    showToast('File upload ho gayi! ✅', 'success');
+                } else {
+                    showToast('File uploaded but sync issue. Refresh karo.', 'warning');
+                }
+                
+                // Reset form
                 document.getElementById('uploadForm').reset();
                 document.getElementById('selectedFileName').textContent = '';
+                document.getElementById('fileSizeWarning').textContent = '';
                 selectedFile = null;
                 progressDiv.style.display = 'none';
-                progressBar.style.width = '0%';
 
                 displayContent();
                 loadAdminFiles();
 
             } catch (error) {
                 console.error('Upload error:', error);
-                showToast('Upload fail! Dobara try karo.', 'error');
+                showToast('Upload fail: ' + error.message, 'error');
+                progressDiv.style.display = 'none';
             }
 
             uploadBtn.disabled = false;
@@ -1595,7 +1779,7 @@
             deleteTargetId = id;
             const resource = allResources.find(r => r.id === id);
             document.getElementById('confirmText').textContent = 
-                `"${resource?.title}" delete karna hai? Ye wapas nahi ayegi!`;
+                `"${resource?.title}" delete karna hai?`;
             document.getElementById('confirmModal').style.display = 'flex';
         }
 
@@ -1632,6 +1816,8 @@
             const grid = document.getElementById('adminFilesGrid');
             let filtered = filter === 'all' ? allResources : allResources.filter(r => r.folder === filter);
 
+            document.getElementById('filesCount').textContent = filtered.length + ' files';
+
             if (filtered.length === 0) {
                 grid.innerHTML = '<p class="no-files-msg">📭 Koi file nahi hai</p>';
                 return;
@@ -1648,6 +1834,7 @@
                             <span>📁 ${r.folder}</span>
                             <span>📦 ${r.size}</span>
                         </div>
+                        <div class="file-card-uploader">👤 ${r.uploadedBy || 'Unknown'}</div>
                         <div class="file-card-actions">
                             <button class="file-action-btn btn-delete" onclick="confirmDelete('${r.id}')">
                                 🗑️ Delete
@@ -1699,7 +1886,7 @@
             const grid = document.getElementById('resourcesGrid');
             
             if (resources.length === 0) {
-                grid.innerHTML = '<p class="no-files-msg">📭 Is folder mein koi file nahi hai</p>';
+                grid.innerHTML = '<p class="no-files-msg">📭 Is folder mein koi file nahi</p>';
                 return;
             }
 
@@ -1780,9 +1967,9 @@
             } else if (r.type === 'video') {
                 viewer.innerHTML = `<video src="${r.fileUrl}" controls style="max-width:90%; max-height:90%; border-radius:12px;"></video>`;
             } else if (r.type === 'pdf') {
-                viewer.innerHTML = `<iframe src="${r.fileUrl}" style="width:100%; height:100%;"></iframe>`;
+                viewer.innerHTML = `<iframe src="${r.fileUrl}"></iframe>`;
             } else {
-                viewer.innerHTML = `<p style="color:var(--gray-medium);">Preview available nahi hai</p>`;
+                viewer.innerHTML = `<p style="color:var(--gray-medium);">Preview available nahi</p>`;
             }
             
             document.getElementById('previewModal').style.display = 'block';
@@ -1797,18 +1984,11 @@
             const r = allResources.find(x => x.id === id);
             if (!r) return;
 
-            // Increment downloads
             r.downloads = (r.downloads || 0) + 1;
             saveResources();
             displayContent();
 
-            // Download
-            const a = document.createElement('a');
-            a.href = r.fileUrl;
-            a.download = r.title;
-            a.target = '_blank';
-            a.click();
-            
+            window.open(r.fileUrl, '_blank');
             showToast('Download started! ⬇️', 'success');
         }
 
@@ -1842,6 +2022,11 @@
             if (e.target === document.getElementById('loginModal')) closeLoginModal();
             if (e.target === document.getElementById('confirmModal')) closeConfirmModal();
         };
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) clearInterval(refreshInterval);
+        });
     </script>
 </body>
 </html>
