@@ -1557,802 +1557,797 @@
     </div>
 
     <script>
-        // ===== CONFIGURATION =====
-        const CONFIG = {
-            CLOUDINARY_CLOUD_NAME: 'dmifnqtlx',
-            CLOUDINARY_UPLOAD_PRESET: 'iati_upload',
-            NPOINT_URL: 'https://api.npoint.io/cfe3a72212ad11e74b28',
-            MAX_FILE_SIZE: 10 * 1024 * 1024,
-            REFRESH_INTERVAL: 30000,
-            ADMINS: [
-                { username: 'asad', password: 'asad123' },
-                { username: 'kamran', password: 'kamran123' }
-            ]
-        };
+    // ===== CONFIGURATION =====
+    const CONFIG = {
+        CLOUDINARY_CLOUD_NAME: 'dmifnqtlx',
+        CLOUDINARY_UPLOAD_PRESET: 'iati_upload',
+        NPOINT_URL: 'https://api.npoint.io/cfe3a72212ad11e74b28',
+        MAX_FILE_SIZE: 10 * 1024 * 1024,
+        REFRESH_INTERVAL: 30000,
+        ADMINS: [
+            { username: 'asad', password: 'asad123' },
+            { username: 'kamran', password: 'kamran1234' }
+        ]
+    };
 
-        // ===== STATE =====
-        let isLoggedIn = false;
-        let currentAdmin = null;
-        let allResources = [];
-        let currentFolder = 'root';
-        let searchTerm = '';
-        let selectedFile = null;
-        let currentFilter = 'all';
-        let deleteTargetId = null;
-        let refreshInterval = null;
-        let isRefreshing = false;
-        let downloadController = null;
+    // ===== STATE =====
+    let isLoggedIn = false;
+    let currentAdmin = null;
+    let allResources = [];
+    let currentFolder = 'root';
+    let searchTerm = '';
+    let selectedFile = null;
+    let currentFilter = 'all';
+    let deleteTargetId = null;
+    let refreshInterval = null;
+    let isRefreshing = false;
+    let downloadController = null;
 
-        const folders = [
-            {id: 'first-year', name: 'First Year Notes', icon: '📘'},
-            {id: 'second-year', name: 'Second Year Notes', icon: '📗'},
-            {id: 'third-year', name: 'Third Year Notes', icon: '📙'},
-            {id: 'fourth-year', name: 'Fourth Year Notes', icon: '📕'},
-            {id: 'exam-papers', name: 'Past Papers', icon: '📝'},
-            {id: 'reference', name: 'Reference Books', icon: '📚'},
-            {id: 'photos', name: 'College Photos', icon: '📷'},
-            {id: 'videos', name: 'College Videos', icon: '🎥'}
-        ];
+    const folders = [
+        {id: 'first-year', name: 'First Year Notes', icon: '📘'},
+        {id: 'second-year', name: 'Second Year Notes', icon: '📗'},
+        {id: 'third-year', name: 'Third Year Notes', icon: '📙'},
+        {id: 'fourth-year', name: 'Fourth Year Notes', icon: '📕'},
+        {id: 'exam-papers', name: 'Past Papers', icon: '📝'},
+        {id: 'reference', name: 'Reference Books', icon: '📚'},
+        {id: 'photos', name: 'College Photos', icon: '📷'},
+        {id: 'videos', name: 'College Videos', icon: '🎥'}
+    ];
 
-        // ===== INITIALIZATION =====
-        document.addEventListener('DOMContentLoaded', async () => {
-            checkLoginStatus();
-            await loadResources();
-            displayContent();
-            setupDragDrop();
-            startAutoRefresh();
-        });
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', async () => {
+        checkLoginStatus();
+        await loadResources();
+        displayContent();
+        setupDragDrop();
+        startAutoRefresh();
+    });
 
-        // ===== AUTO REFRESH =====
-        function startAutoRefresh() {
-            refreshInterval = setInterval(async () => {
-                if (!isRefreshing) {
-                    await silentRefresh();
-                }
-            }, CONFIG.REFRESH_INTERVAL);
-        }
-
-        async function silentRefresh() {
-            try {
-                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
-                const data = await response.json();
-                const newResources = Array.isArray(data) ? data : [];
-                
-                if (JSON.stringify(newResources) !== JSON.stringify(allResources)) {
-                    allResources = newResources;
-                    displayContent();
-                    if (document.getElementById('adminPanel').style.display === 'block') {
-                        loadAdminFiles();
-                    }
-                    updateSyncStatus('Updated!', 'var(--primary-green)');
-                }
-            } catch (error) {
-                console.log('Silent refresh error:', error);
+    // ===== AUTO REFRESH =====
+    function startAutoRefresh() {
+        refreshInterval = setInterval(async () => {
+            if (!isRefreshing) {
+                await silentRefresh();
             }
-        }
+        }, CONFIG.REFRESH_INTERVAL);
+    }
 
-        async function manualRefresh() {
-            const btn = document.getElementById('refreshBtn');
-            btn.classList.add('spinning');
-            isRefreshing = true;
+    async function silentRefresh() {
+        try {
+            const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
+            const data = await response.json();
+            const newResources = Array.isArray(data) ? data : [];
             
-            updateSyncStatus('Refreshing...', 'var(--warning)');
-            
-            try {
-                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
-                const data = await response.json();
-                allResources = Array.isArray(data) ? data : [];
+            if (JSON.stringify(newResources) !== JSON.stringify(allResources)) {
+                allResources = newResources;
                 displayContent();
                 if (document.getElementById('adminPanel').style.display === 'block') {
                     loadAdminFiles();
                 }
-                showToast('Data refreshed! ✅', 'success');
-                updateSyncStatus('Live Synced', 'var(--primary-green)');
-            } catch (error) {
-                showToast('Refresh failed!', 'error');
-                updateSyncStatus('Offline', 'var(--danger)');
+                updateSyncStatus('Updated!', 'var(--primary-green)');
             }
-            
-            btn.classList.remove('spinning');
-            isRefreshing = false;
+        } catch (error) {
+            console.log('Silent refresh error:', error);
         }
+    }
 
-        function updateSyncStatus(text, color) {
-            document.getElementById('syncText').textContent = text;
-            document.querySelector('.sync-dot').style.background = color;
-        }
-
-        // ===== DATABASE =====
-        async function loadResources() {
-            document.getElementById('mainLoading').style.display = 'block';
-            try {
-                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
-                const data = await response.json();
-                allResources = Array.isArray(data) ? data : [];
-                updateSyncStatus('Live Synced', 'var(--primary-green)');
-            } catch (error) {
-                console.error('Load error:', error);
-                allResources = [];
-                updateSyncStatus('Offline', 'var(--danger)');
-            }
-            document.getElementById('mainLoading').style.display = 'none';
-        }
-
-        async function saveResources() {
-            try {
-                await fetch(CONFIG.NPOINT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(allResources)
-                });
-                return true;
-            } catch (error) {
-                console.error('Save error:', error);
-                return false;
-            }
-        }
-
-        // ===== AUTHENTICATION =====
-        function checkLoginStatus() {
-            const saved = localStorage.getItem('adminLogin');
-            if (saved) {
-                const data = JSON.parse(saved);
-                if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
-                    isLoggedIn = true;
-                    currentAdmin = data.username;
-                    updateAdminButton();
-                }
-            }
-        }
-
-        function toggleAdminAccess() {
-            if (isLoggedIn) {
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('adminUserInfo').textContent = '👤 Logged in as: ' + currentAdmin;
+    async function manualRefresh() {
+        const btn = document.getElementById('refreshBtn');
+        btn.classList.add('spinning');
+        isRefreshing = true;
+        
+        updateSyncStatus('Refreshing...', 'var(--warning)');
+        
+        try {
+            const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
+            const data = await response.json();
+            allResources = Array.isArray(data) ? data : [];
+            displayContent();
+            if (document.getElementById('adminPanel').style.display === 'block') {
                 loadAdminFiles();
-            } else {
-                document.getElementById('loginModal').style.display = 'flex';
             }
+            showToast('Data refreshed! ✅', 'success');
+            updateSyncStatus('Live Synced', 'var(--primary-green)');
+        } catch (error) {
+            showToast('Refresh failed!', 'error');
+            updateSyncStatus('Offline', 'var(--danger)');
         }
+        
+        btn.classList.remove('spinning');
+        isRefreshing = false;
+    }
 
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('loginError').style.display = 'none';
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
+    function updateSyncStatus(text, color) {
+        document.getElementById('syncText').textContent = text;
+        document.querySelector('.sync-dot').style.background = color;
+    }
+
+    // ===== DATABASE =====
+    async function loadResources() {
+        document.getElementById('mainLoading').style.display = 'block';
+        try {
+            const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
+            const data = await response.json();
+            allResources = Array.isArray(data) ? data : [];
+            updateSyncStatus('Live Synced', 'var(--primary-green)');
+        } catch (error) {
+            console.error('Load error:', error);
+            allResources = [];
+            updateSyncStatus('Offline', 'var(--danger)');
         }
+        document.getElementById('mainLoading').style.display = 'none';
+    }
 
-        function login() {
-            const username = document.getElementById('loginUsername').value.toLowerCase().trim();
-            const password = document.getElementById('loginPassword').value;
-            
-            const admin = CONFIG.ADMINS.find(a => a.username === username && a.password === password);
-            
-            if (admin) {
+    async function saveResources() {
+        try {
+            await fetch(CONFIG.NPOINT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(allResources)
+            });
+            return true;
+        } catch (error) {
+            console.error('Save error:', error);
+            return false;
+        }
+    }
+
+    // ===== AUTHENTICATION =====
+    function checkLoginStatus() {
+        const saved = localStorage.getItem('adminLogin');
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
                 isLoggedIn = true;
-                currentAdmin = username;
-                localStorage.setItem('adminLogin', JSON.stringify({
-                    username: username,
-                    timestamp: Date.now()
-                }));
-                closeLoginModal();
+                currentAdmin = data.username;
                 updateAdminButton();
-                showToast(`Welcome ${username}! 👋`, 'success');
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('adminUserInfo').textContent = '👤 Logged in as: ' + currentAdmin;
-                loadAdminFiles();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
             }
         }
+    }
 
-        function logout() {
-            isLoggedIn = false;
-            currentAdmin = null;
-            localStorage.removeItem('adminLogin');
+    function toggleAdminAccess() {
+        if (isLoggedIn) {
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('adminUserInfo').textContent = '👤 Logged in as: ' + currentAdmin;
+            loadAdminFiles();
+        } else {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+    }
+
+    function closeLoginModal() {
+        document.getElementById('loginModal').style.display = 'none';
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+    }
+
+    function login() {
+        const username = document.getElementById('loginUsername').value.toLowerCase().trim();
+        const password = document.getElementById('loginPassword').value;
+        
+        const admin = CONFIG.ADMINS.find(a => a.username === username && a.password === password);
+        
+        if (admin) {
+            isLoggedIn = true;
+            currentAdmin = username;
+            localStorage.setItem('adminLogin', JSON.stringify({
+                username: username,
+                timestamp: Date.now()
+            }));
+            closeLoginModal();
             updateAdminButton();
-            closeAdminPanel();
-            showToast('Logged out!', 'success');
+            showToast(`Welcome ${username}! 👋`, 'success');
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('adminUserInfo').textContent = '👤 Logged in as: ' + currentAdmin;
+            loadAdminFiles();
+        } else {
+            document.getElementById('loginError').style.display = 'block';
         }
+    }
 
-        function updateAdminButton() {
-            const btn = document.getElementById('adminLoginBtn');
-            const text = document.getElementById('adminBtnText');
-            if (isLoggedIn) {
-                btn.classList.add('logged-in');
-                text.textContent = currentAdmin;
-            } else {
-                btn.classList.remove('logged-in');
-                text.textContent = 'Admin';
+    function logout() {
+        isLoggedIn = false;
+        currentAdmin = null;
+        localStorage.removeItem('adminLogin');
+        updateAdminButton();
+        closeAdminPanel();
+        showToast('Logged out!', 'success');
+    }
+
+    function updateAdminButton() {
+        const btn = document.getElementById('adminLoginBtn');
+        const text = document.getElementById('adminBtnText');
+        if (isLoggedIn) {
+            btn.classList.add('logged-in');
+            text.textContent = currentAdmin;
+        } else {
+            btn.classList.remove('logged-in');
+            text.textContent = 'Admin';
+        }
+    }
+
+    function closeAdminPanel() {
+        document.getElementById('adminPanel').style.display = 'none';
+    }
+
+    // ===== FILE UPLOAD =====
+    function setupDragDrop() {
+        const dropZone = document.getElementById('dropZone');
+        if (!dropZone) return;
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+            dropZone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); });
+        });
+
+        ['dragenter', 'dragover'].forEach(e => {
+            dropZone.addEventListener(e, () => dropZone.classList.add('dragover'));
+        });
+
+        ['dragleave', 'drop'].forEach(e => {
+            dropZone.addEventListener(e, () => dropZone.classList.remove('dragover'));
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect({ target: { files: files } });
             }
+        });
+    }
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        const warning = document.getElementById('fileSizeWarning');
+        const fileName = document.getElementById('selectedFileName');
+        
+        if (!file) return;
+        
+        if (file.size > CONFIG.MAX_FILE_SIZE) {
+            warning.textContent = `⚠️ File bohot bari hai! (${formatFileSize(file.size)}) - Max 10MB allowed`;
+            fileName.textContent = '';
+            selectedFile = null;
+            return;
+        }
+        
+        warning.textContent = '';
+        selectedFile = file;
+        fileName.textContent = `✅ ${file.name} (${formatFileSize(file.size)})`;
+    }
+
+    async function uploadFile(event) {
+        event.preventDefault();
+        
+        if (!selectedFile) {
+            showToast('Pehle file select karo!', 'error');
+            return;
         }
 
-        function closeAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'none';
+        if (selectedFile.size > CONFIG.MAX_FILE_SIZE) {
+            showToast('File 10MB se bari hai!', 'error');
+            return;
         }
 
-        // ===== FILE UPLOAD =====
-        function setupDragDrop() {
-            const dropZone = document.getElementById('dropZone');
-            if (!dropZone) return;
+        const title = document.getElementById('fileTitle').value.trim();
+        const folder = document.getElementById('fileFolder').value;
+
+        if (!title || !folder) {
+            showToast('Sab fields fill karo!', 'error');
+            return;
+        }
+
+        const uploadBtn = document.getElementById('uploadBtn');
+        const progressDiv = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('uploadProgressBar');
+        const progressText = document.getElementById('uploadProgressText');
+
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = '⏳ Uploading...';
+        progressDiv.style.display = 'block';
+        progressBar.style.width = '0%';
+
+        try {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('upload_preset', CONFIG.CLOUDINARY_UPLOAD_PRESET);
+            formData.append('folder', `iati-ryk/${folder}`);
+
+            const xhr = new XMLHttpRequest();
             
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
-                dropZone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); });
-            });
-
-            ['dragenter', 'dragover'].forEach(e => {
-                dropZone.addEventListener(e, () => dropZone.classList.add('dragover'));
-            });
-
-            ['dragleave', 'drop'].forEach(e => {
-                dropZone.addEventListener(e, () => dropZone.classList.remove('dragover'));
-            });
-
-            dropZone.addEventListener('drop', (e) => {
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    handleFileSelect({ target: { files: files } });
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    progressBar.style.width = percent + '%';
+                    progressText.textContent = `Uploading... ${percent}%`;
                 }
             });
-        }
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const warning = document.getElementById('fileSizeWarning');
-            const fileName = document.getElementById('selectedFileName');
-            
-            if (!file) return;
-            
-            if (file.size > CONFIG.MAX_FILE_SIZE) {
-                warning.textContent = `⚠️ File bohot bari hai! (${formatFileSize(file.size)}) - Max 10MB allowed`;
-                fileName.textContent = '';
-                selectedFile = null;
-                return;
-            }
-            
-            warning.textContent = '';
-            selectedFile = file;
-            fileName.textContent = `✅ ${file.name} (${formatFileSize(file.size)})`;
-        }
-
-        async function uploadFile(event) {
-            event.preventDefault();
-            
-            if (!selectedFile) {
-                showToast('Pehle file select karo!', 'error');
-                return;
-            }
-
-            if (selectedFile.size > CONFIG.MAX_FILE_SIZE) {
-                showToast('File 10MB se bari hai!', 'error');
-                return;
-            }
-
-            const title = document.getElementById('fileTitle').value.trim();
-            const folder = document.getElementById('fileFolder').value;
-
-            if (!title || !folder) {
-                showToast('Sab fields fill karo!', 'error');
-                return;
-            }
-
-            const uploadBtn = document.getElementById('uploadBtn');
-            const progressDiv = document.getElementById('uploadProgress');
-            const progressBar = document.getElementById('uploadProgressBar');
-            const progressText = document.getElementById('uploadProgressText');
-
-            uploadBtn.disabled = true;
-            uploadBtn.textContent = '⏳ Uploading...';
-            progressDiv.style.display = 'block';
-            progressBar.style.width = '0%';
-
-            try {
-                const formData = new FormData();
-                formData.append('file', selectedFile);
-                formData.append('upload_preset', CONFIG.CLOUDINARY_UPLOAD_PRESET);
-                formData.append('folder', `iati-ryk/${folder}`);
-
-                const xhr = new XMLHttpRequest();
-                
-                xhr.upload.addEventListener('progress', (e) => {
-                    if (e.lengthComputable) {
-                        const percent = Math.round((e.loaded / e.total) * 100);
-                        progressBar.style.width = percent + '%';
-                        progressText.textContent = `Uploading... ${percent}%`;
-                    }
-                });
-
-                const result = await new Promise((resolve, reject) => {
-                    xhr.onload = () => {
-                        if (xhr.status === 200) {
-                            resolve(JSON.parse(xhr.responseText));
-                        } else {
-                            try {
-                                const err = JSON.parse(xhr.responseText);
-                                reject(new Error(err.error?.message || 'Upload failed'));
-                            } catch {
-                                reject(new Error('Upload failed - Status: ' + xhr.status));
-                            }
+            const result = await new Promise((resolve, reject) => {
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        try {
+                            const err = JSON.parse(xhr.responseText);
+                            reject(new Error(err.error?.message || 'Upload failed'));
+                        } catch {
+                            reject(new Error('Upload failed - Status: ' + xhr.status));
                         }
-                    };
-                    xhr.onerror = () => reject(new Error('Network error'));
-                    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CONFIG.CLOUDINARY_CLOUD_NAME}/auto/upload`);
-                    xhr.send(formData);
-                });
-
-                let fileType = 'pdf';
-                if (result.resource_type === 'image') fileType = 'image';
-                else if (result.resource_type === 'video') fileType = 'video';
-
-                const newResource = {
-                    id: 'res_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    title: title,
-                    type: fileType,
-                    size: formatFileSize(result.bytes),
-                    sizeBytes: result.bytes,
-                    downloads: 0,
-                    fileUrl: result.secure_url,
-                    folder: folder,
-                    uploadedBy: currentAdmin,
-                    uploadedAt: new Date().toISOString(),
-                    icon: getIcon(fileType)
+                    }
                 };
+                xhr.onerror = () => reject(new Error('Network error'));
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${CONFIG.CLOUDINARY_CLOUD_NAME}/auto/upload`);
+                xhr.send(formData);
+            });
 
-                allResources.push(newResource);
-                
-                const saved = await saveResources();
-                
-                if (saved) {
-                    showToast('File upload ho gayi! ✅', 'success');
-                } else {
-                    showToast('File uploaded but sync issue. Refresh karo.', 'warning');
-                }
-                
-                document.getElementById('uploadForm').reset();
-                document.getElementById('selectedFileName').textContent = '';
-                document.getElementById('fileSizeWarning').textContent = '';
-                selectedFile = null;
-                progressDiv.style.display = 'none';
+            let fileType = 'pdf';
+            if (result.resource_type === 'image') fileType = 'image';
+            else if (result.resource_type === 'video') fileType = 'video';
 
-                displayContent();
-                loadAdminFiles();
+            const newResource = {
+                id: 'res_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                title: title,
+                type: fileType,
+                size: formatFileSize(result.bytes),
+                sizeBytes: result.bytes,
+                downloads: 0,
+                fileUrl: result.secure_url,
+                folder: folder,
+                uploadedBy: currentAdmin,
+                uploadedAt: new Date().toISOString(),
+                icon: getIcon(fileType)
+            };
 
-            } catch (error) {
-                console.error('Upload error:', error);
-                showToast('Upload fail: ' + error.message, 'error');
-                progressDiv.style.display = 'none';
-            }
-
-            uploadBtn.disabled = false;
-            uploadBtn.textContent = '📤 Upload File';
-        }
-
-        function getIcon(type) {
-            return { pdf: '📄', image: '🖼️', video: '🎥' }[type] || '📁';
-        }
-
-        // ===== DELETE =====
-        function confirmDelete(id) {
-            deleteTargetId = id;
-            const resource = allResources.find(r => r.id === id);
-            document.getElementById('confirmText').textContent = 
-                `"${resource?.title}" delete karna hai?`;
-            document.getElementById('confirmModal').style.display = 'flex';
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').style.display = 'none';
-            deleteTargetId = null;
-        }
-
-        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-            if (!deleteTargetId) return;
+            allResources.push(newResource);
             
-            allResources = allResources.filter(r => r.id !== deleteTargetId);
-            await saveResources();
+            const saved = await saveResources();
+            
+            if (saved) {
+                showToast('File upload ho gayi! ✅', 'success');
+            } else {
+                showToast('File uploaded but sync issue. Refresh karo.', 'warning');
+            }
+            
+            document.getElementById('uploadForm').reset();
+            document.getElementById('selectedFileName').textContent = '';
+            document.getElementById('fileSizeWarning').textContent = '';
+            selectedFile = null;
+            progressDiv.style.display = 'none';
 
-            showToast('File delete ho gayi!', 'success');
-            closeConfirmModal();
             displayContent();
             loadAdminFiles();
-        });
 
-        // ===== ADMIN FILES =====
-        function loadAdminFiles() {
-            displayAdminFiles(currentFilter);
+        } catch (error) {
+            console.error('Upload error:', error);
+            showToast('Upload fail: ' + error.message, 'error');
+            progressDiv.style.display = 'none';
         }
 
-        function filterFiles(filter, btn) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            displayAdminFiles(filter);
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = '📤 Upload File';
+    }
+
+    function getIcon(type) {
+        return { pdf: '📄', image: '🖼️', video: '🎥' }[type] || '📁';
+    }
+
+    // ===== DELETE =====
+    function confirmDelete(id) {
+        deleteTargetId = id;
+        const resource = allResources.find(r => r.id === id);
+        document.getElementById('confirmText').textContent = 
+            `"${resource?.title}" delete karna hai?`;
+        document.getElementById('confirmModal').style.display = 'flex';
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+        deleteTargetId = null;
+    }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+        if (!deleteTargetId) return;
+        
+        allResources = allResources.filter(r => r.id !== deleteTargetId);
+        await saveResources();
+
+        showToast('File delete ho gayi!', 'success');
+        closeConfirmModal();
+        displayContent();
+        loadAdminFiles();
+    });
+
+    // ===== ADMIN FILES =====
+    function loadAdminFiles() {
+        displayAdminFiles(currentFilter);
+    }
+
+    function filterFiles(filter, btn) {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        displayAdminFiles(filter);
+    }
+
+    function displayAdminFiles(filter) {
+        const grid = document.getElementById('adminFilesGrid');
+        let filtered = filter === 'all' ? allResources : allResources.filter(r => r.folder === filter);
+
+        document.getElementById('filesCount').textContent = filtered.length + ' files';
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<p class="no-files-msg">📭 Koi file nahi hai</p>';
+            return;
         }
 
-        function displayAdminFiles(filter) {
-            const grid = document.getElementById('adminFilesGrid');
-            let filtered = filter === 'all' ? allResources : allResources.filter(r => r.folder === filter);
-
-            document.getElementById('filesCount').textContent = filtered.length + ' files';
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '<p class="no-files-msg">📭 Koi file nahi hai</p>';
-                return;
-            }
-
-            grid.innerHTML = filtered.map(r => `
-                <div class="file-card">
-                    <div class="file-card-thumb">
-                        ${r.type === 'image' ? `<img src="${r.fileUrl}" alt="${r.title}">` : r.icon}
+        grid.innerHTML = filtered.map(r => `
+            <div class="file-card">
+                <div class="file-card-thumb">
+                    ${r.type === 'image' ? `<img src="${r.fileUrl}" alt="${r.title}">` : r.icon}
+                </div>
+                <div class="file-card-content">
+                    <div class="file-card-title">${r.title}</div>
+                    <div class="file-card-meta">
+                        <span>📁 ${r.folder}</span>
+                        <span>📦 ${r.size}</span>
                     </div>
-                    <div class="file-card-content">
-                        <div class="file-card-title">${r.title}</div>
-                        <div class="file-card-meta">
-                            <span>📁 ${r.folder}</span>
-                            <span>📦 ${r.size}</span>
-                        </div>
-                        <div class="file-card-uploader">👤 ${r.uploadedBy || 'Unknown'}</div>
-                        <div class="file-card-actions">
-                            <button class="file-action-btn btn-delete" onclick="confirmDelete('${r.id}')">
-                                🗑️ Delete
-                            </button>
-                        </div>
+                    <div class="file-card-uploader">👤 ${r.uploadedBy || 'Unknown'}</div>
+                    <div class="file-card-actions">
+                        <button class="file-action-btn btn-delete" onclick="confirmDelete('${r.id}')">
+                            🗑️ Delete
+                        </button>
                     </div>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
+    }
+
+    // ===== PUBLIC DISPLAY =====
+    function displayContent() {
+        updateStats();
+        
+        if (currentFolder === 'root' && !searchTerm) {
+            displayFolders();
+            displayRootResources();
+        } else if (searchTerm) {
+            document.getElementById('foldersGrid').innerHTML = '';
+            const results = allResources.filter(r => 
+                r.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            displayResourcesList(results);
+        } else {
+            document.getElementById('foldersGrid').innerHTML = '';
+            displayResourcesList(allResources.filter(r => r.folder === currentFolder));
         }
+        updateBreadcrumb();
+    }
 
-        // ===== PUBLIC DISPLAY =====
-        function displayContent() {
-            updateStats();
-            
-            if (currentFolder === 'root' && !searchTerm) {
-                displayFolders();
-                displayRootResources();
-            } else if (searchTerm) {
-                document.getElementById('foldersGrid').innerHTML = '';
-                const results = allResources.filter(r => 
-                    r.title.toLowerCase().includes(searchTerm.toLowerCase())
-                );
-                displayResourcesList(results);
-            } else {
-                document.getElementById('foldersGrid').innerHTML = '';
-                displayResourcesList(allResources.filter(r => r.folder === currentFolder));
-            }
-            updateBreadcrumb();
-        }
-
-        function displayFolders() {
-            document.getElementById('foldersGrid').innerHTML = folders.map(f => {
-                const count = allResources.filter(r => r.folder === f.id).length;
-                return `
-                    <div class="folder-card" onclick="openFolder('${f.id}')">
-                        <div class="folder-icon">${f.icon}</div>
-                        <div class="folder-name">${f.name}</div>
-                        <div class="folder-info">📄 ${count} Files</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function displayRootResources() {
-            displayResourcesList(allResources.filter(r => r.folder === 'root'));
-        }
-
-        function displayResourcesList(resources) {
-            const grid = document.getElementById('resourcesGrid');
-            
-            if (resources.length === 0) {
-                grid.innerHTML = '<p class="no-files-msg">📭 Is folder mein koi file nahi</p>';
-                return;
-            }
-
-            grid.innerHTML = resources.map(r => `
-                <div class="resource-card">
-                    <div class="resource-thumbnail ${r.type}">
-                        ${r.type === 'image' ? `<img src="${r.fileUrl}" alt="${r.title}">` : 
-                          r.type === 'video' ? `<video src="${r.fileUrl}"></video>` : r.icon}
-                        <div class="resource-type-badge">${r.type.toUpperCase()}</div>
-                    </div>
-                    <div class="resource-content">
-                        <h3 class="resource-title">${r.title}</h3>
-                        <div class="resource-meta">
-                            <span>📦 ${r.size}</span>
-                            <span>⬇️ ${r.downloads}</span>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="preview-btn" onclick="preview('${r.id}')">
-                                👁️ Preview
-                            </button>
-                            <button class="download-btn" onclick="downloadFile('${r.id}')">
-                                ⬇️ Download
-                            </button>
-                        </div>
-                    </div>
+    function displayFolders() {
+        document.getElementById('foldersGrid').innerHTML = folders.map(f => {
+            const count = allResources.filter(r => r.folder === f.id).length;
+            return `
+                <div class="folder-card" onclick="openFolder('${f.id}')">
+                    <div class="folder-icon">${f.icon}</div>
+                    <div class="folder-name">${f.name}</div>
+                    <div class="folder-info">📄 ${count} Files</div>
                 </div>
-            `).join('');
-        }
-
-        function updateStats() {
-            document.getElementById('totalFolders').textContent = folders.length;
-            document.getElementById('totalDocs').textContent = allResources.length;
-            const total = allResources.reduce((sum, r) => sum + (r.downloads || 0), 0);
-            document.getElementById('totalDownloads').textContent = total >= 1000 ? (total/1000).toFixed(1) + 'K' : total;
-        }
-
-        // ===== NAVIGATION =====
-        function openFolder(id) {
-            currentFolder = id;
-            searchTerm = '';
-            document.getElementById('searchBox').value = '';
-            displayContent();
-            window.scrollTo({ top: 300, behavior: 'smooth' });
-        }
-
-        function goHome() {
-            currentFolder = 'root';
-            searchTerm = '';
-            document.getElementById('searchBox').value = '';
-            displayContent();
-        }
-
-        function updateBreadcrumb() {
-            const bc = document.getElementById('breadcrumb');
-            if (currentFolder === 'root') {
-                bc.style.display = 'none';
-                return;
-            }
-            const folder = folders.find(f => f.id === currentFolder);
-            bc.style.display = 'flex';
-            bc.innerHTML = `
-                <div class="breadcrumb-item" onclick="goHome()">🏠 Home</div>
-                <span style="color:var(--gray-medium);">›</span>
-                <div class="breadcrumb-item" style="color:var(--primary-green);">${folder?.icon || '📁'} ${folder?.name || ''}</div>
             `;
+        }).join('');
+    }
+
+    function displayRootResources() {
+        displayResourcesList(allResources.filter(r => r.folder === 'root'));
+    }
+
+    function displayResourcesList(resources) {
+        const grid = document.getElementById('resourcesGrid');
+        
+        if (resources.length === 0) {
+            grid.innerHTML = '<p class="no-files-msg">📭 Is folder mein koi file nahi</p>';
+            return;
         }
 
-        // ===== PREVIEW - PDF FIXED =====
-        function preview(id) {
-            const r = allResources.find(x => x.id === id);
-            if (!r) return;
-            
-            document.getElementById('previewTitle').textContent = r.title;
-            const viewer = document.getElementById('previewViewer');
-            
-            if (r.type === 'image') {
-                viewer.innerHTML = `<img src="${r.fileUrl}" alt="${r.title}" style="max-height:90%; border-radius:12px;">`;
-            } else if (r.type === 'video') {
-                viewer.innerHTML = `<video src="${r.fileUrl}" controls autoplay style="max-width:90%; max-height:90%; border-radius:12px;"></video>`;
-            } else if (r.type === 'pdf') {
-                // PDF Preview using Cloudinary's page-to-image transformation
-                let pdfPreviewUrl = r.fileUrl;
-                
-                // Convert PDF first page to JPG using Cloudinary
-                if (pdfPreviewUrl.includes('cloudinary.com')) {
-                    pdfPreviewUrl = pdfPreviewUrl.replace('/upload/', '/upload/pg_1,w_800,f_jpg/');
-                }
-                
-                viewer.innerHTML = `
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px; gap: 20px;">
-                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; overflow: auto;">
-                            <img src="${pdfPreviewUrl}" 
-                                 alt="PDF Preview" 
-                                 style="max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.3);"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div style="display: none; flex-direction: column; align-items: center; padding: 60px; background: #f3f4f6; border-radius: 20px;">
-                                <span style="font-size: 5em;">📄</span>
-                                <p style="margin-top: 20px; color: #6b7280; font-size: 1.2em;">PDF Preview</p>
-                            </div>
-                        </div>
-                        <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.05); border-radius: 15px; width: 100%; max-width: 500px;">
-                            <p style="color: #6b7280; margin-bottom: 15px; font-size: 0.95em;">📄 Yeh sirf pehla page hai - Full PDF ke liye:</p>
-                            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                                <button onclick="window.open('${r.fileUrl}', '_blank')" 
-                                        style="padding: 12px 25px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 10px; font-size: 0.95em; font-weight: 700; cursor: pointer;">
-                                    📖 Open Full PDF
-                                </button>
-                                <button onclick="closePreview(); downloadFile('${r.id}')" 
-                                        style="padding: 12px 25px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; border-radius: 10px; font-size: 0.95em; font-weight: 700; cursor: pointer;">
-                                    ⬇️ Download PDF
-                                </button>
-                            </div>
-                        </div>
+        grid.innerHTML = resources.map(r => `
+            <div class="resource-card">
+                <div class="resource-thumbnail ${r.type}">
+                    ${r.type === 'image' ? `<img src="${r.fileUrl}" alt="${r.title}">` : 
+                      r.type === 'video' ? `<video src="${r.fileUrl}"></video>` : r.icon}
+                    <div class="resource-type-badge">${r.type.toUpperCase()}</div>
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">${r.title}</h3>
+                    <div class="resource-meta">
+                        <span>📦 ${r.size}</span>
+                        <span>⬇️ ${r.downloads}</span>
                     </div>
-                `;
-            } else {
-                viewer.innerHTML = `<p style="color:var(--gray-medium); font-size:1.2em;">Preview available nahi - Download karo</p>`;
-            }
-            
-            document.getElementById('previewModal').style.display = 'block';
+                    <div class="action-buttons">
+                        <button class="preview-btn" onclick="preview('${r.id}')">
+                            👁️ Preview
+                        </button>
+                        <button class="download-btn" onclick="downloadFile('${r.id}')">
+                            ⬇️ Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateStats() {
+        document.getElementById('totalFolders').textContent = folders.length;
+        document.getElementById('totalDocs').textContent = allResources.length;
+        const total = allResources.reduce((sum, r) => sum + (r.downloads || 0), 0);
+        document.getElementById('totalDownloads').textContent = total >= 1000 ? (total/1000).toFixed(1) + 'K' : total;
+    }
+
+    // ===== NAVIGATION =====
+    function openFolder(id) {
+        currentFolder = id;
+        searchTerm = '';
+        document.getElementById('searchBox').value = '';
+        displayContent();
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+
+    function goHome() {
+        currentFolder = 'root';
+        searchTerm = '';
+        document.getElementById('searchBox').value = '';
+        displayContent();
+    }
+
+    function updateBreadcrumb() {
+        const bc = document.getElementById('breadcrumb');
+        if (currentFolder === 'root') {
+            bc.style.display = 'none';
+            return;
         }
+        const folder = folders.find(f => f.id === currentFolder);
+        bc.style.display = 'flex';
+        bc.innerHTML = `
+            <div class="breadcrumb-item" onclick="goHome()">🏠 Home</div>
+            <span style="color:var(--gray-medium);">›</span>
+            <div class="breadcrumb-item" style="color:var(--primary-green);">${folder?.icon || '📁'} ${folder?.name || ''}</div>
+        `;
+    }
 
-        function closePreview() {
-            document.getElementById('previewModal').style.display = 'none';
-            document.getElementById('previewViewer').innerHTML = '';
-        }
-
-        // ===== DOWNLOAD WITH PROGRESS =====
-        function showDownloadModal(fileName) {
-            document.getElementById('downloadFileName').textContent = fileName;
-            document.getElementById('downloadProgressBar').style.width = '0%';
-            document.getElementById('downloadProgressText').textContent = '0%';
-            document.getElementById('downloadSpeed').textContent = 'Starting download...';
-            document.getElementById('downloadInProgress').style.display = 'block';
-            document.getElementById('downloadComplete').style.display = 'none';
-            document.getElementById('downloadModal').style.display = 'flex';
-        }
-
-        function updateDownloadProgress(percent, speed) {
-            document.getElementById('downloadProgressBar').style.width = percent + '%';
-            document.getElementById('downloadProgressText').textContent = Math.round(percent) + '%';
-            document.getElementById('downloadSpeed').textContent = speed;
-        }
-
-        function showDownloadComplete(fileName) {
-            document.getElementById('downloadCompleteFileName').textContent = fileName;
-            document.getElementById('downloadInProgress').style.display = 'none';
-            document.getElementById('downloadComplete').style.display = 'block';
-        }
-
-        function closeDownloadModal() {
-            document.getElementById('downloadModal').style.display = 'none';
-        }
-
-        function cancelDownload() {
-            if (downloadController) {
-                downloadController.abort();
-                downloadController = null;
-            }
-            closeDownloadModal();
-            showToast('Download cancelled!', 'warning');
-        }
-
-        async function downloadFile(id) {
-            const r = allResources.find(x => x.id === id);
-            if (!r) return;
-
-            // Update download count
-            r.downloads = (r.downloads || 0) + 1;
-            saveResources();
-            displayContent();
-
-            // Get file extension
-            let extension = 'file';
-            if (r.type === 'pdf') extension = 'pdf';
-            else if (r.type === 'image') {
-                if (r.fileUrl.includes('.png')) extension = 'png';
-                else if (r.fileUrl.includes('.gif')) extension = 'gif';
-                else extension = 'jpg';
-            }
-            else if (r.type === 'video') {
-                if (r.fileUrl.includes('.webm')) extension = 'webm';
-                else if (r.fileUrl.includes('.mov')) extension = 'mov';
-                else extension = 'mp4';
-            }
-
-            const fileName = `${r.title}.${extension}`;
-            
-            showDownloadModal(fileName);
-
-            try {
-                downloadController = new AbortController();
-                const startTime = Date.now();
-                
-                // Cloudinary download URL
-                let downloadUrl = r.fileUrl;
-                if (downloadUrl.includes('cloudinary.com')) {
-                    downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
-                }
-
-                const response = await fetch(downloadUrl, {
-                    signal: downloadController.signal
-                });
-
-                if (!response.ok) {
-                    throw new Error('Download failed');
-                }
-
-                const contentLength = response.headers.get('content-length');
-                const total = contentLength ? parseInt(contentLength, 10) : r.sizeBytes || 0;
-                
-                let loaded = 0;
-                const reader = response.body.getReader();
-                const chunks = [];
-
-                while (true) {
-                    const { done, value } = await reader.read();
+    // ===== PREVIEW - PDF FIXED =====
+    function preview(id) {
+        const r = allResources.find(x => x.id === id);
+        if (!r) return;
+        
+        document.getElementById('previewTitle').textContent = r.title;
+        const viewer = document.getElementById('previewViewer');
+        
+        if (r.type === 'image') {
+            viewer.innerHTML = `<img src="${r.fileUrl}" alt="${r.title}" style="max-height:90%; border-radius:12px;">`;
+        } else if (r.type === 'video') {
+            viewer.innerHTML = `<video src="${r.fileUrl}" controls autoplay style="max-width:90%; max-height:90%; border-radius:12px;"></video>`;
+        } else if (r.type === 'pdf') {
+            // Simple PDF Preview - Icon + Buttons
+            viewer.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px; text-align: center;">
+                    <div style="background: linear-gradient(135deg, #ef4444, #dc2626); width: 120px; height: 150px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(239,68,68,0.3);">
+                        <span style="color: white; font-size: 3em;">📄</span>
+                    </div>
+                    <h2 style="color: #1f2937; margin-bottom: 10px; font-size: 1.5em;">${r.title}</h2>
+                    <p style="color: #6b7280; margin-bottom: 8px;">PDF Document</p>
+                    <p style="color: #9ca3af; margin-bottom: 30px; font-size: 0.9em;">📦 ${r.size}</p>
                     
-                    if (done) break;
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                        <button onclick="window.open('${r.fileUrl}', '_blank')" 
+                                style="padding: 15px 30px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 12px; font-size: 1em; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;"
+                                onmouseover="this.style.transform='translateY(-3px)'" 
+                                onmouseout="this.style.transform='translateY(0)'">
+                            <span>📖</span> Open PDF
+                        </button>
+                        <button onclick="closePreview(); downloadFile('${r.id}')" 
+                                style="padding: 15px 30px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; border-radius: 12px; font-size: 1em; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;"
+                                onmouseover="this.style.transform='translateY(-3px)'" 
+                                onmouseout="this.style.transform='translateY(0)'">
+                            <span>⬇️</span> Download PDF
+                        </button>
+                    </div>
                     
-                    chunks.push(value);
-                    loaded += value.length;
-                    
-                    // Calculate progress
-                    const percent = total > 0 ? (loaded / total) * 100 : 0;
-                    
-                    // Calculate speed
-                    const elapsed = (Date.now() - startTime) / 1000;
-                    const speed = loaded / elapsed;
-                    const speedText = formatSpeed(speed);
-                    
-                    updateDownloadProgress(percent, speedText);
-                }
+                    <p style="color: #9ca3af; margin-top: 25px; font-size: 0.85em;">
+                        💡 "Open PDF" browser mein PDF kholega
+                    </p>
+                </div>
+            `;
+        } else {
+            viewer.innerHTML = `<p style="color:var(--gray-medium); font-size:1.2em;">Preview available nahi - Download karo</p>`;
+        }
+        
+        document.getElementById('previewModal').style.display = 'block';
+    }
 
-                // Create blob and download
-                const blob = new Blob(chunks);
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+    function closePreview() {
+        document.getElementById('previewModal').style.display = 'none';
+        document.getElementById('previewViewer').innerHTML = '';
+    }
 
-                showDownloadComplete(fileName);
-                showToast('Download complete! ✅', 'success');
+    // ===== DOWNLOAD WITH PROGRESS =====
+    function showDownloadModal(fileName) {
+        document.getElementById('downloadFileName').textContent = fileName;
+        document.getElementById('downloadProgressBar').style.width = '0%';
+        document.getElementById('downloadProgressText').textContent = '0%';
+        document.getElementById('downloadSpeed').textContent = 'Starting download...';
+        document.getElementById('downloadInProgress').style.display = 'block';
+        document.getElementById('downloadComplete').style.display = 'none';
+        document.getElementById('downloadModal').style.display = 'flex';
+    }
 
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    console.log('Download cancelled');
-                } else {
-                    console.error('Download error:', error);
-                    closeDownloadModal();
-                    
-                    // Fallback: open in new tab
-                    showToast('Opening file in new tab...', 'info');
-                    window.open(r.fileUrl, '_blank');
-                }
-            }
+    function updateDownloadProgress(percent, speed) {
+        document.getElementById('downloadProgressBar').style.width = percent + '%';
+        document.getElementById('downloadProgressText').textContent = Math.round(percent) + '%';
+        document.getElementById('downloadSpeed').textContent = speed;
+    }
 
+    function showDownloadComplete(fileName) {
+        document.getElementById('downloadCompleteFileName').textContent = fileName;
+        document.getElementById('downloadInProgress').style.display = 'none';
+        document.getElementById('downloadComplete').style.display = 'block';
+    }
+
+    function closeDownloadModal() {
+        document.getElementById('downloadModal').style.display = 'none';
+    }
+
+    function cancelDownload() {
+        if (downloadController) {
+            downloadController.abort();
             downloadController = null;
         }
+        closeDownloadModal();
+        showToast('Download cancelled!', 'warning');
+    }
 
-        function formatSpeed(bytesPerSecond) {
-            if (bytesPerSecond < 1024) {
-                return bytesPerSecond.toFixed(0) + ' B/s';
-            } else if (bytesPerSecond < 1024 * 1024) {
-                return (bytesPerSecond / 1024).toFixed(1) + ' KB/s';
+    async function downloadFile(id) {
+        const r = allResources.find(x => x.id === id);
+        if (!r) return;
+
+        // Update download count
+        r.downloads = (r.downloads || 0) + 1;
+        saveResources();
+        displayContent();
+
+        // Get file extension
+        let extension = 'file';
+        if (r.type === 'pdf') extension = 'pdf';
+        else if (r.type === 'image') {
+            if (r.fileUrl.includes('.png')) extension = 'png';
+            else if (r.fileUrl.includes('.gif')) extension = 'gif';
+            else extension = 'jpg';
+        }
+        else if (r.type === 'video') {
+            if (r.fileUrl.includes('.webm')) extension = 'webm';
+            else if (r.fileUrl.includes('.mov')) extension = 'mov';
+            else extension = 'mp4';
+        }
+
+        const fileName = `${r.title}.${extension}`;
+        
+        showDownloadModal(fileName);
+
+        try {
+            downloadController = new AbortController();
+            const startTime = Date.now();
+            
+            // Cloudinary download URL
+            let downloadUrl = r.fileUrl;
+            if (downloadUrl.includes('cloudinary.com')) {
+                downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+            }
+
+            const response = await fetch(downloadUrl, {
+                signal: downloadController.signal
+            });
+
+            if (!response.ok) {
+                throw new Error('Download failed');
+            }
+
+            const contentLength = response.headers.get('content-length');
+            const total = contentLength ? parseInt(contentLength, 10) : r.sizeBytes || 0;
+            
+            let loaded = 0;
+            const reader = response.body.getReader();
+            const chunks = [];
+
+            while (true) {
+                const { done, value } = await reader.read();
+                
+                if (done) break;
+                
+                chunks.push(value);
+                loaded += value.length;
+                
+                // Calculate progress
+                const percent = total > 0 ? (loaded / total) * 100 : 0;
+                
+                // Calculate speed
+                const elapsed = (Date.now() - startTime) / 1000;
+                const speed = loaded / elapsed;
+                const speedText = formatSpeed(speed);
+                
+                updateDownloadProgress(percent, speedText);
+            }
+
+            // Create blob and download
+            const blob = new Blob(chunks);
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showDownloadComplete(fileName);
+            showToast('Download complete! ✅', 'success');
+
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('Download cancelled');
             } else {
-                return (bytesPerSecond / (1024 * 1024)).toFixed(1) + ' MB/s';
+                console.error('Download error:', error);
+                closeDownloadModal();
+                
+                // Fallback: open in new tab
+                showToast('Opening file in new tab...', 'info');
+                window.open(r.fileUrl, '_blank');
             }
         }
 
-        // ===== UTILITY =====
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = `toast ${type}`;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
+        downloadController = null;
+    }
+
+    function formatSpeed(bytesPerSecond) {
+        if (bytesPerSecond < 1024) {
+            return bytesPerSecond.toFixed(0) + ' B/s';
+        } else if (bytesPerSecond < 1024 * 1024) {
+            return (bytesPerSecond / 1024).toFixed(1) + ' KB/s';
+        } else {
+            return (bytesPerSecond / (1024 * 1024)).toFixed(1) + ' MB/s';
         }
+    }
 
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
+    // ===== UTILITY =====
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = `toast ${type}`;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 3000);
+    }
 
-        // ===== EVENT LISTENERS =====
-        document.getElementById('searchBox').addEventListener('input', (e) => {
-            searchTerm = e.target.value;
-            displayContent();
-        });
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
 
-        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') login();
-        });
+    // ===== EVENT LISTENERS =====
+    document.getElementById('searchBox').addEventListener('input', (e) => {
+        searchTerm = e.target.value;
+        displayContent();
+    });
 
-        window.onclick = (e) => {
-            if (e.target === document.getElementById('previewModal')) closePreview();
-            if (e.target === document.getElementById('loginModal')) closeLoginModal();
-            if (e.target === document.getElementById('confirmModal')) closeConfirmModal();
-        };
+    document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') login();
+    });
 
-        window.addEventListener('beforeunload', () => {
-            if (refreshInterval) clearInterval(refreshInterval);
-        });
-    </script>
+    window.onclick = (e) => {
+        if (e.target === document.getElementById('previewModal')) closePreview();
+        if (e.target === document.getElementById('loginModal')) closeLoginModal();
+        if (e.target === document.getElementById('confirmModal')) closeConfirmModal();
+    };
+
+    window.addEventListener('beforeunload', () => {
+        if (refreshInterval) clearInterval(refreshInterval);
+    });
+</script>
 </body>
 </html>
