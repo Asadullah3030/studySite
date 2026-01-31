@@ -3,2015 +3,1007 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agriculture College RYK - Study Resources</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>IATI RYK - Study Resources</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary-green: #10b981;
-            --dark-green: #059669;
-            --light-green: #34d399;
-            --accent-green: #6ee7b7;
-            --gray-white: #f9fafb;
-            --gray-light: #e5e7eb;
-            --gray-medium: #9ca3af;
-            --gray-dark: #374151;
-            --gray-darker: #1f2937;
-            --white: #ffffff;
+            --primary: #10b981;
+            --primary-dark: #059669;
             --danger: #ef4444;
             --warning: #f59e0b;
             --info: #3b82f6;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
         }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #f0fdf4 0%, #e0e7ff 100%); min-height: 100vh; }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--gray-white) 0%, #e0e7ff 100%);
-            min-height: 100vh;
-            color: var(--gray-darker);
-        }
+        .fixed-btn { position: fixed; bottom: 20px; padding: 12px 24px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; z-index: 1000; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .refresh-btn { left: 20px; background: linear-gradient(135deg, var(--info), #1d4ed8); color: white; }
+        .admin-btn { right: 20px; background: linear-gradient(135deg, var(--gray-800), #374151); color: white; }
+        .admin-btn.logged-in { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .fixed-btn:hover { transform: translateY(-3px); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinning { animation: spin 1s linear infinite; display: inline-block; }
 
-        /* Download Progress Modal */
-        .download-modal {
-            display: none;
-            position: fixed;
-            z-index: 3000;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            align-items: center;
-            justify-content: center;
-        }
+        .sync-status { position: fixed; top: 20px; right: 20px; background: white; padding: 10px 20px; border-radius: 50px; font-size: 0.85em; font-weight: 600; box-shadow: 0 2px 15px rgba(0,0,0,0.1); z-index: 1000; display: flex; align-items: center; gap: 8px; }
+        .sync-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .download-modal-content {
-            background: white;
-            padding: 40px 50px;
-            border-radius: 25px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            animation: scaleIn 0.3s ease;
-        }
+        .toast { position: fixed; bottom: 80px; right: 20px; padding: 15px 25px; border-radius: 12px; color: white; font-weight: 600; z-index: 3000; display: none; max-width: 350px; }
+        .toast.success { background: var(--primary); }
+        .toast.error { background: var(--danger); }
+        .toast.info { background: var(--info); }
 
-        @keyframes scaleIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        .modal { display: none; position: fixed; z-index: 2000; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 25px; max-width: 450px; width: 90%; text-align: center; position: relative; }
 
-        .download-modal-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            animation: bounce 1s infinite;
-        }
+        .login-input { width: 100%; padding: 15px; border: 2px solid var(--gray-200); border-radius: 12px; font-size: 1em; margin-bottom: 15px; }
+        .login-input:focus { outline: none; border-color: var(--primary); }
+        .login-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 12px; font-size: 1.1em; font-weight: 700; cursor: pointer; }
+        .close-modal { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--gray-400); }
+        .error-msg { background: #fee2e2; color: #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: none; }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        .download-modal .modal-content { max-width: 400px; }
+        .download-icon { font-size: 4em; margin-bottom: 20px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .progress-container { background: var(--gray-200); border-radius: 50px; height: 25px; overflow: hidden; position: relative; margin: 20px 0; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), #34d399); width: 0%; transition: width 0.3s; border-radius: 50px; }
+        .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 800; font-size: 0.85em; }
+        .download-speed { color: var(--gray-400); font-size: 0.9em; }
+        .cancel-btn { background: var(--danger); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
+        .done-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
 
-        .download-modal h3 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: var(--gray-darker);
-        }
-
-        .download-file-name {
-            color: var(--gray-medium);
-            font-size: 0.9em;
-            margin-bottom: 25px;
-            word-break: break-all;
-        }
-
-        .download-progress-container {
-            background: var(--gray-light);
-            border-radius: 50px;
-            height: 25px;
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .download-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-green), var(--light-green), var(--primary-green));
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 50px;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        .download-progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: 800;
-            font-size: 0.85em;
-            color: var(--gray-darker);
-        }
-
-        .download-speed {
-            font-size: 0.85em;
-            color: var(--gray-medium);
-            margin-bottom: 20px;
-        }
-
-        .download-cancel-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .download-complete {
-            display: none;
-        }
-
-        .download-complete-icon {
-            font-size: 5em;
-            margin-bottom: 15px;
-            animation: successPop 0.5s ease;
-        }
-
-        @keyframes successPop {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .download-complete h3 {
-            color: var(--primary-green);
-            margin-bottom: 10px;
-        }
-
-        .download-complete-btn {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        /* Refresh Button */
-        .refresh-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: linear-gradient(135deg, var(--info), #1d4ed8);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 700;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .refresh-btn:hover {
-            transform: translateY(-3px);
-        }
-
-        .refresh-btn.spinning span:first-child {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Admin Login Button */
-        .admin-login-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--gray-darker), #374151);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 700;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .admin-login-btn:hover {
-            transform: translateY(-3px);
-        }
-
-        .admin-login-btn.logged-in {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-        }
-
-        /* Sync Status */
-        .sync-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 0.85em;
-            font-weight: 600;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sync-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--primary-green);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Login Modal */
-        .login-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .login-modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 25px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            animation: slideIn 0.3s ease;
-            position: relative;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-modal h2 {
-            font-size: 1.8em;
-            margin-bottom: 10px;
-            color: var(--gray-darker);
-        }
-
-        .login-modal p {
-            color: var(--gray-medium);
-            margin-bottom: 25px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid var(--gray-light);
-            border-radius: 12px;
-            font-size: 1em;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .login-input:focus {
-            outline: none;
-            border-color: var(--primary-green);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: var(--gray-medium);
-        }
-
-        .error-msg {
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        /* Admin Panel */
-        .admin-panel {
-            display: none;
-            position: fixed;
-            z-index: 1500;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            overflow-y: auto;
-        }
-
-        .admin-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .admin-header {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: white;
-            padding: 25px 30px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .admin-header h1 {
-            font-size: 1.5em;
-        }
-
-        .admin-user-info {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-        }
-
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .admin-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-refresh { background: var(--info); color: white; }
+        .admin-panel { display: none; position: fixed; z-index: 1500; inset: 0; background: rgba(0,0,0,0.95); overflow-y: auto; }
+        .admin-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .admin-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 25px; border-radius: 20px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .admin-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .admin-actions button { padding: 10px 20px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
         .btn-close { background: rgba(255,255,255,0.2); color: white; }
         .btn-logout { background: var(--danger); color: white; }
 
-        /* Upload Section */
-        .upload-section {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-        }
-
-        .upload-section h2 {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-        }
-
-        .upload-info {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 0.9em;
-        }
-
-        .upload-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: var(--gray-dark);
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 12px 15px;
-            border: 2px solid var(--gray-light);
-            border-radius: 10px;
-            font-size: 1em;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-green);
-        }
-
-        .file-upload-area {
-            border: 3px dashed var(--gray-light);
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            cursor: pointer;
-            grid-column: 1 / -1;
-        }
-
-        .file-upload-area:hover,
-        .file-upload-area.dragover {
-            border-color: var(--primary-green);
-            background: rgba(16, 185, 129, 0.05);
-        }
-
+        .upload-section { background: white; padding: 30px; border-radius: 20px; margin-bottom: 25px; }
+        .upload-info { background: #fef3c7; border: 1px solid var(--warning); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .upload-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-weight: 600; }
+        .form-group input, .form-group select { padding: 12px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 1em; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+        .file-upload-area { border: 3px dashed var(--gray-200); padding: 40px; border-radius: 15px; text-align: center; cursor: pointer; grid-column: 1 / -1; }
+        .file-upload-area:hover, .file-upload-area.dragover { border-color: var(--primary); background: rgba(16,185,129,0.05); }
         .upload-icon { font-size: 3em; margin-bottom: 15px; }
         .file-input { display: none; }
-        .file-size-warning { color: var(--danger); font-size: 0.85em; margin-top: 10px; }
+        .file-warning { color: var(--danger); font-size: 0.85em; margin-top: 10px; }
+        .upload-progress { display: none; grid-column: 1 / -1; margin-top: 20px; }
+        .upload-submit { grid-column: 1 / -1; padding: 15px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; border-radius: 12px; font-size: 1.1em; font-weight: 700; cursor: pointer; }
+        .upload-submit:disabled { background: var(--gray-400); cursor: not-allowed; }
 
-        .upload-submit {
-            grid-column: 1 / -1;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .upload-submit:disabled {
-            background: var(--gray-medium);
-            cursor: not-allowed;
-        }
-
-        /* Files Management */
-        .files-section {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-        }
-
-        .files-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .files-section h2 { font-size: 1.5em; }
-
-        .files-count {
-            background: var(--primary-green);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 700;
-        }
-
-        .files-filter {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 10px 20px;
-            border: 2px solid var(--gray-light);
-            background: white;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .filter-btn.active {
-            background: var(--primary-green);
-            color: white;
-            border-color: var(--primary-green);
-        }
-
-        .files-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .file-card {
-            background: var(--gray-white);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid var(--gray-light);
-        }
-
-        .file-card-thumb {
-            height: 120px;
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3em;
-            color: white;
-            position: relative;
-        }
-
-        .file-card-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+        .files-section { background: white; padding: 30px; border-radius: 20px; }
+        .files-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .files-count { background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px; font-weight: 700; }
+        .files-filter { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-btn { padding: 10px 20px; border: 2px solid var(--gray-200); background: white; border-radius: 25px; cursor: pointer; font-weight: 600; }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .file-card { background: var(--gray-100); border-radius: 15px; overflow: hidden; }
+        .file-card-thumb { height: 100px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-size: 2.5em; color: white; position: relative; }
+        .file-card-thumb img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
         .file-card-content { padding: 15px; }
-        .file-card-title { font-weight: 700; margin-bottom: 8px; font-size: 0.95em; }
-        .file-card-meta { display: flex; gap: 10px; font-size: 0.8em; color: var(--gray-medium); margin-bottom: 12px; flex-wrap: wrap; }
-        .file-card-uploader { font-size: 0.8em; color: var(--info); margin-bottom: 12px; }
-        .file-card-actions { display: flex; gap: 10px; }
+        .file-card-title { font-weight: 700; margin-bottom: 8px; word-break: break-word; }
+        .file-card-meta { font-size: 0.8em; color: var(--gray-400); margin-bottom: 10px; }
+        .btn-delete { width: 100%; padding: 10px; background: var(--danger); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
-        .file-action-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85em;
-        }
+        .hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 60px 20px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .hero-content { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+        .college-badge { display: inline-flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.15); padding: 12px 28px; border-radius: 50px; margin-bottom: 25px; }
+        .hero h1 { font-size: 2.5em; font-weight: 900; margin-bottom: 15px; }
+        .hero .subtitle { font-size: 1.2em; opacity: 0.9; }
+        .author-tag { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.2); padding: 12px 25px; border-radius: 50px; margin-top: 25px; font-weight: 600; margin-right: 10px; }
 
-        .btn-delete { background: var(--danger); color: white; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
 
-        /* Upload Progress */
-        .upload-progress {
-            display: none;
-            margin-top: 20px;
-            grid-column: 1 / -1;
-        }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+        .stat-icon { font-size: 2em; margin-bottom: 10px; }
+        .stat-number { font-size: 2.5em; font-weight: 900; color: var(--primary); }
+        .stat-label { color: var(--gray-400); font-weight: 600; }
 
-        .progress-bar-container {
-            height: 20px;
-            background: var(--gray-light);
-            border-radius: 10px;
-            overflow: hidden;
-        }
+        .breadcrumb { background: white; padding: 15px 25px; border-radius: 15px; margin-bottom: 25px; display: none; align-items: center; gap: 10px; }
+        .breadcrumb-item { font-weight: 600; cursor: pointer; color: var(--gray-600); }
+        .breadcrumb-item:hover { color: var(--primary); }
 
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-green), var(--light-green));
-            width: 0%;
-            transition: width 0.3s ease;
-        }
+        .search-container { max-width: 600px; margin: 0 auto 40px; position: relative; }
+        .search-box { width: 100%; padding: 18px 50px 18px 25px; border: 2px solid var(--gray-200); border-radius: 50px; font-size: 1em; }
+        .search-box:focus { outline: none; border-color: var(--primary); }
+        .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); font-size: 1.2em; }
 
-        .progress-text { text-align: center; margin-top: 10px; font-weight: 600; }
+        .folders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .folder-card { background: white; border-radius: 20px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .folder-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(16,185,129,0.2); border-color: var(--primary); }
+        .folder-icon { font-size: 3em; margin-bottom: 15px; }
+        .folder-name { font-weight: 700; margin-bottom: 8px; }
+        .folder-info { color: var(--gray-400); font-size: 0.9em; }
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            z-index: 3000;
-            display: none;
-            max-width: 300px;
-        }
-
-        .toast.success { background: var(--primary-green); }
-        .toast.error { background: var(--danger); }
-        .toast.warning { background: var(--warning); }
-        .toast.info { background: var(--info); }
-
-        /* Hero */
-        .hero {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: white;
-            padding: 60px 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-30px, 30px); }
-        }
-
-        .hero-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-
-        .college-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 12px 28px;
-            border-radius: 50px;
-            margin-bottom: 25px;
-        }
-
-        .college-icon { font-size: 2em; }
-
-        .hero h1 {
-            font-size: 3.2em;
-            font-weight: 900;
-            margin-bottom: 15px;
-        }
-
-        .hero .subtitle {
-            font-size: 1.3em;
-            opacity: 0.95;
-        }
-
-        .author-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 12px 30px;
-            border-radius: 50px;
-            margin-top: 25px;
-            font-weight: 700;
-            margin-right: 10px;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .stat-card {
-            background: var(--white);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--gray-light);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
-        }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .stat-icon { font-size: 2em; }
-
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: 900;
-            color: var(--primary-green);
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            color: var(--gray-medium);
-            font-weight: 600;
-        }
-
-        /* Breadcrumb */
-        .breadcrumb {
-            background: var(--white);
-            padding: 18px 28px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            display: none;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .breadcrumb-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--gray-dark);
-        }
-
-        .breadcrumb-item:hover { color: var(--primary-green); }
-
-        /* Search */
-        .search-container {
-            max-width: 700px;
-            margin: 0 auto 40px;
-            position: relative;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 18px 55px 18px 25px;
-            font-size: 1em;
-            border: 2px solid var(--gray-light);
-            border-radius: 50px;
-            background: var(--white);
-        }
-
-        .search-box:focus {
-            outline: none;
-            border-color: var(--primary-green);
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.3em;
-        }
-
-        /* Folders */
-        .folders-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .folder-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 30px 25px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            border: 1px solid var(--gray-light);
-            transition: all 0.3s ease;
-        }
-
-        .folder-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
-            border-color: var(--primary-green);
-        }
-
-        .folder-icon { font-size: 3.5em; margin-bottom: 15px; }
-        .folder-name { font-size: 1.15em; font-weight: 700; margin-bottom: 10px; }
-        .folder-info { color: var(--gray-medium); font-weight: 600; font-size: 0.9em; }
-
-        /* Resources */
-        .resources-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .resource-card {
-            background: var(--white);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--gray-light);
-            transition: all 0.3s ease;
-        }
-
-        .resource-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
-        }
-
-        .resource-thumbnail {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4em;
-            color: white;
-            position: relative;
-        }
-
-        .resource-thumbnail.video { background: linear-gradient(135deg, #ec4899, #be185d); }
-        .resource-thumbnail.image { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-
-        .resource-thumbnail img,
-        .resource-thumbnail video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            inset: 0;
-        }
-
-        .resource-type-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.75em;
-            font-weight: 800;
-            z-index: 3;
-        }
-
+        .resources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .resource-card { background: white; border-radius: 20px; overflow: hidden; transition: all 0.3s; }
+        .resource-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .resource-thumb { height: 160px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-size: 4em; color: white; position: relative; }
+        .resource-thumb.pdf { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .resource-thumb.video { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .resource-thumb.image { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .resource-thumb img, .resource-thumb video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+        .resource-badge { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 800; }
         .resource-content { padding: 20px; }
-        .resource-title { font-size: 1.05em; font-weight: 700; margin-bottom: 10px; }
+        .resource-title { font-weight: 700; margin-bottom: 10px; word-break: break-word; }
+        .resource-meta { display: flex; gap: 15px; font-size: 0.85em; color: var(--gray-400); margin-bottom: 15px; }
+        .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .preview-btn, .download-btn { padding: 12px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .preview-btn { background: var(--gray-100); color: var(--gray-800); }
+        .download-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
 
-        .resource-meta {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            font-size: 0.85em;
-            color: var(--gray-medium);
-            font-weight: 600;
-        }
+        .preview-modal { z-index: 1800; }
+        .preview-modal .modal-content { max-width: 1200px; width: 95%; height: 90%; padding: 0; overflow: hidden; }
+        .preview-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        .close-preview { background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2em; cursor: pointer; }
+        .preview-body { height: calc(100% - 60px); display: flex; align-items: center; justify-content: center; background: var(--gray-100); overflow: auto; padding: 20px; }
+        .preview-body img, .preview-body video { max-width: 100%; max-height: 100%; border-radius: 10px; }
+        .preview-body iframe { width: 100%; height: 100%; border: none; }
 
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+        .pdf-preview-box { text-align: center; padding: 40px; }
+        .pdf-icon-large { background: linear-gradient(135deg, #ef4444, #dc2626); width: 120px; height: 150px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 30px rgba(239,68,68,0.3); }
+        .pdf-icon-large span { font-size: 3.5em; color: white; }
+        .pdf-title { font-size: 1.4em; font-weight: 700; margin-bottom: 10px; }
+        .pdf-size { color: var(--gray-400); margin-bottom: 25px; }
+        .pdf-actions { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .pdf-btn { padding: 15px 30px; border: none; border-radius: 12px; font-size: 1em; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
+        .pdf-btn-view { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .pdf-btn-download { background: linear-gradient(135deg, var(--info), #1d4ed8); }
 
-        .download-btn, .preview-btn {
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 0.85em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
+        .confirm-modal .modal-content { max-width: 400px; }
+        .confirm-icon { font-size: 4em; margin-bottom: 15px; }
+        .confirm-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        .confirm-actions button { padding: 12px 30px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-cancel { background: var(--gray-200); color: var(--gray-800); }
+        .btn-confirm { background: var(--danger); color: white; }
 
-        .download-btn {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: white;
-        }
+        .footer { background: white; padding: 50px 20px; text-align: center; margin-top: 60px; border-radius: 40px 40px 0 0; }
+        .footer h3 { font-size: 1.8em; color: var(--primary); margin-bottom: 20px; }
+        .team-section { background: var(--gray-100); padding: 30px; border-radius: 20px; max-width: 500px; margin: 0 auto; }
+        .team-members { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .team-avatar { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; margin: 0 auto 10px; }
+        .team-name { font-weight: 700; }
+        .copyright { margin-top: 25px; color: var(--gray-400); }
 
-        .preview-btn {
-            background: var(--gray-white);
-            color: var(--gray-darker);
-            border: 2px solid var(--gray-light);
-        }
+        .loading-spinner { display: none; width: 50px; height: 50px; border: 5px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 50px auto; }
+        .no-files { grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--gray-400); font-size: 1.2em; }
 
-        .download-btn:hover { transform: translateY(-2px); }
-        .preview-btn:hover { border-color: var(--primary-green); color: var(--primary-green); }
-
-        /* Preview Modal */
-        .preview-modal {
-            display: none;
-            position: fixed;
-            z-index: 1500;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-        }
-
-        .preview-modal-content {
-            width: 95%;
-            height: 95%;
-            max-width: 1400px;
-            margin: 2.5% auto;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .preview-modal-header {
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            color: white;
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .preview-modal-header h3 { font-size: 1.2em; font-weight: 700; }
-
-        .close-preview {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.3em;
-            cursor: pointer;
-        }
-
-        .preview-viewer {
-            width: 100%;
-            height: calc(100% - 80px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--gray-white);
-            overflow: auto;
-        }
-
-        /* Confirm Modal */
-        .confirm-modal {
-            display: none;
-            position: fixed;
-            z-index: 2500;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .confirm-modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 25px;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .confirm-icon { font-size: 4em; margin-bottom: 20px; }
-        .confirm-modal h2 { margin-bottom: 15px; }
-        .confirm-modal p { color: var(--gray-medium); margin-bottom: 25px; }
-        .confirm-actions { display: flex; gap: 15px; justify-content: center; }
-
-        .confirm-actions button {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn-confirm-delete { background: var(--danger); color: white; }
-        .btn-cancel { background: var(--gray-light); color: var(--gray-darker); }
-
-        /* Footer */
-        .footer {
-            background: var(--white);
-            padding: 50px 30px;
-            text-align: center;
-            margin-top: 80px;
-            border-radius: 40px 40px 0 0;
-        }
-
-        .footer h3 {
-            font-size: 2em;
-            font-weight: 900;
-            color: var(--primary-green);
-            margin-bottom: 20px;
-        }
-
-        .team-section {
-            background: var(--gray-white);
-            padding: 30px;
-            border-radius: 20px;
-            margin: 25px 0;
-        }
-
-        .team-members {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-
-        .team-member-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5em;
-            margin: 0 auto 10px;
-        }
-
-        .team-member-name { font-size: 1.2em; font-weight: 800; }
-        .copyright { margin-top: 25px; color: var(--gray-medium); font-weight: 600; }
-
-        /* Loading */
-        .loading-spinner {
-            display: none;
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--gray-light);
-            border-top-color: var(--primary-green);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 50px auto;
-        }
-
-        .no-files-msg {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--gray-medium);
-            font-size: 1.2em;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2em; }
-            .stats { grid-template-columns: 1fr 1fr; }
+            .hero h1 { font-size: 1.8em; }
             .folders-grid { grid-template-columns: repeat(2, 1fr); }
             .resources-grid { grid-template-columns: 1fr; }
             .action-buttons { grid-template-columns: 1fr; }
-            .preview-modal-content { width: 100%; height: 100%; margin: 0; border-radius: 0; }
             .admin-header { flex-direction: column; text-align: center; }
-            .sync-status { top: auto; bottom: 80px; left: 50%; transform: translateX(-50%); right: auto; }
-            .refresh-btn { bottom: 80px; }
+            .preview-modal .modal-content { width: 100%; height: 100%; border-radius: 0; }
+            .pdf-actions { flex-direction: column; }
+            .sync-status { top: auto; bottom: 70px; left: 50%; transform: translateX(-50%); right: auto; }
+            .refresh-btn { bottom: 70px; left: 10px; padding: 10px 15px; }
+            .admin-btn { bottom: 70px; right: 10px; padding: 10px 15px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Download Progress Modal -->
-    <div class="download-modal" id="downloadModal">
-        <div class="download-modal-content">
-            <div class="download-in-progress" id="downloadInProgress">
-                <div class="download-modal-icon">⬇️</div>
-                <h3>Downloading...</h3>
-                <p class="download-file-name" id="downloadFileName">filename.pdf</p>
-                <div class="download-progress-container">
-                    <div class="download-progress-bar" id="downloadProgressBar"></div>
-                    <span class="download-progress-text" id="downloadProgressText">0%</span>
-                </div>
-                <p class="download-speed" id="downloadSpeed">Calculating speed...</p>
-                <button class="download-cancel-btn" onclick="cancelDownload()">❌ Cancel</button>
-            </div>
-            <div class="download-complete" id="downloadComplete">
-                <div class="download-complete-icon">✅</div>
-                <h3>Download Complete!</h3>
-                <p class="download-file-name" id="downloadCompleteFileName"></p>
-                <button class="download-complete-btn" onclick="closeDownloadModal()">👍 Done</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sync Status -->
-    <div class="sync-status" id="syncStatus">
+    <div class="sync-status">
         <div class="sync-dot"></div>
-        <span id="syncText">Live Synced</span>
+        <span id="syncText">Live</span>
     </div>
 
-    <!-- Refresh Button -->
-    <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">
-        <span>🔄</span>
-        <span>Refresh</span>
+    <button class="fixed-btn refresh-btn" onclick="manualRefresh()">
+        <span id="refreshIcon">🔄</span> Refresh
+    </button>
+    <button class="fixed-btn admin-btn" id="adminBtn" onclick="toggleAdmin()">
+        <span>🔐</span> <span id="adminBtnText">Admin</span>
     </button>
 
-    <!-- Admin Login Button -->
-    <button class="admin-login-btn" id="adminLoginBtn" onclick="toggleAdminAccess()">
-        <span>🔐</span>
-        <span id="adminBtnText">Admin</span>
-    </button>
-
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <!-- Login Modal -->
-    <div class="login-modal" id="loginModal">
-        <div class="login-modal-content">
-            <button class="close-modal" onclick="closeLoginModal()">✖</button>
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeLogin()">✖</button>
             <h2>🔐 Admin Login</h2>
-            <p>Sirf Asad aur Kamran ke liye</p>
-            <div class="error-msg" id="loginError">Username ya password galat hai!</div>
-            <input type="text" class="login-input" id="loginUsername" placeholder="Username">
-            <input type="password" class="login-input" id="loginPassword" placeholder="Password">
+            <p>Authorized users only</p>
+            <div class="error-msg" id="loginError">Wrong credentials!</div>
+            <input type="text" class="login-input" id="loginUser" placeholder="Username">
+            <input type="password" class="login-input" id="loginPass" placeholder="Password">
             <button class="login-btn" onclick="login()">Login</button>
         </div>
     </div>
 
-    <!-- Admin Panel -->
+    <div class="modal download-modal" id="downloadModal">
+        <div class="modal-content">
+            <div id="downloadProgress">
+                <div class="download-icon">⬇️</div>
+                <h3>Downloading...</h3>
+                <p id="downloadFileName">file.pdf</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+                <p class="download-speed" id="downloadSpeed">Calculating...</p>
+                <button class="cancel-btn" onclick="cancelDownload()">❌ Cancel</button>
+            </div>
+            <div id="downloadComplete" style="display:none;">
+                <div style="font-size:5em;">✅</div>
+                <h3 style="color:var(--primary);margin:15px 0;">Download Complete!</h3>
+                <p id="completedFileName"></p>
+                <button class="done-btn" onclick="closeDownloadModal()">👍 Done</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal confirm-modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="confirm-icon">⚠️</div>
+            <h2>Delete File?</h2>
+            <p id="confirmText">Are you sure?</p>
+            <div class="confirm-actions">
+                <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+                <button class="btn-confirm" id="confirmBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal preview-modal" id="previewModal">
+        <div class="modal-content">
+            <div class="preview-header">
+                <h3 id="previewTitle">Preview</h3>
+                <button class="close-preview" onclick="closePreview()">✖</button>
+            </div>
+            <div class="preview-body" id="previewBody"></div>
+        </div>
+    </div>
+
     <div class="admin-panel" id="adminPanel">
         <div class="admin-container">
             <div class="admin-header">
-                <h1>🛠️ Admin Dashboard</h1>
-                <div class="admin-user-info" id="adminUserInfo">👤 Logged in as: -</div>
+                <h1>🛠️ Admin Panel</h1>
                 <div class="admin-actions">
-                    <button class="admin-btn btn-refresh" onclick="manualRefresh()">🔄 Refresh</button>
-                    <button class="admin-btn btn-close" onclick="closeAdminPanel()">✖ Close</button>
-                    <button class="admin-btn btn-logout" onclick="logout()">🚪 Logout</button>
+                    <button class="btn-close" onclick="closeAdmin()">✖ Close</button>
+                    <button class="btn-logout" onclick="logout()">🚪 Logout</button>
                 </div>
             </div>
 
             <div class="upload-section">
-                <h2>📤 Upload New File</h2>
-                <div class="upload-info">
-                    ⚠️ <strong>File Size Limit:</strong> Maximum 10MB per file. Images, PDFs aur Videos supported hain.
-                </div>
-                <form class="upload-form" id="uploadForm" onsubmit="uploadFile(event)">
+                <h2>📤 Upload File</h2>
+                <div class="upload-info">⚠️ Max 50MB. PDF, Images, Videos supported. Make sure Supabase bucket is PUBLIC!</div>
+                <form class="upload-form" onsubmit="uploadFile(event)">
                     <div class="form-group">
-                        <label>File Title *</label>
-                        <input type="text" id="fileTitle" placeholder="File ka naam likho" required>
+                        <label>Title *</label>
+                        <input type="text" id="fileTitle" required>
                     </div>
                     <div class="form-group">
-                        <label>Select Folder *</label>
+                        <label>Folder *</label>
                         <select id="fileFolder" required>
-                            <option value="">-- Folder Select Karo --</option>
-                            <option value="first-year">First Year Notes</option>
-                            <option value="second-year">Second Year Notes</option>
-                            <option value="third-year">Third Year Notes</option>
-                            <option value="fourth-year">Fourth Year Notes</option>
+                            <option value="">-- Select --</option>
+                            <option value="first-year">First Year</option>
+                            <option value="second-year">Second Year</option>
+                            <option value="third-year">Third Year</option>
+                            <option value="fourth-year">Fourth Year</option>
                             <option value="exam-papers">Past Papers</option>
-                            <option value="reference">Reference Books</option>
-                            <option value="photos">College Photos</option>
-                            <option value="videos">College Videos</option>
+                            <option value="reference">Reference</option>
+                            <option value="photos">Photos</option>
+                            <option value="videos">Videos</option>
                             <option value="root">Main Page</option>
                         </select>
                     </div>
                     <div class="file-upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
                         <div class="upload-icon">📁</div>
-                        <p><strong>Click karke file select karo</strong></p>
-                        <p style="color: var(--gray-medium); font-size: 0.9em;">PDF, Images, Videos (Max 10MB)</p>
-                        <p id="selectedFileName" style="color: var(--primary-green); margin-top: 10px; font-weight: 600;"></p>
-                        <p class="file-size-warning" id="fileSizeWarning"></p>
+                        <p><strong>Click to select file</strong></p>
+                        <p style="color:var(--gray-400);font-size:0.9em;">PDF, Images, Videos</p>
+                        <p id="selectedFile" style="color:var(--primary);margin-top:10px;font-weight:600;"></p>
+                        <p class="file-warning" id="fileWarning"></p>
                     </div>
-                    <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.mp4,.webm,.mov" onchange="handleFileSelect(event)">
-                    
-                    <div class="upload-progress" id="uploadProgress">
-                        <div class="progress-bar-container">
-                            <div class="progress-bar-fill" id="uploadProgressBar"></div>
+                    <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.mp4,.webm,.mov" onchange="handleFile(event)">
+                    <div class="upload-progress" id="uploadProgressDiv">
+                        <div class="progress-container">
+                            <div class="progress-bar" id="uploadBar"></div>
+                            <span class="progress-text" id="uploadText">0%</span>
                         </div>
-                        <p class="progress-text" id="uploadProgressText">Uploading... 0%</p>
                     </div>
-                    
-                    <button type="submit" class="upload-submit" id="uploadBtn">📤 Upload File</button>
+                    <button type="submit" class="upload-submit" id="uploadBtn">📤 Upload</button>
                 </form>
             </div>
 
             <div class="files-section">
                 <div class="files-header">
-                    <h2>📂 Manage Files</h2>
-                    <span class="files-count" id="filesCount">0 files</span>
+                    <h2>📂 Files</h2>
+                    <span class="files-count" id="filesCount">0</span>
                 </div>
                 <div class="files-filter">
-                    <button class="filter-btn active" onclick="filterFiles('all', this)">All</button>
-                    <button class="filter-btn" onclick="filterFiles('first-year', this)">1st Year</button>
-                    <button class="filter-btn" onclick="filterFiles('second-year', this)">2nd Year</button>
-                    <button class="filter-btn" onclick="filterFiles('third-year', this)">3rd Year</button>
-                    <button class="filter-btn" onclick="filterFiles('exam-papers', this)">Papers</button>
-                    <button class="filter-btn" onclick="filterFiles('photos', this)">Photos</button>
-                    <button class="filter-btn" onclick="filterFiles('videos', this)">Videos</button>
+                    <button class="filter-btn active" onclick="filterFiles('all',this)">All</button>
+                    <button class="filter-btn" onclick="filterFiles('first-year',this)">1st</button>
+                    <button class="filter-btn" onclick="filterFiles('second-year',this)">2nd</button>
+                    <button class="filter-btn" onclick="filterFiles('third-year',this)">3rd</button>
+                    <button class="filter-btn" onclick="filterFiles('exam-papers',this)">Papers</button>
                 </div>
-                <div class="loading-spinner" id="filesLoading"></div>
-                <div class="files-grid" id="adminFilesGrid"></div>
+                <div class="files-grid" id="adminFiles"></div>
             </div>
         </div>
     </div>
 
-    <!-- Confirm Delete Modal -->
-    <div class="confirm-modal" id="confirmModal">
-        <div class="confirm-modal-content">
-            <div class="confirm-icon">⚠️</div>
-            <h2>Delete File?</h2>
-            <p id="confirmText">Kya aap sure hain?</p>
-            <div class="confirm-actions">
-                <button class="btn-cancel" onclick="closeConfirmModal()">Cancel</button>
-                <button class="btn-confirm-delete" id="confirmDeleteBtn">Delete</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
     <div class="hero">
         <div class="hero-content">
             <div class="college-badge">
-                <span class="college-icon">🌾</span>
-                <span style="font-weight: 700;">Study Resources Hub</span>
+                <span style="font-size:1.5em;">🌾</span>
+                <span style="font-weight:700;">Study Hub</span>
             </div>
             <h1>IATI - Rahim Yar Khan</h1>
-            <p class="subtitle">Your Premium Digital Learning Platform</p>
-            <div class="author-tag">
-                <span>👨‍💼</span>
-                <span>Asadullah Ashraf - 66</span>
-            </div>
-            <div class="author-tag">
-                <span>👨‍💼</span>
-                <span>Muhammad Kamran - 68</span>
-            </div>
+            <p class="subtitle">Digital Learning Platform</p>
+            <div class="author-tag"><span>👨‍💼</span> Asadullah Ashraf</div>
+            <div class="author-tag"><span>👨‍💼</span> Muhammad Kamran</div>
         </div>
     </div>
 
     <div class="container">
         <div class="stats">
             <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon">📁</div>
-                    <div class="stat-number" id="totalFolders">8</div>
-                </div>
+                <div class="stat-icon">📁</div>
+                <div class="stat-number" id="statFolders">8</div>
                 <div class="stat-label">Folders</div>
             </div>
             <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon">📚</div>
-                    <div class="stat-number" id="totalDocs">0</div>
-                </div>
+                <div class="stat-icon">📚</div>
+                <div class="stat-number" id="statFiles">0</div>
                 <div class="stat-label">Files</div>
             </div>
             <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon">⬇️</div>
-                    <div class="stat-number" id="totalDownloads">0</div>
-                </div>
+                <div class="stat-icon">⬇️</div>
+                <div class="stat-number" id="statDownloads">0</div>
                 <div class="stat-label">Downloads</div>
             </div>
         </div>
 
         <div class="breadcrumb" id="breadcrumb"></div>
-        
+
         <div class="search-container">
             <input type="text" class="search-box" id="searchBox" placeholder="Search files...">
             <span class="search-icon">🔍</span>
         </div>
-        
-        <div class="loading-spinner" id="mainLoading"></div>
+
+        <div class="loading-spinner" id="loader"></div>
         <div class="folders-grid" id="foldersGrid"></div>
         <div class="resources-grid" id="resourcesGrid"></div>
     </div>
 
-    <div id="previewModal" class="preview-modal">
-        <div class="preview-modal-content">
-            <div class="preview-modal-header">
-                <h3 id="previewTitle">Preview</h3>
-                <button class="close-preview" onclick="closePreview()">✖</button>
-            </div>
-            <div class="preview-viewer" id="previewViewer"></div>
-        </div>
-    </div>
-
     <div class="footer">
-        <h3>🌾 IATI - Rahim Yar Khan 🌾</h3>
+        <h3>🌾 IATI Rahim Yar Khan 🌾</h3>
         <div class="team-section">
-            <h4 style="font-size: 1.4em; font-weight: 800; margin-bottom: 20px;">Project Team</h4>
+            <h4 style="margin-bottom:20px;">Team</h4>
             <div class="team-members">
-                <div>
-                    <div class="team-member-avatar">👨‍💼</div>
-                    <div class="team-member-name">Asad</div>
-                </div>
-                <div>
-                    <div class="team-member-avatar">👨‍💻</div>
-                    <div class="team-member-name">Kamran</div>
-                </div>
+                <div><div class="team-avatar">👨‍💼</div><div class="team-name">Asad</div></div>
+                <div><div class="team-avatar">👨‍💻</div><div class="team-name">Kamran</div></div>
             </div>
         </div>
-        <div class="copyright">
-            <p>© 2025 <strong>Asadullah Ashraf</strong></p>
-        </div>
+        <div class="copyright">© 2025 Asadullah Ashraf</div>
     </div>
 
-    <script>
-        // ===== CONFIGURATION =====
-        const CONFIG = {
-            CLOUDINARY_CLOUD_NAME: 'dmifnqtlx',
-            CLOUDINARY_UPLOAD_PRESET: 'iati_upload',
-            NPOINT_URL: 'https://api.npoint.io/cfe3a72212ad11e74b28',
-            MAX_FILE_SIZE: 10 * 1024 * 1024,
-            REFRESH_INTERVAL: 30000,
-            ADMINS: [
-                { username: 'asad', password: 'asad123' },
-                { username: 'kamran', password: 'kamran123' }
-            ]
-        };
+<script>
+// ============ CONFIGURATION ============
+const CONFIG = {
+    // ✅ YOUR SUPABASE KEYS
+    SUPABASE_URL: 'https://iyjlbqdlnyddqefelwwh.supabase.co',
+    SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5amxicWRsbnlkZHFlZmVsd3doIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4NDQ1NTAsImV4cCI6MjA4NTQyMDU1MH0.X41y1x5wcqeveq6TYZqGGvhESgLB0BwHfxqWsL3ryW8',
+    BUCKET: 'files',
+    
+    DB_URL: 'https://api.npoint.io/cfe3a72212ad11e74b28',
+    MAX_SIZE: 50 * 1024 * 1024,
+    
+    ADMINS: [
+        { user: 'asad', pass: 'asad123' },
+        { user: 'kamran', pass: 'kamran123' }
+    ]
+};
 
-        // ===== STATE =====
-        let isLoggedIn = false;
-        let currentAdmin = null;
-        let allResources = [];
-        let currentFolder = 'root';
-        let searchTerm = '';
-        let selectedFile = null;
-        let currentFilter = 'all';
-        let deleteTargetId = null;
-        let refreshInterval = null;
-        let isRefreshing = false;
-        let downloadController = null;
+// State
+let loggedIn = false;
+let admin = null;
+let resources = [];
+let folder = 'root';
+let search = '';
+let filter = 'all';
+let deleteId = null;
+let file = null;
+let downloadCtrl = null;
 
-        const folders = [
-            {id: 'first-year', name: 'First Year Notes', icon: '📘'},
-            {id: 'second-year', name: 'Second Year Notes', icon: '📗'},
-            {id: 'third-year', name: 'Third Year Notes', icon: '📙'},
-            {id: 'fourth-year', name: 'Fourth Year Notes', icon: '📕'},
-            {id: 'exam-papers', name: 'Past Papers', icon: '📝'},
-            {id: 'reference', name: 'Reference Books', icon: '📚'},
-            {id: 'photos', name: 'College Photos', icon: '📷'},
-            {id: 'videos', name: 'College Videos', icon: '🎥'}
-        ];
+const FOLDERS = [
+    {id:'first-year', name:'First Year', icon:'📘'},
+    {id:'second-year', name:'Second Year', icon:'📗'},
+    {id:'third-year', name:'Third Year', icon:'📙'},
+    {id:'fourth-year', name:'Fourth Year', icon:'📕'},
+    {id:'exam-papers', name:'Past Papers', icon:'📝'},
+    {id:'reference', name:'Reference', icon:'📚'},
+    {id:'photos', name:'Photos', icon:'📷'},
+    {id:'videos', name:'Videos', icon:'🎥'}
+];
 
-        // ===== INIT =====
-        document.addEventListener('DOMContentLoaded', async () => {
-            checkLoginStatus();
-            await loadResources();
-            displayContent();
-            setupDragDrop();
-            startAutoRefresh();
+// Helper - Get URL (supports both old and new format)
+function getUrl(r) {
+    return r.fileUrl || r.url || '';
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', async () => {
+    checkAuth();
+    await loadData();
+    render();
+    setupDrag();
+    setInterval(silentRefresh, 30000);
+});
+
+// Auth
+function checkAuth() {
+    const s = localStorage.getItem('auth');
+    if (s) {
+        const d = JSON.parse(s);
+        if (Date.now() - d.time < 86400000) {
+            loggedIn = true;
+            admin = d.user;
+            updateAdminBtn();
+        }
+    }
+}
+
+function toggleAdmin() {
+    if (loggedIn) {
+        document.getElementById('adminPanel').style.display = 'block';
+        loadAdminFiles();
+    } else {
+        document.getElementById('loginModal').style.display = 'flex';
+    }
+}
+
+function closeLogin() {
+    document.getElementById('loginModal').style.display = 'none';
+    document.getElementById('loginError').style.display = 'none';
+}
+
+function login() {
+    const u = document.getElementById('loginUser').value.toLowerCase().trim();
+    const p = document.getElementById('loginPass').value;
+    const a = CONFIG.ADMINS.find(x => x.user === u && x.pass === p);
+    if (a) {
+        loggedIn = true;
+        admin = u;
+        localStorage.setItem('auth', JSON.stringify({user: u, time: Date.now()}));
+        closeLogin();
+        updateAdminBtn();
+        toast('Welcome ' + u + '!', 'success');
+        document.getElementById('adminPanel').style.display = 'block';
+        loadAdminFiles();
+    } else {
+        document.getElementById('loginError').style.display = 'block';
+    }
+}
+
+function logout() {
+    loggedIn = false;
+    admin = null;
+    localStorage.removeItem('auth');
+    updateAdminBtn();
+    closeAdmin();
+    toast('Logged out', 'info');
+}
+
+function updateAdminBtn() {
+    document.getElementById('adminBtn').classList.toggle('logged-in', loggedIn);
+    document.getElementById('adminBtnText').textContent = loggedIn ? admin : 'Admin';
+}
+
+function closeAdmin() {
+    document.getElementById('adminPanel').style.display = 'none';
+}
+
+// Data
+async function loadData() {
+    document.getElementById('loader').style.display = 'block';
+    try {
+        const r = await fetch(CONFIG.DB_URL + '?t=' + Date.now());
+        resources = await r.json();
+        if (!Array.isArray(resources)) resources = [];
+        document.getElementById('syncText').textContent = 'Live';
+        document.querySelector('.sync-dot').style.background = 'var(--primary)';
+    } catch(e) {
+        resources = [];
+        document.getElementById('syncText').textContent = 'Offline';
+        document.querySelector('.sync-dot').style.background = 'var(--danger)';
+    }
+    document.getElementById('loader').style.display = 'none';
+}
+
+async function saveData() {
+    try {
+        await fetch(CONFIG.DB_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(resources)
+        });
+        return true;
+    } catch(e) { return false; }
+}
+
+async function silentRefresh() {
+    try {
+        const r = await fetch(CONFIG.DB_URL + '?t=' + Date.now());
+        resources = await r.json();
+        if (!Array.isArray(resources)) resources = [];
+        render();
+        if (document.getElementById('adminPanel').style.display === 'block') loadAdminFiles();
+    } catch(e) {}
+}
+
+async function manualRefresh() {
+    document.getElementById('refreshIcon').classList.add('spinning');
+    await loadData();
+    render();
+    if (document.getElementById('adminPanel').style.display === 'block') loadAdminFiles();
+    toast('Refreshed!', 'success');
+    setTimeout(() => document.getElementById('refreshIcon').classList.remove('spinning'), 1000);
+}
+
+// Upload
+function setupDrag() {
+    const z = document.getElementById('dropZone');
+    if (!z) return;
+    ['dragenter','dragover','dragleave','drop'].forEach(e => {
+        z.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); });
+    });
+    ['dragenter','dragover'].forEach(e => z.addEventListener(e, () => z.classList.add('dragover')));
+    ['dragleave','drop'].forEach(e => z.addEventListener(e, () => z.classList.remove('dragover')));
+    z.addEventListener('drop', e => {
+        if (e.dataTransfer.files.length) handleFile({target:{files:e.dataTransfer.files}});
+    });
+}
+
+function handleFile(e) {
+    const f = e.target.files[0];
+    if (!f) return;
+    if (f.size > CONFIG.MAX_SIZE) {
+        document.getElementById('fileWarning').textContent = '⚠️ Max 50MB!';
+        document.getElementById('selectedFile').textContent = '';
+        file = null;
+        return;
+    }
+    document.getElementById('fileWarning').textContent = '';
+    file = f;
+    document.getElementById('selectedFile').textContent = '✅ ' + f.name + ' (' + formatSize(f.size) + ')';
+}
+
+async function uploadFile(e) {
+    e.preventDefault();
+    if (!file) { toast('Select file first!', 'error'); return; }
+    
+    const title = document.getElementById('fileTitle').value.trim();
+    const fld = document.getElementById('fileFolder').value;
+    if (!title || !fld) { toast('Fill all fields!', 'error'); return; }
+
+    const btn = document.getElementById('uploadBtn');
+    const prog = document.getElementById('uploadProgressDiv');
+    const bar = document.getElementById('uploadBar');
+    const txt = document.getElementById('uploadText');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Uploading...';
+    prog.style.display = 'block';
+    bar.style.width = '0%';
+
+    try {
+        const ts = Date.now();
+        const ext = file.name.split('.').pop().toLowerCase();
+        const fname = `${fld}/${ts}_${Math.random().toString(36).substr(2,9)}.${ext}`;
+
+        // Upload to Supabase
+        const uploadUrl = `${CONFIG.SUPABASE_URL}/storage/v1/object/${CONFIG.BUCKET}/${fname}`;
+        
+        console.log('Uploading to:', uploadUrl);
+        
+        const res = await fetch(uploadUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`,
+                'apikey': CONFIG.SUPABASE_KEY,
+                'Content-Type': file.type,
+                'x-upsert': 'true'
+            },
+            body: file
         });
 
-        // ===== AUTO REFRESH =====
-        function startAutoRefresh() {
-            refreshInterval = setInterval(async () => {
-                if (!isRefreshing) await silentRefresh();
-            }, CONFIG.REFRESH_INTERVAL);
+        console.log('Upload response status:', res.status);
+        
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error('Upload error:', errorText);
+            throw new Error(`Upload failed: ${res.status} - ${errorText}`);
         }
 
-        async function silentRefresh() {
-            try {
-                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
-                const data = await response.json();
-                const newResources = Array.isArray(data) ? data : [];
-                if (JSON.stringify(newResources) !== JSON.stringify(allResources)) {
-                    allResources = newResources;
-                    displayContent();
-                    if (document.getElementById('adminPanel').style.display === 'block') loadAdminFiles();
-                    updateSyncStatus('Updated!', 'var(--primary-green)');
-                }
-            } catch (e) { console.log('Silent refresh error'); }
+        // Animate progress
+        for (let i = 0; i <= 100; i += 10) {
+            bar.style.width = i + '%';
+            txt.textContent = i + '%';
+            await new Promise(r => setTimeout(r, 50));
         }
 
-        async function manualRefresh() {
-            const btn = document.getElementById('refreshBtn');
-            btn.classList.add('spinning');
-            isRefreshing = true;
-            updateSyncStatus('Refreshing...', 'var(--warning)');
-            
-            try {
-                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
-                const data = await response.json();
-                allResources = Array.isArray(data) ? data : [];
-                displayContent();
-                if (document.getElementById('adminPanel').style.display === 'block') loadAdminFiles();
-                showToast('Data refreshed! ✅', 'success');
-                updateSyncStatus('Live Synced', 'var(--primary-green)');
-            } catch (e) {
-                showToast('Refresh failed!', 'error');
-                updateSyncStatus('Offline', 'var(--danger)');
-            }
-            
-            btn.classList.remove('spinning');
-            isRefreshing = false;
-        }
+        // Public URL
+        const fileUrl = `${CONFIG.SUPABASE_URL}/storage/v1/object/public/${CONFIG.BUCKET}/${fname}`;
 
-        function updateSyncStatus(text, color) {
-            document.getElementById('syncText').textContent = text;
-            document.querySelector('.sync-dot').style.background = color;
-        }
+        // Detect type
+        let type = 'pdf';
+        if (file.type.startsWith('image/')) type = 'image';
+        else if (file.type.startsWith('video/')) type = 'video';
 
-        // ===== DATABASE =====
-        async function loadResources() {
-            document.getElementById('mainLoading').style.display = 'block';
-            try {
-                const response = await fetch(CONFIG.NPOINT_URL + '?t=' + Date.now());
-                const data = await response.json();
-                allResources = Array.isArray(data) ? data : [];
-                updateSyncStatus('Live Synced', 'var(--primary-green)');
-            } catch (e) {
-                allResources = [];
-                updateSyncStatus('Offline', 'var(--danger)');
-            }
-            document.getElementById('mainLoading').style.display = 'none';
-        }
-
-        async function saveResources() {
-            try {
-                await fetch(CONFIG.NPOINT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(allResources)
-                });
-                return true;
-            } catch (e) { return false; }
-        }
-
-        // ===== AUTH =====
-        function checkLoginStatus() {
-            const saved = localStorage.getItem('adminLogin');
-            if (saved) {
-                const data = JSON.parse(saved);
-                if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
-                    isLoggedIn = true;
-                    currentAdmin = data.username;
-                    updateAdminButton();
-                }
-            }
-        }
-
-        function toggleAdminAccess() {
-            if (isLoggedIn) {
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('adminUserInfo').textContent = '👤 ' + currentAdmin;
-                loadAdminFiles();
-            } else {
-                document.getElementById('loginModal').style.display = 'flex';
-            }
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('loginError').style.display = 'none';
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-        }
-
-        function login() {
-            const username = document.getElementById('loginUsername').value.toLowerCase().trim();
-            const password = document.getElementById('loginPassword').value;
-            const admin = CONFIG.ADMINS.find(a => a.username === username && a.password === password);
-            
-            if (admin) {
-                isLoggedIn = true;
-                currentAdmin = username;
-                localStorage.setItem('adminLogin', JSON.stringify({ username, timestamp: Date.now() }));
-                closeLoginModal();
-                updateAdminButton();
-                showToast(`Welcome ${username}! 👋`, 'success');
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('adminUserInfo').textContent = '👤 ' + currentAdmin;
-                loadAdminFiles();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-            }
-        }
-
-        function logout() {
-            isLoggedIn = false;
-            currentAdmin = null;
-            localStorage.removeItem('adminLogin');
-            updateAdminButton();
-            closeAdminPanel();
-            showToast('Logged out!', 'success');
-        }
-
-        function updateAdminButton() {
-            const btn = document.getElementById('adminLoginBtn');
-            const text = document.getElementById('adminBtnText');
-            if (isLoggedIn) {
-                btn.classList.add('logged-in');
-                text.textContent = currentAdmin;
-            } else {
-                btn.classList.remove('logged-in');
-                text.textContent = 'Admin';
-            }
-        }
-
-        function closeAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'none';
-        }
-
-        // ===== UPLOAD =====
-        function setupDragDrop() {
-            const dropZone = document.getElementById('dropZone');
-            if (!dropZone) return;
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
-                dropZone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); });
-            });
-            ['dragenter', 'dragover'].forEach(e => {
-                dropZone.addEventListener(e, () => dropZone.classList.add('dragover'));
-            });
-            ['dragleave', 'drop'].forEach(e => {
-                dropZone.addEventListener(e, () => dropZone.classList.remove('dragover'));
-            });
-            dropZone.addEventListener('drop', (e) => {
-                if (e.dataTransfer.files.length > 0) handleFileSelect({ target: { files: e.dataTransfer.files } });
-            });
-        }
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const warning = document.getElementById('fileSizeWarning');
-            const fileName = document.getElementById('selectedFileName');
-            
-            if (file.size > CONFIG.MAX_FILE_SIZE) {
-                warning.textContent = `⚠️ File bohot bari hai! Max 10MB allowed`;
-                fileName.textContent = '';
-                selectedFile = null;
-                return;
-            }
-            
-            warning.textContent = '';
-            selectedFile = file;
-            fileName.textContent = `✅ ${file.name} (${formatFileSize(file.size)})`;
-        }
-
-        async function uploadFile(event) {
-            event.preventDefault();
-            if (!selectedFile) { showToast('Pehle file select karo!', 'error'); return; }
-
-            const title = document.getElementById('fileTitle').value.trim();
-            const folder = document.getElementById('fileFolder').value;
-            if (!title || !folder) { showToast('Sab fields fill karo!', 'error'); return; }
-
-            const uploadBtn = document.getElementById('uploadBtn');
-            const progressDiv = document.getElementById('uploadProgress');
-            const progressBar = document.getElementById('uploadProgressBar');
-            const progressText = document.getElementById('uploadProgressText');
-
-            uploadBtn.disabled = true;
-            uploadBtn.textContent = '⏳ Uploading...';
-            progressDiv.style.display = 'block';
-
-            try {
-                const formData = new FormData();
-                formData.append('file', selectedFile);
-                formData.append('upload_preset', CONFIG.CLOUDINARY_UPLOAD_PRESET);
-                formData.append('folder', `iati-ryk/${folder}`);
-
-                const xhr = new XMLHttpRequest();
-                xhr.upload.addEventListener('progress', (e) => {
-                    if (e.lengthComputable) {
-                        const percent = Math.round((e.loaded / e.total) * 100);
-                        progressBar.style.width = percent + '%';
-                        progressText.textContent = `Uploading... ${percent}%`;
-                    }
-                });
-
-                const result = await new Promise((resolve, reject) => {
-                    xhr.onload = () => xhr.status === 200 ? resolve(JSON.parse(xhr.responseText)) : reject(new Error('Upload failed'));
-                    xhr.onerror = () => reject(new Error('Network error'));
-                    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CONFIG.CLOUDINARY_CLOUD_NAME}/auto/upload`);
-                    xhr.send(formData);
-                });
-
-                let fileType = 'pdf';
-                if (result.resource_type === 'image') fileType = 'image';
-                else if (result.resource_type === 'video') fileType = 'video';
-
-                const newResource = {
-                    id: 'res_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    title, type: fileType,
-                    size: formatFileSize(result.bytes),
-                    sizeBytes: result.bytes,
-                    downloads: 0,
-                    fileUrl: result.secure_url,
-                    folder,
-                    uploadedBy: currentAdmin,
-                    uploadedAt: new Date().toISOString(),
-                    icon: { pdf: '📄', image: '🖼️', video: '🎥' }[fileType] || '📁'
-                };
-
-                allResources.push(newResource);
-                await saveResources();
-                showToast('File upload ho gayi! ✅', 'success');
-                
-                document.getElementById('uploadForm').reset();
-                document.getElementById('selectedFileName').textContent = '';
-                selectedFile = null;
-                progressDiv.style.display = 'none';
-                displayContent();
-                loadAdminFiles();
-            } catch (e) {
-                showToast('Upload fail: ' + e.message, 'error');
-                progressDiv.style.display = 'none';
-            }
-
-            uploadBtn.disabled = false;
-            uploadBtn.textContent = '📤 Upload File';
-        }
-
-        // ===== DELETE =====
-        function confirmDelete(id) {
-            deleteTargetId = id;
-            const resource = allResources.find(r => r.id === id);
-            document.getElementById('confirmText').textContent = `"${resource?.title}" delete karna hai?`;
-            document.getElementById('confirmModal').style.display = 'flex';
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').style.display = 'none';
-            deleteTargetId = null;
-        }
-
-        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-            if (!deleteTargetId) return;
-            allResources = allResources.filter(r => r.id !== deleteTargetId);
-            await saveResources();
-            showToast('File delete ho gayi!', 'success');
-            closeConfirmModal();
-            displayContent();
-            loadAdminFiles();
+        // Save to database
+        resources.push({
+            id: 'r_' + ts,
+            title,
+            type,
+            size: formatSize(file.size),
+            sizeBytes: file.size,
+            downloads: 0,
+            fileUrl,
+            folder: fld,
+            uploadedBy: admin,
+            uploadedAt: new Date().toISOString(),
+            icon: {pdf:'📄', image:'🖼️', video:'🎥'}[type]
         });
 
-        // ===== ADMIN FILES =====
-        function loadAdminFiles() { displayAdminFiles(currentFilter); }
+        await saveData();
+        toast('Uploaded successfully! ✅', 'success');
 
-        function filterFiles(filter, btn) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            displayAdminFiles(filter);
-        }
+        // Reset form
+        document.getElementById('fileTitle').value = '';
+        document.getElementById('fileFolder').value = '';
+        document.getElementById('selectedFile').textContent = '';
+        document.getElementById('fileInput').value = '';
+        file = null;
+        prog.style.display = 'none';
+        render();
+        loadAdminFiles();
 
-        function displayAdminFiles(filter) {
-            const grid = document.getElementById('adminFilesGrid');
-            let filtered = filter === 'all' ? allResources : allResources.filter(r => r.folder === filter);
-            document.getElementById('filesCount').textContent = filtered.length + ' files';
+    } catch(e) {
+        console.error('Upload error:', e);
+        toast('Upload failed! Make sure bucket is PUBLIC. Error: ' + e.message, 'error');
+        prog.style.display = 'none';
+    }
 
-            if (filtered.length === 0) {
-                grid.innerHTML = '<p class="no-files-msg">📭 Koi file nahi hai</p>';
-                return;
-            }
+    btn.disabled = false;
+    btn.textContent = '📤 Upload';
+}
 
-            grid.innerHTML = filtered.map(r => `
-                <div class="file-card">
-                    <div class="file-card-thumb">${r.type === 'image' ? `<img src="${r.fileUrl}">` : r.icon}</div>
-                    <div class="file-card-content">
-                        <div class="file-card-title">${r.title}</div>
-                        <div class="file-card-meta"><span>📁 ${r.folder}</span><span>📦 ${r.size}</span></div>
-                        <div class="file-card-uploader">👤 ${r.uploadedBy || 'Unknown'}</div>
-                        <div class="file-card-actions">
-                            <button class="file-action-btn btn-delete" onclick="confirmDelete('${r.id}')">🗑️ Delete</button>
-                        </div>
-                    </div>
+// Delete
+function confirmDel(id) {
+    deleteId = id;
+    const r = resources.find(x => x.id === id);
+    document.getElementById('confirmText').textContent = `Delete "${r?.title}"?`;
+    document.getElementById('confirmModal').style.display = 'flex';
+}
+
+function closeConfirm() {
+    document.getElementById('confirmModal').style.display = 'none';
+    deleteId = null;
+}
+
+document.getElementById('confirmBtn').onclick = async () => {
+    if (!deleteId) return;
+    resources = resources.filter(x => x.id !== deleteId);
+    await saveData();
+    toast('Deleted!', 'success');
+    closeConfirm();
+    render();
+    loadAdminFiles();
+};
+
+// Admin Files
+function loadAdminFiles() {
+    const grid = document.getElementById('adminFiles');
+    let list = filter === 'all' ? resources : resources.filter(x => x.folder === filter);
+    document.getElementById('filesCount').textContent = list.length;
+
+    if (!list.length) {
+        grid.innerHTML = '<p class="no-files">📭 No files</p>';
+        return;
+    }
+
+    grid.innerHTML = list.map(r => {
+        const url = getUrl(r);
+        return `
+        <div class="file-card">
+            <div class="file-card-thumb">${r.type === 'image' && url ? `<img src="${url}">` : (r.icon || '📄')}</div>
+            <div class="file-card-content">
+                <div class="file-card-title">${r.title || 'Untitled'}</div>
+                <div class="file-card-meta">${r.folder || 'root'} • ${r.size || 'N/A'}</div>
+                <button class="btn-delete" onclick="confirmDel('${r.id}')">🗑️ Delete</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function filterFiles(f, btn) {
+    filter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadAdminFiles();
+}
+
+// Render
+function render() {
+    updateStats();
+    if (folder === 'root' && !search) {
+        renderFolders();
+        renderResources(resources.filter(x => x.folder === 'root'));
+    } else if (search) {
+        document.getElementById('foldersGrid').innerHTML = '';
+        renderResources(resources.filter(x => x.title && x.title.toLowerCase().includes(search.toLowerCase())));
+    } else {
+        document.getElementById('foldersGrid').innerHTML = '';
+        renderResources(resources.filter(x => x.folder === folder));
+    }
+    updateBreadcrumb();
+}
+
+function renderFolders() {
+    document.getElementById('foldersGrid').innerHTML = FOLDERS.map(f => {
+        const cnt = resources.filter(x => x.folder === f.id).length;
+        return `<div class="folder-card" onclick="openFolder('${f.id}')">
+            <div class="folder-icon">${f.icon}</div>
+            <div class="folder-name">${f.name}</div>
+            <div class="folder-info">${cnt} files</div>
+        </div>`;
+    }).join('');
+}
+
+function renderResources(list) {
+    const grid = document.getElementById('resourcesGrid');
+    if (!list.length) {
+        grid.innerHTML = '<p class="no-files">📭 No files</p>';
+        return;
+    }
+
+    grid.innerHTML = list.map(r => {
+        const url = getUrl(r);
+        const type = r.type || 'pdf';
+        return `
+        <div class="resource-card">
+            <div class="resource-thumb ${type}">
+                ${type === 'image' && url ? `<img src="${url}">` : type === 'video' && url ? `<video src="${url}"></video>` : (r.icon || '📄')}
+                <div class="resource-badge">${type.toUpperCase()}</div>
+            </div>
+            <div class="resource-content">
+                <div class="resource-title">${r.title || 'Untitled'}</div>
+                <div class="resource-meta"><span>📦 ${r.size || 'N/A'}</span><span>⬇️ ${r.downloads || 0}</span></div>
+                <div class="action-buttons">
+                    <button class="preview-btn" onclick="preview('${r.id}')">👁️ Preview</button>
+                    <button class="download-btn" onclick="download('${r.id}')">⬇️ Download</button>
                 </div>
-            `).join('');
-        }
+            </div>
+        </div>`;
+    }).join('');
+}
 
-        // ===== DISPLAY =====
-        function displayContent() {
-            updateStats();
-            if (currentFolder === 'root' && !searchTerm) {
-                displayFolders();
-                displayResourcesList(allResources.filter(r => r.folder === 'root'));
-            } else if (searchTerm) {
-                document.getElementById('foldersGrid').innerHTML = '';
-                displayResourcesList(allResources.filter(r => r.title.toLowerCase().includes(searchTerm.toLowerCase())));
-            } else {
-                document.getElementById('foldersGrid').innerHTML = '';
-                displayResourcesList(allResources.filter(r => r.folder === currentFolder));
-            }
-            updateBreadcrumb();
-        }
+function updateStats() {
+    document.getElementById('statFolders').textContent = FOLDERS.length;
+    document.getElementById('statFiles').textContent = resources.length;
+    const dl = resources.reduce((s,r) => s + (r.downloads||0), 0);
+    document.getElementById('statDownloads').textContent = dl >= 1000 ? (dl/1000).toFixed(1)+'K' : dl;
+}
 
-        function displayFolders() {
-            document.getElementById('foldersGrid').innerHTML = folders.map(f => {
-                const count = allResources.filter(r => r.folder === f.id).length;
-                return `<div class="folder-card" onclick="openFolder('${f.id}')">
-                    <div class="folder-icon">${f.icon}</div>
-                    <div class="folder-name">${f.name}</div>
-                    <div class="folder-info">📄 ${count} Files</div>
-                </div>`;
-            }).join('');
-        }
+// Navigation
+function openFolder(id) {
+    folder = id;
+    search = '';
+    document.getElementById('searchBox').value = '';
+    render();
+    window.scrollTo({top: 300, behavior: 'smooth'});
+}
 
-        function displayResourcesList(resources) {
-            const grid = document.getElementById('resourcesGrid');
-            if (resources.length === 0) {
-                grid.innerHTML = '<p class="no-files-msg">📭 Is folder mein koi file nahi</p>';
-                return;
-            }
+function goHome() {
+    folder = 'root';
+    search = '';
+    document.getElementById('searchBox').value = '';
+    render();
+}
 
-            grid.innerHTML = resources.map(r => `
-                <div class="resource-card">
-                    <div class="resource-thumbnail ${r.type}">
-                        ${r.type === 'image' ? `<img src="${r.fileUrl}">` : r.type === 'video' ? `<video src="${r.fileUrl}"></video>` : r.icon}
-                        <div class="resource-type-badge">${r.type.toUpperCase()}</div>
-                    </div>
-                    <div class="resource-content">
-                        <h3 class="resource-title">${r.title}</h3>
-                        <div class="resource-meta"><span>📦 ${r.size}</span><span>⬇️ ${r.downloads}</span></div>
-                        <div class="action-buttons">
-                            <button class="preview-btn" onclick="preview('${r.id}')">👁️ Preview</button>
-                            <button class="download-btn" onclick="downloadFile('${r.id}')">⬇️ Download</button>
-                        </div>
-                    </div>
+function updateBreadcrumb() {
+    const bc = document.getElementById('breadcrumb');
+    if (folder === 'root') { bc.style.display = 'none'; return; }
+    const f = FOLDERS.find(x => x.id === folder);
+    bc.style.display = 'flex';
+    bc.innerHTML = `
+        <div class="breadcrumb-item" onclick="goHome()">🏠 Home</div>
+        <span style="color:var(--gray-400);">›</span>
+        <div class="breadcrumb-item" style="color:var(--primary);">${f?.icon || '📁'} ${f?.name || folder}</div>
+    `;
+}
+
+// Preview
+function preview(id) {
+    const r = resources.find(x => x.id === id);
+    if (!r) { toast('File not found!', 'error'); return; }
+
+    const url = getUrl(r);
+    if (!url) { toast('File URL missing!', 'error'); return; }
+
+    document.getElementById('previewTitle').textContent = r.title || 'Preview';
+    const body = document.getElementById('previewBody');
+    const type = r.type || 'pdf';
+
+    if (type === 'image') {
+        body.innerHTML = `<img src="${url}">`;
+    } else if (type === 'video') {
+        body.innerHTML = `<video src="${url}" controls autoplay></video>`;
+    } else if (type === 'pdf') {
+        body.innerHTML = `
+            <div class="pdf-preview-box">
+                <div class="pdf-icon-large"><span>📄</span></div>
+                <div class="pdf-title">${r.title || 'PDF Document'}</div>
+                <div class="pdf-size">📦 ${r.size || 'Unknown'}</div>
+                <div class="pdf-actions">
+                    <a href="${url}" target="_blank" class="pdf-btn pdf-btn-view">📖 View PDF</a>
+                    <button class="pdf-btn pdf-btn-download" onclick="closePreview(); download('${r.id}');">⬇️ Download</button>
                 </div>
-            `).join('');
+            </div>
+        `;
+    }
+
+    document.getElementById('previewModal').style.display = 'flex';
+}
+
+function closePreview() {
+    document.getElementById('previewModal').style.display = 'none';
+    document.getElementById('previewBody').innerHTML = '';
+}
+
+// Download
+async function download(id) {
+    const r = resources.find(x => x.id === id);
+    if (!r) { toast('File not found!', 'error'); return; }
+
+    const url = getUrl(r);
+    if (!url) { toast('File URL missing!', 'error'); return; }
+
+    // Update count
+    r.downloads = (r.downloads || 0) + 1;
+    saveData();
+    render();
+
+    // Get extension
+    const type = r.type || 'pdf';
+    let ext = 'pdf';
+    if (type === 'image') {
+        if (url.includes('.png')) ext = 'png';
+        else if (url.includes('.gif')) ext = 'gif';
+        else ext = 'jpg';
+    } else if (type === 'video') {
+        if (url.includes('.webm')) ext = 'webm';
+        else ext = 'mp4';
+    }
+
+    const fname = `${r.title || 'file'}.${ext}`;
+
+    // Show modal
+    document.getElementById('downloadFileName').textContent = fname;
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('progressText').textContent = '0%';
+    document.getElementById('downloadSpeed').textContent = 'Starting...';
+    document.getElementById('downloadProgress').style.display = 'block';
+    document.getElementById('downloadComplete').style.display = 'none';
+    document.getElementById('downloadModal').style.display = 'flex';
+
+    try {
+        downloadCtrl = new AbortController();
+        const start = Date.now();
+
+        const res = await fetch(url, { signal: downloadCtrl.signal });
+        if (!res.ok) throw new Error('Download failed');
+
+        const total = parseInt(res.headers.get('content-length') || r.sizeBytes || 0);
+        let loaded = 0;
+        const reader = res.body.getReader();
+        const chunks = [];
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            loaded += value.length;
+
+            const pct = total > 0 ? Math.min((loaded / total) * 100, 100) : 0;
+            const elapsed = (Date.now() - start) / 1000;
+            const speed = elapsed > 0 ? loaded / elapsed : 0;
+
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = Math.round(pct) + '%';
+            document.getElementById('downloadSpeed').textContent = formatSpeed(speed);
         }
 
-        function updateStats() {
-            document.getElementById('totalFolders').textContent = folders.length;
-            document.getElementById('totalDocs').textContent = allResources.length;
-            const total = allResources.reduce((sum, r) => sum + (r.downloads || 0), 0);
-            document.getElementById('totalDownloads').textContent = total >= 1000 ? (total/1000).toFixed(1) + 'K' : total;
-        }
+        // Download
+        const blob = new Blob(chunks);
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fname;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
 
-        // ===== NAVIGATION =====
-        function openFolder(id) {
-            currentFolder = id;
-            searchTerm = '';
-            document.getElementById('searchBox').value = '';
-            displayContent();
-            window.scrollTo({ top: 300, behavior: 'smooth' });
-        }
+        // Complete
+        document.getElementById('completedFileName').textContent = fname;
+        document.getElementById('downloadProgress').style.display = 'none';
+        document.getElementById('downloadComplete').style.display = 'block';
+        toast('Downloaded!', 'success');
 
-        function goHome() {
-            currentFolder = 'root';
-            searchTerm = '';
-            document.getElementById('searchBox').value = '';
-            displayContent();
-        }
-
-        function updateBreadcrumb() {
-            const bc = document.getElementById('breadcrumb');
-            if (currentFolder === 'root') { bc.style.display = 'none'; return; }
-            const folder = folders.find(f => f.id === currentFolder);
-            bc.style.display = 'flex';
-            bc.innerHTML = `
-                <div class="breadcrumb-item" onclick="goHome()">🏠 Home</div>
-                <span style="color:var(--gray-medium);">›</span>
-                <div class="breadcrumb-item" style="color:var(--primary-green);">${folder?.icon} ${folder?.name}</div>
-            `;
-        }
-
-        // ===== PREVIEW - SIMPLE & WORKING =====
-        function preview(id) {
-            const r = allResources.find(x => x.id === id);
-            if (!r) return;
-            
-            document.getElementById('previewTitle').textContent = r.title;
-            const viewer = document.getElementById('previewViewer');
-            
-            if (r.type === 'image') {
-                viewer.innerHTML = `<img src="${r.fileUrl}" style="max-height:90%; border-radius:12px;">`;
-            } else if (r.type === 'video') {
-                viewer.innerHTML = `<video src="${r.fileUrl}" controls autoplay style="max-width:90%; max-height:90%; border-radius:12px;"></video>`;
-            } else if (r.type === 'pdf') {
-                // PDF - Simple buttons (NO iframe - direct open in browser)
-                viewer.innerHTML = `
-                    <div style="text-align:center; padding:40px;">
-                        <div style="background:linear-gradient(135deg,#ef4444,#dc2626); width:140px; height:170px; border-radius:15px; display:flex; align-items:center; justify-content:center; margin:0 auto 30px; box-shadow:0 15px 40px rgba(239,68,68,0.4);">
-                            <span style="color:white; font-size:4em;">📄</span>
-                        </div>
-                        <h2 style="color:#1f2937; margin-bottom:10px; font-size:1.6em;">${r.title}</h2>
-                        <p style="color:#6b7280; margin-bottom:8px;">PDF Document</p>
-                        <p style="color:#9ca3af; margin-bottom:35px;">📦 ${r.size}</p>
-                        
-                        <div style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap;">
-                            <button onclick="openPdfInNewTab('${r.fileUrl}')" 
-                                    style="padding:16px 35px; background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; border-radius:12px; font-size:1.1em; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:10px;">
-                                📖 PDF Kholo (New Tab)
-                            </button>
-                            <button onclick="directDownload('${r.fileUrl}', '${r.title}')" 
-                                    style="padding:16px 35px; background:linear-gradient(135deg,#3b82f6,#1d4ed8); color:white; border:none; border-radius:12px; font-size:1.1em; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:10px;">
-                                ⬇️ Download Karo
-                            </button>
-                        </div>
-                        
-                        <p style="color:#9ca3af; margin-top:30px; font-size:0.9em;">
-                            💡 Browser PDF open karega - wahan se download bhi kar sakte ho
-                        </p>
-                    </div>
-                `;
-            } else {
-                viewer.innerHTML = `<p style="color:var(--gray-medium);">Preview nahi hai</p>`;
-            }
-            
-            document.getElementById('previewModal').style.display = 'block';
-        }
-
-        // PDF Open in New Tab
-        function openPdfInNewTab(url) {
-            window.open(url, '_blank');
-            showToast('PDF new tab mein khul raha hai...', 'info');
-        }
-
-        // Direct Download
-        function directDownload(url, title) {
-            showToast('Download shuru ho raha hai...', 'info');
-            
-            // Create hidden link and click
-            const a = document.createElement('a');
-            a.href = url;
-            a.target = '_blank';
-            a.download = title + '.pdf';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function closePreview() {
-            document.getElementById('previewModal').style.display = 'none';
-            document.getElementById('previewViewer').innerHTML = '';
-        }
-
-        // ===== DOWNLOAD WITH PROGRESS (For Images/Videos) =====
-        function showDownloadModal(fileName) {
-            document.getElementById('downloadFileName').textContent = fileName;
-            document.getElementById('downloadProgressBar').style.width = '0%';
-            document.getElementById('downloadProgressText').textContent = '0%';
-            document.getElementById('downloadSpeed').textContent = 'Starting...';
-            document.getElementById('downloadInProgress').style.display = 'block';
-            document.getElementById('downloadComplete').style.display = 'none';
-            document.getElementById('downloadModal').style.display = 'flex';
-        }
-
-        function updateDownloadProgress(percent, speed) {
-            document.getElementById('downloadProgressBar').style.width = percent + '%';
-            document.getElementById('downloadProgressText').textContent = Math.round(percent) + '%';
-            document.getElementById('downloadSpeed').textContent = speed;
-        }
-
-        function showDownloadComplete(fileName) {
-            document.getElementById('downloadCompleteFileName').textContent = fileName;
-            document.getElementById('downloadInProgress').style.display = 'none';
-            document.getElementById('downloadComplete').style.display = 'block';
-        }
-
-        function closeDownloadModal() {
-            document.getElementById('downloadModal').style.display = 'none';
-        }
-
-        function cancelDownload() {
-            if (downloadController) { downloadController.abort(); downloadController = null; }
+    } catch(e) {
+        if (e.name !== 'AbortError') {
             closeDownloadModal();
-            showToast('Download cancelled!', 'warning');
+            window.open(url, '_blank');
+            toast('Opening in new tab...', 'info');
         }
+    }
+    downloadCtrl = null;
+}
 
-        async function downloadFile(id) {
-            const r = allResources.find(x => x.id === id);
-            if (!r) return;
+function cancelDownload() {
+    if (downloadCtrl) downloadCtrl.abort();
+    closeDownloadModal();
+    toast('Cancelled', 'info');
+}
 
-            // Update count
-            r.downloads = (r.downloads || 0) + 1;
-            saveResources();
-            displayContent();
+function closeDownloadModal() {
+    document.getElementById('downloadModal').style.display = 'none';
+}
 
-            // For PDF - just open in new tab (simplest & most reliable)
-            if (r.type === 'pdf') {
-                showToast('PDF new tab mein khul raha hai - wahan se download karo', 'info');
-                window.open(r.fileUrl, '_blank');
-                return;
-            }
+// Helpers
+function toast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 4000);
+}
 
-            // For Images/Videos - download with progress
-            let ext = 'file';
-            if (r.type === 'image') ext = r.fileUrl.includes('.png') ? 'png' : r.fileUrl.includes('.gif') ? 'gif' : 'jpg';
-            else if (r.type === 'video') ext = r.fileUrl.includes('.webm') ? 'webm' : 'mp4';
+function formatSize(b) {
+    if (!b) return 'N/A';
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+    return (b/1048576).toFixed(1) + ' MB';
+}
 
-            const fileName = `${r.title}.${ext}`;
-            showDownloadModal(fileName);
+function formatSpeed(bps) {
+    if (!bps) return '0 B/s';
+    if (bps < 1024) return bps.toFixed(0) + ' B/s';
+    if (bps < 1048576) return (bps/1024).toFixed(1) + ' KB/s';
+    return (bps/1048576).toFixed(1) + ' MB/s';
+}
 
-            try {
-                downloadController = new AbortController();
-                const startTime = Date.now();
-                
-                let downloadUrl = r.fileUrl;
-                if (downloadUrl.includes('cloudinary.com')) {
-                    downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
-                }
+// Events
+document.getElementById('searchBox').addEventListener('input', e => {
+    search = e.target.value;
+    render();
+});
 
-                const response = await fetch(downloadUrl, { signal: downloadController.signal });
-                if (!response.ok) throw new Error('Failed');
+document.getElementById('loginPass').addEventListener('keypress', e => {
+    if (e.key === 'Enter') login();
+});
 
-                const total = parseInt(response.headers.get('content-length') || r.sizeBytes || 0);
-                let loaded = 0;
-                const reader = response.body.getReader();
-                const chunks = [];
+window.onclick = e => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
+};
+</script>
 
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    chunks.push(value);
-                    loaded += value.length;
-                    const percent = total > 0 ? (loaded / total) * 100 : 0;
-                    const elapsed = (Date.now() - startTime) / 1000;
-                    const speed = loaded / elapsed;
-                    updateDownloadProgress(percent, formatSpeed(speed));
-                }
-
-                const blob = new Blob(chunks);
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                showDownloadComplete(fileName);
-                showToast('Download complete! ✅', 'success');
-            } catch (e) {
-                if (e.name !== 'AbortError') {
-                    closeDownloadModal();
-                    showToast('Opening in new tab...', 'info');
-                    window.open(r.fileUrl, '_blank');
-                }
-            }
-            downloadController = null;
-        }
-
-        function formatSpeed(bps) {
-            if (bps < 1024) return bps.toFixed(0) + ' B/s';
-            if (bps < 1024 * 1024) return (bps / 1024).toFixed(1) + ' KB/s';
-            return (bps / (1024 * 1024)).toFixed(1) + ' MB/s';
-        }
-
-        // ===== UTILITY =====
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = `toast ${type}`;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
-        }
-
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-
-        // ===== EVENTS =====
-        document.getElementById('searchBox').addEventListener('input', (e) => {
-            searchTerm = e.target.value;
-            displayContent();
-        });
-
-        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') login();
-        });
-
-        window.onclick = (e) => {
-            if (e.target === document.getElementById('previewModal')) closePreview();
-            if (e.target === document.getElementById('loginModal')) closeLoginModal();
-            if (e.target === document.getElementById('confirmModal')) closeConfirmModal();
-        };
-
-        window.addEventListener('beforeunload', () => {
-            if (refreshInterval) clearInterval(refreshInterval);
-        });
-    </script>
 </body>
 </html>
